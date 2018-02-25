@@ -14,5 +14,5 @@ jobs:
     steps:
       - checkout
       - run: dotnet restore
-      - run: dotnet build -c Release --framework netstandard1.4 ./src
-      - run: dotnet test  -c Release --framework netcoreapp1.1 ./test
+      - run: dotnet build ./src -c Release --framework netstandard1.4 
+      - run: dotnet test ./test -c Release --framework netcoreapp1.1
