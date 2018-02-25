@@ -50,7 +50,7 @@ namespace Makaretu.Mdns
                 ip6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork,
                 SocketType.Dgram,
                 ProtocolType.Udp);
-            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, false);
+            //socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, false);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             socket.ExclusiveAddressUse = false;
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
