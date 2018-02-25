@@ -157,12 +157,11 @@ namespace Makaretu.Mdns
             cancel.Register(() =>
             {
                 // .Net Standard on Unix neeeds this to cancel the Accept
-#if false
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Shutdown(SocketShutdown.Receive);
                 }
-#endif
+
                 socket.Dispose();
                 socket = null;
             });
