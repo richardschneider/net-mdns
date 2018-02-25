@@ -4,10 +4,10 @@
 [![travis build](https://travis-ci.org/richardschneider/net-mdns.svg?branch=master)](https://travis-ci.org/richardschneider/net-mdns)
 [![CircleCI](https://circleci.com/gh/richardschneider/net-mdns.svg?style=svg)](https://circleci.com/gh/richardschneider/net-mdns)
 [![Coverage Status](https://coveralls.io/repos/richardschneider/net-mdns/badge.svg?branch=master&service=github)](https://coveralls.io/github/richardschneider/net-mdns?branch=master)
-[![Version](https://img.shields.io/nuget/v/Ipfs.Engine.svg)](https://www.nuget.org/packages/Ipfs.Engine)
+[![Version](https://img.shields.io/nuget/v/Makaretu.Mdns.svg)](https://www.nuget.org/packages/Makaretu.Mdns)
 [![docs](https://cdn.rawgit.com/richardschneider/net-mdns/master/doc/images/docs-latest-green.svg)](https://richardschneider.github.io/net-mdns)
 
-A simple Multicast Domain Name Server based on [RFC 6762](https://tools.ietf.org/html/rfc6762).  Can be used as both a client (sending queries) or a server (responding to queries).
+A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.org/html/rfc6762).  Can be used as both a client (sending queries) or a server (responding to queries).
 
 ## Features
 
