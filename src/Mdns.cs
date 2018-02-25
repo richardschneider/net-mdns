@@ -110,7 +110,7 @@ namespace Makaretu.Mdns
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
 
-            var ip6 = Socket.OSSupportsIPv6;
+            var ip6 = true;// Socket.OSSupportsIPv6;
             var endpoint = new IPEndPoint(ip6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
             socket.SendTo(new byte[10], endpoint);
         }
@@ -157,10 +157,12 @@ namespace Makaretu.Mdns
             cancel.Register(() =>
             {
                 // .Net Standard on Unix neeeds this to cancel the Accept
+#if false
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     socket.Shutdown(SocketShutdown.Both);
                 }
+#endif
                 socket.Dispose();
                 socket = null;
             });
