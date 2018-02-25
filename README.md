@@ -11,7 +11,7 @@ A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.or
 
 ## Features
 
-- Targets .NET Standard 1.4
+- Targets .NET Standard 1.4 and 2.0
 - Supports IPv6 and IPv4 platforms
 
 ## Getting started
