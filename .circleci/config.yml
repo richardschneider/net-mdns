@@ -14,5 +14,5 @@ jobs:
     steps:
       - checkout
       - run: dotnet restore
-      - run: dotnet build ./src -c Release --framework netstandard1.4 
-      - run: dotnet test ./test -c Release --framework netcoreapp1.1
+      - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard1.4 
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp1.1
