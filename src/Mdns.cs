@@ -82,7 +82,8 @@ namespace Makaretu.Mdns
                 }
             }
 
-            Task.Run((Action)Listener);
+            Task.Run((Action)Listener, listenerCancellation.Token);
+            
         }
 
         /// <summary>
@@ -154,25 +155,24 @@ namespace Makaretu.Mdns
             var cancel = listenerCancellation.Token;
 
             Console.WriteLine("start listening");
+#if false
             cancel.Register(() =>
             {
-                // .Net Standard on Unix neeeds this to cancel the Accept
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    socket.Shutdown(SocketShutdown.Receive);
-                }
-
+                socket.Close();
                 socket.Dispose();
                 socket = null;
             });
-
+#endif
             var datagram = new byte[32 * 1024];
             try
             {
                 while (!cancel.IsCancellationRequested)
                 {
                     var n = socket.Receive(datagram);
-                    OnDnsMessage(datagram, n);
+                    if (n != 0 && !cancel.IsCancellationRequested)
+                    {
+                        OnDnsMessage(datagram, n);
+                    }
                 }
             }
             catch (Exception e)
