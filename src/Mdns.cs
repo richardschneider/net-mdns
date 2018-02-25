@@ -111,9 +111,9 @@ namespace Makaretu.Mdns
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
 
-            var ip6 = true;// Socket.OSSupportsIPv6;
+            var ip6 = Socket.OSSupportsIPv6;
             var endpoint = new IPEndPoint(ip6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
-            socket.SendTo(new byte[10], endpoint);
+            socket.SendTo(new byte[10], 0, 10, SocketFlags.None, endpoint);
         }
 
         /// <summary>
