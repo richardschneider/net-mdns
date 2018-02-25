@@ -20,6 +20,9 @@ namespace Makaretu.Mdns
         IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         int MulticastPort = 5353;
         CancellationTokenSource listenerCancellation;
+        List<NetworkInterface> knownNics;
+        bool ip6;
+        IPEndPoint mdnsEndpoint;
 
         /// <summary>
         ///   The multicast socket.
@@ -39,13 +42,33 @@ namespace Makaretu.Mdns
         public event EventHandler<AnswerEventArgs> AnswerReceived;
 
         /// <summary>
+        ///   Raised when one or more network interfaces are discovered. 
+        /// </summary>
+        public event EventHandler<NetworkInterfaceEventArgs> NetworkInterfaceDiscovered;
+
+        /// <summary>
+        ///   Create a new instance of the <see cref="MdnsService"/> class.
+        /// </summary>
+        public MdnsService()
+        {
+            if (Socket.OSSupportsIPv4)
+                ip6 = false;
+            else if (Socket.OSSupportsIPv6)
+                ip6 = true;
+            else
+                throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
+
+            mdnsEndpoint = new IPEndPoint(ip6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
+        }
+
+        /// <summary>
         ///   Start the service.
         /// </summary>
         public void Start()
         {
             listenerCancellation = new CancellationTokenSource();
+            knownNics = new List<NetworkInterface>();
 
-            var ip6 = false;// Socket.OSSupportsIPv6;
             socket = new Socket(
                 ip6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork,
                 SocketType.Dgram,
@@ -54,6 +77,13 @@ namespace Makaretu.Mdns
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             socket.Bind(endpoint);
 
+            FindNetworkInterfaces();
+
+            Task.Run((Action)Listener, listenerCancellation.Token);
+        }
+
+        void FindNetworkInterfaces()
+        {
             var nics = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
                 .Where(nic => nic.SupportsMulticast);
@@ -80,8 +110,10 @@ namespace Makaretu.Mdns
                 }
             }
 
-            Task.Run((Action)Listener, listenerCancellation.Token);
-            
+            NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+            {
+                NetworkInterfaces = nics
+            });
         }
 
         /// <summary>
@@ -95,6 +127,7 @@ namespace Makaretu.Mdns
             QueryReceived = null;
             AnswerReceived = null;
             listenerCancellation.Cancel();
+            knownNics = null;
 
             if (socket != null)
             {
@@ -112,9 +145,7 @@ namespace Makaretu.Mdns
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
 
-            var ip6 = false;// Socket.OSSupportsIPv6;
-            var endpoint = new IPEndPoint(ip6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
-            socket.SendTo(new byte[10], 0, 10, SocketFlags.None, endpoint);
+            socket.SendTo(new byte[10], 0, 10, SocketFlags.None, mdnsEndpoint);
         }
 
         /// <summary>
@@ -142,6 +173,10 @@ namespace Makaretu.Mdns
         void OnDnsMessage(byte[] datagram, int length)
         {
             Console.WriteLine($"got datagram, {length} bytes");
+            QueryReceived?.Invoke(this, new QueryEventArgs
+            {
+                Question = null // todo
+            });
         }
 
         /// <summary>
