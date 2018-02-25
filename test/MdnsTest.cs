@@ -13,14 +13,14 @@ namespace Makaretu.Mdns
         [TestMethod]
         public void Can_Create()
         {
-            var mdns = new Mdns();
+            var mdns = new MdnsService();
             Assert.IsNotNull(mdns);
         }
 
         [TestMethod]
         public void StartStop()
         {
-            var mdns = new Mdns();
+            var mdns = new MdnsService();
             mdns.Start();
             Thread.Sleep(1000);
             mdns.Stop();
@@ -30,7 +30,7 @@ namespace Makaretu.Mdns
         [TestMethod]
         public void SendQuery()
         {
-            var mdns = new Mdns();
+            var mdns = new MdnsService();
             mdns.Start();
             Thread.Sleep(10);
             mdns.SendQuery("some-service.local");

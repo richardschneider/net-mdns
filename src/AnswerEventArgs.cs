@@ -5,7 +5,7 @@ using System.Text;
 namespace Makaretu.Mdns
 {
     /// <summary>
-    ///   The event data.
+    ///   The event data for <see cref="MdnsService.AnswerReceived"/>.
     /// </summary>
     public class AnswerEventArgs : EventArgs
     {

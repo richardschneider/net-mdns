@@ -14,7 +14,7 @@ namespace Makaretu.Mdns
     /// <summary>
     ///   Muticast Domain Name Service
     /// </summary>
-    public class Mdns
+    public class MdnsService
     {
         IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
@@ -27,16 +27,16 @@ namespace Makaretu.Mdns
         Socket socket;
 
         /// <summary>
-        ///   Raised when any local service sends a query.
+        ///   Raised when any local MDNS service sends a query.
         /// </summary>
         /// <seealso cref="SendQuery(string)"/>
         /// <see cref="SendAnswer(object)"/>
-        public event EventHandler<QueryEventArgs> Query;
+        public event EventHandler<QueryEventArgs> QueryReceived;
 
         /// <summary>
-        ///   Raised when any local service response to a query.
+        ///   Raised when any local MDNS service responds to a query.
         /// </summary>
-        public event EventHandler<AnswerEventArgs> Answer;
+        public event EventHandler<AnswerEventArgs> AnswerReceived;
 
         /// <summary>
         ///   Start the service.
@@ -50,9 +50,7 @@ namespace Makaretu.Mdns
                 ip6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork,
                 SocketType.Dgram,
                 ProtocolType.Udp);
-            //socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, false);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            //socket.ExclusiveAddressUse = false;
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             socket.Bind(endpoint);
 
@@ -89,10 +87,13 @@ namespace Makaretu.Mdns
         /// <summary>
         ///   Stop the service.
         /// </summary>
+        /// <remarks>
+        ///   Clears all the event handlers.
+        /// </remarks>
         public void Stop()
         {
-            Query = null;
-            Answer = null;
+            QueryReceived = null;
+            AnswerReceived = null;
             listenerCancellation.Cancel();
 
             if (socket != null)
@@ -136,7 +137,7 @@ namespace Makaretu.Mdns
         /// </param>
         /// <remarks>
         ///   Decodes the <paramref name="datagram"/> and then raises
-        ///   either the <see cref="Query"/> or <see cref="Answer"/> event.
+        ///   either the <see cref="QueryReceived"/> or <see cref="AnswerReceived"/> event.
         /// </remarks>
         void OnDnsMessage(byte[] datagram, int length)
         {
@@ -155,19 +156,18 @@ namespace Makaretu.Mdns
             var cancel = listenerCancellation.Token;
 
             Console.WriteLine("start listening");
-#if true
             cancel.Register(() =>
             {
                 socket.Dispose();
                 socket = null;
             });
-#endif
-            var datagram = new byte[32 * 1024];
+            var datagram = new byte[8 * 1024];
+            var buffer = new ArraySegment<byte>(datagram);
             try
             {
                 while (!cancel.IsCancellationRequested)
                 {
-                    var n = await socket.ReceiveAsync(new ArraySegment<byte>(datagram), SocketFlags.None);
+                    var n = await socket.ReceiveAsync(buffer, SocketFlags.None);
                     if (n != 0 && !cancel.IsCancellationRequested)
                     {
                         OnDnsMessage(datagram, n);
