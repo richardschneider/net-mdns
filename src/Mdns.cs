@@ -150,15 +150,14 @@ namespace Makaretu.Mdns
         ///   A background task to receive DNS messages from this and other MDNS services.  It is
         ///   cancelled via <see cref="Stop"/>.  All messages are forwarded to <see cref="OnDnsMessage"/>.
         /// </remarks>
-        void Listener()
+        async void Listener()
         {
             var cancel = listenerCancellation.Token;
 
             Console.WriteLine("start listening");
-#if false
+#if true
             cancel.Register(() =>
             {
-                socket.Close();
                 socket.Dispose();
                 socket = null;
             });
@@ -168,7 +167,7 @@ namespace Makaretu.Mdns
             {
                 while (!cancel.IsCancellationRequested)
                 {
-                    var n = socket.Receive(datagram);
+                    var n = await socket.ReceiveAsync(new ArraySegment<byte>(datagram), SocketFlags.None);
                     if (n != 0 && !cancel.IsCancellationRequested)
                     {
                         OnDnsMessage(datagram, n);
