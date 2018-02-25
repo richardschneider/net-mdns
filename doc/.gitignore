@@ -1,0 +1,13 @@
+###############
+#    folder   #
+###############
+/**/DROP/
+/**/TEMP/
+/**/packages/
+/**/bin/
+/**/obj/
+_site
+log.txt
+msdn.4.5.2.zip
+namespaces.4.5.2.zip
+

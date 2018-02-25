@@ -1,0 +1,90 @@
+# gitversion will change the version number
+version: x-{build}
+
+for:
+-
+  branches:
+    only:
+      - master
+
+  environment:
+    git_token:
+      secure: NeX5NCOUXsCLc1UjTJjqB9F02FZ8Wq0VsxqTXC8kBdyK6zjxjebrf/9Da2sY1Kql
+
+configuration: Release
+os: Visual Studio 2017
+
+init:
+  - git config --global core.autocrlf input
+  - git config --global credential.helper store
+  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:git_token):x-oauth-basic@github.com`n"
+  - git config --global user.email "noreply@emanon.org"
+  - git config --global user.name "Appveyor CI"
+
+cache:
+  - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: 2/rbxuse7F3p04C3Lin9tH/fCwigpYAW2bB+4hv8nyCcHo+VMjbTCM2Tf/f4TXIQ
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+# tools we need for bulding/testing/deploying
+install:
+  - choco install gitversion.portable -pre -y
+  - nuget update -self
+  - choco install docfx -y
+  - npm install gh-pages -g
+
+# gitversion will change the assembly info
+pull_requests:
+  do_not_increment_build_number: true
+
+before_build:
+  - nuget restore
+  - ps: gitversion /output buildserver /updateAssemblyInfo >gitversion.log
+
+build_script:
+  - dotnet build -c %CONFIGURATION% -p:Version=%GitVersion_MajorMinorPatch% -p:AssemblyVersion=%GitVersion_MajorMinorPatch%
+  - dotnet build -c %CONFIGURATION% --no-restore ./Peer2Peer/src
+  - dotnet pack -c %CONFIGURATION% --no-build --no-restore -p:Version=%GitVersion_MajorMinorPatch% -p:AssemblyVersion=%GitVersion_MajorMinorPatch%
+
+after_build:
+  - cmd: appveyor PushArtifact "src\bin\%CONFIGURATION%\Makaretu.Mdns.%GitVersion_MajorMinorPatch%.nupkg"
+# Build documentation in doc\_site
+# See https://github.com/dotnet/docfx/issues/1752#issuecomment-308909959
+  - set MSBUILD_EXE_PATH=C:\Program Files\dotnet\sdk\2.0.0\MSBuild.dll
+  - copy doc\MSBuild.dll.config "C:\Program Files\dotnet\sdk\2.0.0\MSBuild.dll.config" /Y
+  - docfx doc\docfx.json
+  - 7z a -tzip docs.zip doc\_site
+  - appveyor PushArtifact docs.zip
+  - if defined git_token gh-pages -d doc\_site -m "new docs %GitVersion_FullSemVer%"
+
+test_script:
+  - dotnet test -c %CONFIGURATION% --no-build --no-restore test
+
+after_test: 
+# Generate coverage report
+    - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe 
+        -register:user -filter:"+[Makaretu.Mdns*]* -[*Tests]*" 
+        -target:"c:\Program Files\dotnet\dotnet.exe" 
+        -targetargs:"test -c Release --no-build --no-restore --framework netcoreapp1.0 test" 
+        -output:coverage.xml  
+        -mergeoutput 
+        -hideskipped:File 
+        -oldStyle 
+    - if defined COVERALLS_REPO_TOKEN 
+        packages\coveralls.net.0.6.0\tools\csmacnz.coveralls.exe 
+        --opencover -i ./coverage.xml --useRelativePaths --serviceName appveyor --jobId %APPVEYOR_BUILD_NUMBER%
+
+# publish NuGet package on tag build
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+deploy:
+- provider: NuGet
+  api_key:
+    secure: OdmGEj/l0K0ZPDmXAYx+fryCzV012eTrM29ALBuL0waxvwLvrufdDXiI+1iNhWEG
+  on:
+    appveyor_repo_tag: true

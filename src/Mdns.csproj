@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard14</TargetFrameworks>
+    <AssemblyName>Makaretu.Mdns</AssemblyName>
+    <RootNamespace>Makaretu.Mdns</RootNamespace>
+    <DocumentationFile>Makaretu.Mdns.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    
+    <!-- developer build is always 0.42 -->
+    <AssemblyVersion>0.42</AssemblyVersion>
+    <Version>0.42</Version>
+    
+    <!-- Nuget specs -->
+    <PackageId>Makaretu.Mdns</PackageId>
+    <Authors>Richard Schneider</Authors>
+    <Title>Multicast DNS</Title>
+    <Description>A simple Multicast Domain Name Server based on RFC ???.  Can be used as both a client (sending queries) or a server (responding to queries).</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <Copyright>© 2018 Richard Schneider</Copyright>
+    <PackageTags>multicast mdns dns zeroconf</PackageTags>
+    <IncludeSymbols>True</IncludeSymbols>
+    <PackageLicenseUrl>https://github.com/richardschneider/net-mdns/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/richardschneider/net-mdns</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard14'">
+    <DefineConstants>NETSTANDARD14</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

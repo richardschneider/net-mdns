@@ -1,0 +1,12 @@
+language: csharp
+mono: none
+dotnet: 1.4.0
+dist: trusty
+sudo: required
+
+install:
+  - dotnet restore
+
+script:
+  - dotnet build -c Release --no-restore --framework netstandard1.4 ./src
+  - dotnet test  -c Release --no-restore --framework netcoreapp1.0 ./test
