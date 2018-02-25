@@ -45,7 +45,7 @@ namespace Makaretu.Mdns
         {
             listenerCancellation = new CancellationTokenSource();
 
-            var ip6 = Socket.OSSupportsIPv6;
+            var ip6 = false;// Socket.OSSupportsIPv6;
             socket = new Socket(
                 ip6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork,
                 SocketType.Dgram,
@@ -111,7 +111,7 @@ namespace Makaretu.Mdns
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
 
-            var ip6 = Socket.OSSupportsIPv6;
+            var ip6 = false;// Socket.OSSupportsIPv6;
             var endpoint = new IPEndPoint(ip6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
             socket.SendTo(new byte[10], 0, 10, SocketFlags.None, endpoint);
         }
