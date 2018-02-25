@@ -52,7 +52,7 @@ namespace Makaretu.Mdns
                 ProtocolType.Udp);
             //socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, false);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            socket.ExclusiveAddressUse = false;
+            //socket.ExclusiveAddressUse = false;
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             socket.Bind(endpoint);
 
