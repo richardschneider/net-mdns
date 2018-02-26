@@ -4,7 +4,7 @@ general:
     ignore:
       - gh-pages
 jobs:
-  build:
+  build-dotnet-1:
     working_directory: /temp
     docker:
       - image: microsoft/dotnet:1.1-sdk
@@ -17,3 +17,24 @@ jobs:
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard1.4 
       - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp1.1
+
+   build-dotnet-2:
+    working_directory: /temp
+    docker:
+      - image: microsoft/dotnet:sdk
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - run: cat /etc/os-release
+      - checkout
+      - run: dotnet restore
+      - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard2 
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.0
+
+workflows:
+  version: 2
+  build-all:
+    jobs:
+      - build-dotnet-2
+      - build-dotnet-1
