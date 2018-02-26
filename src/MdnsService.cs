@@ -193,8 +193,11 @@ namespace Makaretu.Mdns
             Console.WriteLine("start listening");
             cancel.Register(() =>
             {
-                socket.Dispose();
-                socket = null;
+                if (socket != null)
+                {
+                    socket.Dispose();
+                    socket = null;
+                }
             });
             var datagram = new byte[8 * 1024];
             var buffer = new ArraySegment<byte>(datagram);
