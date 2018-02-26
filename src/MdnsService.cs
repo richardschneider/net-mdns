@@ -111,6 +111,9 @@ namespace Makaretu.Mdns
                 .ToArray();
             foreach (var nic in nics)
             {
+                if (socket == null)
+                    return;
+
                 IPInterfaceProperties properties = nic.GetIPProperties();
                 if (ip6)
                 {
@@ -154,14 +157,14 @@ namespace Makaretu.Mdns
             QueryReceived = null;
             AnswerReceived = null;
             NetworkInterfaceDiscovered = null;
-            if (listenerCancellation != null)
-            {
-                listenerCancellation.Cancel();
-            }
             if (nicTimer != null)
             {
                 nicTimer.Dispose();
                 nicTimer = null;
+            }
+            if (listenerCancellation != null)
+            {
+                listenerCancellation.Cancel();
             }
 
             if (socket != null)
