@@ -12,8 +12,8 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
     steps:
+      - run: cat /etc/os-release
       - checkout
       - run: dotnet restore
-      - run: lsb_release -a
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard1.4 
       - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp1.1
