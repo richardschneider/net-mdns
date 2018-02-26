@@ -157,7 +157,6 @@ namespace Makaretu.Mdns
             if (listenerCancellation != null)
             {
                 listenerCancellation.Cancel();
-                listenerCancellation = null;
             }
             if (nicTimer != null)
             {
