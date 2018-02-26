@@ -67,7 +67,7 @@ after_test:
     - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe 
         -register:user -filter:"+[Makaretu.Mdns*]* -[*Tests]*" 
         -target:"c:\Program Files\dotnet\dotnet.exe" 
-        -targetargs:"test -c Release --no-build --no-restore --framework netcoreapp1.0 test" 
+        -targetargs:"test -c Release --no-build --no-restore --framework net461 test" 
         -output:coverage.xml  
         -mergeoutput 
         -hideskipped:File 
