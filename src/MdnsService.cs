@@ -20,7 +20,8 @@ namespace Makaretu.Mdns
         IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         int MulticastPort = 5353;
         CancellationTokenSource listenerCancellation;
-        List<NetworkInterface> knownNics;
+        List<NetworkInterface> knownNics = new List<NetworkInterface>();
+        Timer nicTimer;
         bool ip6;
         IPEndPoint mdnsEndpoint;
 
@@ -62,13 +63,25 @@ namespace Makaretu.Mdns
         }
 
         /// <summary>
+        ///   The interval for discovering network interfaces.
+        /// </summary>
+        /// <value>
+        ///   Default is 2 minutes.
+        /// </value>
+        /// <remarks>
+        ///   When the interval is reached a task is started to discover any
+        ///   new network interfaces. 
+        /// </remarks>
+        /// <seealso cref="NetworkInterfaceDiscovered"/>
+        TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
+
+        /// <summary>
         ///   Start the service.
         /// </summary>
         public void Start()
         {
             listenerCancellation = new CancellationTokenSource();
-            knownNics = new List<NetworkInterface>();
-
+            knownNics.Clear();
             socket = new Socket(
                 ip6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork,
                 SocketType.Dgram,
@@ -77,16 +90,25 @@ namespace Makaretu.Mdns
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             socket.Bind(endpoint);
 
-            FindNetworkInterfaces();
+            // Start a task to find the network interface.
+            nicTimer = new Timer(
+                FindNetworkInterfaces, 
+                this, 
+                TimeSpan.Zero, 
+                NetworkInterfaceDiscoveryInterval);
 
+            // Start a task to listen for MDNS messages.
             Task.Run((Action)Listener, listenerCancellation.Token);
         }
 
-        void FindNetworkInterfaces()
+        void FindNetworkInterfaces(object state)
         {
             var nics = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.SupportsMulticast);
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .Where(nic => nic.SupportsMulticast)
+                .Where(nic => !knownNics.Any(k => k.Id == nic.Id))
+                .ToArray();
             foreach (var nic in nics)
             {
                 IPInterfaceProperties properties = nic.GetIPProperties();
@@ -108,12 +130,17 @@ namespace Makaretu.Mdns
                         SocketOptionName.AddMembership,
                         mopt);
                 }
+                knownNics.Add(nic);
             }
 
-            NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+            // Tell others.
+            if (nics.Length > 0)
             {
-                NetworkInterfaces = nics
-            });
+                NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+                {
+                    NetworkInterfaces = nics
+                });
+            }
         }
 
         /// <summary>
@@ -126,8 +153,17 @@ namespace Makaretu.Mdns
         {
             QueryReceived = null;
             AnswerReceived = null;
-            listenerCancellation.Cancel();
-            knownNics = null;
+            NetworkInterfaceDiscovered = null;
+            if (listenerCancellation != null)
+            {
+                listenerCancellation.Cancel();
+                listenerCancellation = null;
+            }
+            if (nicTimer != null)
+            {
+                nicTimer.Dispose();
+                nicTimer = null;
+            }
 
             if (socket != null)
             {
