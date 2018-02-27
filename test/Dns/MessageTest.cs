@@ -60,6 +60,8 @@ namespace Makaretu.Dns
             var msg = new Message();
             msg.Read(bytes, 0, bytes.Length);
 
+            Assert.IsTrue(msg.IsResponse);
+            Assert.IsTrue(msg.AA);
             Assert.AreEqual(0, msg.Questions.Count);
             Assert.AreEqual(1, msg.Answers.Count);
             Assert.AreEqual(0, msg.AuthorityRecords.Count);
@@ -69,6 +71,32 @@ namespace Makaretu.Dns
             Assert.AreEqual(1, msg.Answers[0].TYPE);
             Assert.AreEqual(0x8001, msg.Answers[0].CLASS);
             Assert.AreEqual(TimeSpan.FromSeconds(30720), msg.Answers[0].TTL);
+        }
+
+        [TestMethod]
+        public void Flags()
+        {
+            var expected = new Message
+            {
+                QR = true,
+                OPCODE = Message.Opcode.STATUS,
+                AA = true,
+                TC = true,
+                RD = true,
+                RA = true,
+                Z = 7,
+                RCODE = Message.Rcode.Refused
+            };
+            var actual = new Message();
+            actual.Read(expected.ToByteArray());
+            Assert.AreEqual(expected.QR, actual.QR);
+            Assert.AreEqual(expected.OPCODE, actual.OPCODE);
+            Assert.AreEqual(expected.AA, actual.AA);
+            Assert.AreEqual(expected.TC, actual.TC);
+            Assert.AreEqual(expected.RD, actual.RD);
+            Assert.AreEqual(expected.RA, actual.RA);
+            Assert.AreEqual(expected.Z, actual.Z);
+            Assert.AreEqual(expected.RCODE, actual.RCODE);
         }
     }
 }

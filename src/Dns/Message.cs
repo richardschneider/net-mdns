@@ -171,7 +171,15 @@ namespace Makaretu.Dns
         public override IDnsSerialiser Read(DnsReader reader)
         {
             ID = reader.ReadUInt16();
-            var flags = reader.ReadUInt16(); // TODO: decode
+            var flags = reader.ReadUInt16();
+            QR = (flags & 0x8000) == 0x8000;
+            AA = (flags & 0x0400) == 0x0400;
+            TC = (flags & 0x0200) == 0x0200;
+            RD = (flags & 0x0100) == 0x0100;
+            RA = (flags & 0x0080) == 0x0080;
+            OPCODE = (Message.Opcode)((flags & 0x7800) >> 11);
+            Z = (flags & 0x0070) >> 4;
+            RCODE = (Message.Rcode)(flags & 0x000F);
             var qdcount = reader.ReadUInt16();
             var ancount = reader.ReadUInt16();
             var nscount = reader.ReadUInt16();
@@ -204,8 +212,16 @@ namespace Makaretu.Dns
         public override void Write(DnsWriter writer)
         {
             writer.WriteUInt16(ID);
-            ushort flags = 0; // TODO: encode
-            writer.WriteUInt16(flags);
+            var flags =
+                (Convert.ToInt32(QR) << 15) |
+                (((ushort)OPCODE & 0xf)<< 11) |
+                (Convert.ToInt32(AA) << 10) |
+                (Convert.ToInt32(TC) << 9) |
+                (Convert.ToInt32(RD) << 8) |
+                (Convert.ToInt32(RA) << 7) |
+                ((Z & 0x7) << 4) |
+                ((ushort)RCODE & 0xf);
+            writer.WriteUInt16((ushort)flags);
             writer.WriteUInt16((ushort)Questions.Count);
             writer.WriteUInt16((ushort)Answers.Count);
             writer.WriteUInt16((ushort)AuthorityRecords.Count);

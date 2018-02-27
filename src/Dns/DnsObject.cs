@@ -16,6 +16,17 @@ namespace Makaretu.Dns
         /// <param name="buffer">
         ///   The source for the DNS object.
         /// </param>
+        public IDnsSerialiser Read(byte[] buffer)
+        {
+            return Read(buffer, 0, buffer.Length);
+        }
+
+        /// <summary>
+        ///   Reads the DNS object from a byte array.
+        /// </summary>
+        /// <param name="buffer">
+        ///   The source for the DNS object.
+        /// </param>
         /// <param name="offset">
         ///   The offset into the <paramref name="buffer"/>.
         /// </param>
