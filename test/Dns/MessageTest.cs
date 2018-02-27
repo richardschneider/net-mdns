@@ -30,7 +30,7 @@ namespace Makaretu.Dns
                 0x00, 0x01              // Class
             };
             var msg = new Message();
-            msg.Read(bytes);
+            msg.Read(bytes, 0, bytes.Length);
             Assert.AreEqual(0, msg.ID);
             Assert.AreEqual(1, msg.Questions.Count);
             Assert.AreEqual(0, msg.Answers.Count);

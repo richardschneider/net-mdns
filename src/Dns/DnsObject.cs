@@ -16,9 +16,15 @@ namespace Makaretu.Dns
         /// <param name="buffer">
         ///   The source for the DNS object.
         /// </param>
-        public void Read(byte[] buffer)
+        /// <param name="offset">
+        ///   The offset into the <paramref name="buffer"/>.
+        /// </param>
+        /// <param name="count">
+        ///   The number of bytes in the <paramref name="buffer"/>.
+        /// </param>
+        public void Read(byte[] buffer, int offset, int count)
         {
-            using (var ms = new MemoryStream(buffer, false))
+            using (var ms = new MemoryStream(buffer, offset, count, false))
             {
                 Read(new DnsReader(ms));
             }

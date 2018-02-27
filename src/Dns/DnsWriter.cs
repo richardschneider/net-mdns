@@ -52,6 +52,7 @@ namespace Makaretu.Dns
                 stream.WriteByte((byte)bytes.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
+            stream.WriteByte(0); // terminating byte
         }
 
     }
