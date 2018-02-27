@@ -11,6 +11,8 @@ namespace Makaretu.Dns
     public class DnsWriter
     {
         Stream stream;
+        int position;
+        Dictionary<string, int> pointers = new Dictionary<string, int>();
 
         /// <summary>
         ///   Creates a new instance of the <see cref="DnsWriter"/> on the
@@ -31,6 +33,7 @@ namespace Makaretu.Dns
         {
             stream.WriteByte((byte)(value >> 8));
             stream.WriteByte((byte)value);
+            position += 2;
         }
 
         /// <summary>
@@ -42,6 +45,7 @@ namespace Makaretu.Dns
             stream.WriteByte((byte)(value >> 16));
             stream.WriteByte((byte)(value >> 8));
             stream.WriteByte((byte)value);
+            position += 4;
         }
 
         /// <summary>
@@ -57,6 +61,14 @@ namespace Makaretu.Dns
         /// </remarks>
         public void WriteDomainName(string name)
         {
+            // Check for name already used.
+            if (pointers.TryGetValue(name, out int pointer))
+            {
+                WriteUInt16((ushort)(0xC000 | pointer));
+                return;
+            }
+            pointers[name] = position;
+
             foreach (var label in name.Split('.'))
             {
                 var bytes = Encoding.UTF8.GetBytes(label);
@@ -64,8 +76,10 @@ namespace Makaretu.Dns
                     throw new InvalidDataException($"Label '{label}' cannot exceed 63 octets.");
                 stream.WriteByte((byte)bytes.Length);
                 stream.Write(bytes, 0, bytes.Length);
+                position += bytes.Length + 1;
             }
             stream.WriteByte(0); // terminating byte
+            ++position;
         }
 
         /// <summary>
@@ -80,6 +94,7 @@ namespace Makaretu.Dns
             var bytes = Encoding.UTF8.GetBytes(value);
             stream.WriteByte((byte)bytes.Length);
             stream.Write(bytes, 0, bytes.Length);
+            position += bytes.Length + 1;
         }
 
         /// <summary>
