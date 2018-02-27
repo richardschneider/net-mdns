@@ -28,11 +28,13 @@ namespace Makaretu.Dns
         public CLASS QCLASS { get; set; }
 
         /// <inheritdoc />
-        public override void Read(DnsReader reader)
+        public override IDnsSerialiser Read(DnsReader reader)
         {
             QNAME = reader.ReadDomainName();
             QTYPE = reader.ReadUInt16();
             QCLASS = (CLASS)reader.ReadUInt16();
+
+            return this;
         }
 
         /// <inheritdoc />

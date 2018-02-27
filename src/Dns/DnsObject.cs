@@ -22,11 +22,11 @@ namespace Makaretu.Dns
         /// <param name="count">
         ///   The number of bytes in the <paramref name="buffer"/>.
         /// </param>
-        public void Read(byte[] buffer, int offset, int count)
+        public IDnsSerialiser Read(byte[] buffer, int offset, int count)
         {
             using (var ms = new MemoryStream(buffer, offset, count, false))
             {
-                Read(new DnsReader(ms));
+                return Read(new DnsReader(ms));
             }
         }
 
@@ -36,13 +36,13 @@ namespace Makaretu.Dns
         /// <param name="stream">
         ///   The source for the DNS object.
         /// </param>
-        public void Read(Stream stream)
+        public IDnsSerialiser Read(Stream stream)
         {
-            Read(new DnsReader(stream));
+            return Read(new DnsReader(stream));
         }
 
         /// <inheritdoc />
-        public abstract void Read(DnsReader reader);
+        public abstract IDnsSerialiser Read(DnsReader reader);
 
         /// <summary>
         ///   Writes the DNS object to a byte array.

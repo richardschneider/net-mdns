@@ -11,6 +11,8 @@ namespace Makaretu.Dns
     public class DnsReader
     {
         Stream stream;
+        int position;
+        Dictionary<int, string> names = new Dictionary<int, string>();
 
         /// <summary>
         ///   Creates a new instance of the <see cref="DnsReader"/> on the
@@ -25,15 +27,64 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        ///   Read a byte.
+        /// </summary>
+        /// <returns></returns>
+        public byte ReadByte()
+        {
+            var value = stream.ReadByte();
+            if (value < 0)
+                throw new EndOfStreamException();
+            ++position;
+            return (byte)value;
+        }
+        
+        /// <summary>
+        ///   Read the specified number of bytes.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public byte[] ReadBytes(int length)
+        {
+            var buffer = new byte[length];
+            for (var offset = 0; length > 0; )
+            {
+                var n = stream.Read(buffer, offset, length);
+                if (n == 0)
+                    throw new EndOfStreamException();
+                offset += n;
+                length -= n;
+                position += n;
+            }
+            
+            return buffer;
+        }
+        /// <summary>
         ///   Read an unsigned short.
         /// </summary>
         /// <returns>
-        ///   The two byte big-endian value as an unsigned short.
+        ///   The two byte little-endian value as an unsigned short.
         /// </returns>
         public ushort ReadUInt16()
         {
-            var msb = stream.ReadByte() << 8;
-            return (ushort)(msb | stream.ReadByte());
+            int value = ReadByte();
+            value = value << 8 | ReadByte();
+            return (ushort)value;
+        }
+
+        /// <summary>
+        ///   Read an unsigned int.
+        /// </summary>
+        /// <returns>
+        ///   The four byte little-endian value as an unsigned int.
+        /// </returns>
+        public uint ReadUInt32()
+        {
+            int value = ReadByte();
+            value = value << 8 | ReadByte();
+            value = value << 8 | ReadByte();
+            value = value << 8 | ReadByte();
+            return (uint)value;
         }
 
         /// <summary>
@@ -53,22 +104,58 @@ namespace Makaretu.Dns
         public string ReadDomainName()
         {
             var s = new StringBuilder();
-            var label = new byte[byte.MaxValue + 1];
+            var pointer = position;
+            var length = ReadByte();
 
-            while (true)
+            // Do we have a compressed pointer?
+            if ((length & 0xC0) == 0xC0)
             {
-                var length = stream.ReadByte();
-                if (length < 1)
-                    break;
-                stream.Read(label, 0, length);
+                pointer = (length ^ 0xC0) << 8 | ReadByte();
+                return names[pointer];
+            }
+
+            while (length != 0)
+            {
+                var label = ReadBytes(length);
                 s.Append(Encoding.UTF8.GetString(label, 0, length));
                 s.Append('.');
+                length = ReadByte();
             }
 
             // Remove trailing '.'
             if (s.Length > 0)
                 s.Length = s.Length - 1;
-            return s.ToString();
+
+            // Add to compressed names
+            var name = s.ToString();
+            names[pointer] = name;
+
+            return name;
+        }
+
+        /// <summary>
+        ///   Read a string.
+        /// </summary>
+        /// <remarks>
+        ///   Strings are encoded with a length prefixed byte.  All strings are treated
+        ///   as UTF-8.
+        /// </remarks>
+        public string ReadString()
+        {
+            var length = ReadByte();
+            var buffer = ReadBytes(length);
+            return Encoding.UTF8.GetString(buffer, 0, length);
+        }
+
+        /// <summary>
+        ///   Read a time span (interval)
+        /// </summary>
+        /// <returns>
+        ///   A <see cref="TimeSpan"/> with second resolution.
+        /// </returns>
+        public TimeSpan ReadTimeSpan()
+        {
+            return TimeSpan.FromSeconds(ReadUInt32());
         }
     }
 }

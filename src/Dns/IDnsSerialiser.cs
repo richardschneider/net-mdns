@@ -12,13 +12,24 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Reads the DNS object.
         /// </summary>
-        /// <param name="reader"></param>
-        void Read(DnsReader reader);
+        /// <param name="reader">
+        ///   The source of the DNS object.
+        /// </param>
+        /// <returns>
+        ///   The final DNS object.
+        /// </returns>
+        /// <remarks>
+        ///   Reading a <see cref="ResourceRecord"/> will return a new instance that
+        ///   is type specific.
+        /// </remarks>
+        IDnsSerialiser Read(DnsReader reader);
 
         /// <summary>
         ///   Writes the DNS object.
         /// </summary>
-        /// <param name="writer"></param>
+        /// <param name="writer">
+        ///   The destination of the DNS object.
+        /// </param>
         void Write(DnsWriter writer);
     }
 }

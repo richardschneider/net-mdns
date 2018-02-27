@@ -23,18 +23,40 @@ namespace Makaretu.Dns
         /// </summary>
         public bool QR { get; set; }
 
+        /// <summary>
+        ///   Determines if the message is query.
+        /// </summary>
         public bool IsQuery { get { return !QR; } }
+
+        /// <summary>
+        ///   Determines if the message is a response to a query.
+        /// </summary>
         public bool IsResponse { get { return QR; } }
 
+        /// <summary>
+        ///   The type of query.
+        /// </summary>
         public enum Opcode
         {
+            /// <summary>
+            ///   Standard query.
+            /// </summary>
             QUERY = 0,
+
+            /// <summary>
+            ///   Inverse query.
+            /// </summary>
             IQUERY = 1,
+
+            /// <summary>
+            ///   A server status request.
+            /// </summary>
             STATUS = 2
         }
+
         /// <summary>
-        ///   A four bit field that specifies kind of query in this
-        ///   message.This value is set by the originator of a query
+        ///   A four bit field that specifies the kind of query in this
+        ///   message. This value is set by the originator of a query
         ///   and copied into the response.
         /// </summary>
         public Opcode OPCODE { get; set; }
@@ -80,6 +102,9 @@ namespace Makaretu.Dns
         /// </summary>
         public int Z { get; set; }
 
+        /// <summary>
+        ///   Response codes.
+        /// </summary>
         public enum Rcode
         {
             /// <summary>
@@ -122,34 +147,64 @@ namespace Makaretu.Dns
         /// </summary>
         public Rcode RCODE { get; set; }
 
+        /// <summary>
+        ///   The list of question.
+        /// </summary>
         public List<Question> Questions { get; } = new List<Question>();
+
+        /// <summary>
+        ///   The list of answers.
+        /// </summary>
         public List<ResourceRecord> Answers { get; } = new List<ResourceRecord>();
+
+        /// <summary>
+        ///   The list of authority records.
+        /// </summary>
         public List<ResourceRecord> AuthorityRecords { get; } = new List<ResourceRecord>();
+
+        /// <summary>
+        ///   The list of additional records.
+        /// </summary>
         public List<ResourceRecord> AdditionalRecords { get; } = new List<ResourceRecord>();
 
         /// <inheritdoc />
-        public override void Read(DnsReader reader)
+        public override IDnsSerialiser Read(DnsReader reader)
         {
             ID = reader.ReadUInt16();
-            var flags = reader.ReadUInt16();
+            var flags = reader.ReadUInt16(); // TODO: decode
             var qdcount = reader.ReadUInt16();
             var ancount = reader.ReadUInt16();
             var nscount = reader.ReadUInt16();
             var arcount = reader.ReadUInt16();
             for (var i = 0; i < qdcount; ++i)
             {
-                var question = new Question();
-                question.Read(reader);
+                var question = (Question) new Question().Read(reader);
                 Questions.Add(question);
             }
-            // TODO: resource records
+            for (var i = 0; i < ancount; ++i)
+            {
+                var rr = (ResourceRecord) new ResourceRecord().Read(reader);
+                Answers.Add(rr);
+            }
+            for (var i = 0; i < nscount; ++i)
+            {
+                var rr = (ResourceRecord)new ResourceRecord().Read(reader);
+                AuthorityRecords.Add(rr);
+            }
+            for (var i = 0; i < arcount; ++i)
+            {
+                var rr = (ResourceRecord)new ResourceRecord().Read(reader);
+                AdditionalRecords.Add(rr);
+            }
+
+            return this;
         }
 
         /// <inheritdoc />
         public override void Write(DnsWriter writer)
         {
             writer.WriteUInt16(ID);
-            ushort flags = 0; // TODO
+            ushort flags = 0; // TODO: encode
             writer.WriteUInt16(flags);
             writer.WriteUInt16((ushort)Questions.Count);
             writer.WriteUInt16((ushort)Answers.Count);

@@ -34,6 +34,17 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        ///   Write an unsigned int.
+        /// </summary>
+        public void WriteUInt32(uint value)
+        {
+            stream.WriteByte((byte)(value >> 24));
+            stream.WriteByte((byte)(value >> 16));
+            stream.WriteByte((byte)(value >> 8));
+            stream.WriteByte((byte)value);
+        }
+
+        /// <summary>
         ///   Write a domain name.
         /// </summary>
         /// <remarks>
@@ -49,11 +60,37 @@ namespace Makaretu.Dns
             foreach (var label in name.Split('.'))
             {
                 var bytes = Encoding.UTF8.GetBytes(label);
+                if (bytes.Length > 63)
+                    throw new InvalidDataException($"Label '{label}' cannot exceed 63 octets.");
                 stream.WriteByte((byte)bytes.Length);
                 stream.Write(bytes, 0, bytes.Length);
             }
             stream.WriteByte(0); // terminating byte
         }
 
+        /// <summary>
+        ///   Write a string.
+        /// </summary>
+        /// <remarks>
+        ///   Strings are encoded with a length prefixed byte.  All strings are treated
+        ///   as UTF-8.
+        /// </remarks>
+        public void WriteString(string value)
+        {
+            var bytes = Encoding.UTF8.GetBytes(value);
+            stream.WriteByte((byte)bytes.Length);
+            stream.Write(bytes, 0, bytes.Length);
+        }
+
+        /// <summary>
+        ///   Write a time span.
+        /// </summary>
+        /// <remarks>
+        ///   Represented as 32-bit unsigned int (in seconds).
+        /// </remarks>
+        public void WriteTimeSpan(TimeSpan value)
+        {
+            WriteUInt32((uint)value.TotalSeconds);
+        }
     }
 }
