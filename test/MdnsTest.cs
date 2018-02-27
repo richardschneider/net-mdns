@@ -49,6 +49,7 @@ namespace Makaretu.Mdns
                 mdns.SendQuery("some-service.local");
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
                 Assert.AreEqual("some-service.local", msg.Questions.First().QNAME);
+                Assert.AreEqual(CLASS.IN, msg.Questions.First().QCLASS);
             }
             finally
             {

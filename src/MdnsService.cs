@@ -34,7 +34,7 @@ namespace Makaretu.Mdns
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
         /// </summary>
-        /// <seealso cref="SendQuery(string)"/>
+        /// <seealso cref="SendQuery"/>
         /// <see cref="SendAnswer(object)"/>
         public event EventHandler<MessageEventArgs> QueryReceived;
 
@@ -176,10 +176,19 @@ namespace Makaretu.Mdns
         }
 
         /// <summary>
-        ///   
+        ///   Ask for answer about a name
         /// </summary>
-        /// <param name="serviceName"></param>
-        public void SendQuery(string serviceName)
+        /// <param name="name">
+        ///   A domain name that should end with ".local".
+        /// </param>
+        /// <param name="klass">
+        ///   The class, defaults to <see cref="CLASS.IN"/>.
+        /// </param>
+        /// <remarks>
+        ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
+        ///   event.
+        /// </remarks>
+        public void SendQuery(string name, CLASS klass = CLASS.IN)
         {
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
@@ -190,7 +199,11 @@ namespace Makaretu.Mdns
                 OPCODE = Message.Opcode.QUERY,
                 QR = false
             };
-            msg.Questions.Add(new Question { QNAME = serviceName });
+            msg.Questions.Add(new Question
+            {
+                QNAME = name,
+                QCLASS = klass
+            });
             var packet = msg.ToByteArray();
             socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
         }
@@ -221,7 +234,7 @@ namespace Makaretu.Mdns
         {
             Console.WriteLine($"got datagram, {length} bytes");
             var msg = new Message();
-            msg.Read(datagram);
+            msg.Read(datagram, 0, length);
             if (msg.IsQuery)
             {
                 QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
