@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Makaretu.Dns;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,16 +33,22 @@ namespace Makaretu.Mdns
         {
             var ready = new ManualResetEvent(false);
             var done = new ManualResetEvent(false);
+            Message msg = null;
 
             var mdns = new MdnsService();
             mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
-            mdns.QueryReceived += (s, e) => done.Set();
+            mdns.QueryReceived += (s, e) => 
+            {
+                msg = e.Message;
+                done.Set();
+            };
             try
             {
                 mdns.Start();
                 Assert.IsTrue(ready.WaitOne(TimeSpan.FromSeconds(1)), "ready timeout");
                 mdns.SendQuery("some-service.local");
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
+                Assert.AreEqual("some-service.local", msg.Questions.First().QNAME);
             }
             finally
             {

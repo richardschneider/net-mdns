@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Makaretu.Dns;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -35,12 +36,12 @@ namespace Makaretu.Mdns
         /// </summary>
         /// <seealso cref="SendQuery(string)"/>
         /// <see cref="SendAnswer(object)"/>
-        public event EventHandler<QueryEventArgs> QueryReceived;
+        public event EventHandler<MessageEventArgs> QueryReceived;
 
         /// <summary>
         ///   Raised when any local MDNS service responds to a query.
         /// </summary>
-        public event EventHandler<AnswerEventArgs> AnswerReceived;
+        public event EventHandler<MessageEventArgs> AnswerReceived;
 
         /// <summary>
         ///   Raised when one or more network interfaces are discovered. 
@@ -183,7 +184,15 @@ namespace Makaretu.Mdns
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
 
-            socket.SendTo(new byte[10], 0, 10, SocketFlags.None, mdnsEndpoint);
+            var msg = new Message
+            {
+                ID = 1,
+                OPCODE = Message.Opcode.QUERY,
+                QR = false
+            };
+            msg.Questions.Add(new Question { QNAME = serviceName });
+            var packet = msg.ToByteArray();
+            socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
         }
 
         /// <summary>
@@ -211,10 +220,16 @@ namespace Makaretu.Mdns
         void OnDnsMessage(byte[] datagram, int length)
         {
             Console.WriteLine($"got datagram, {length} bytes");
-            QueryReceived?.Invoke(this, new QueryEventArgs
+            var msg = new Message();
+            msg.Read(datagram);
+            if (msg.IsQuery)
             {
-                Question = null // todo
-            });
+                QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+            }
+            if (msg.IsResponse)
+            {
+                AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+            }
         }
 
         /// <summary>
