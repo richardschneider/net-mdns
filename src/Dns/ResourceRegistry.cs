@@ -30,7 +30,10 @@ namespace Makaretu.Dns
             Register<MXRecord>();
             Register<NSECRecord>();
             Register<NSRecord>();
+            Register<NULLRecord>();
             Register<PTRRecord>();
+            Register<SOARecord>();
+            Register<TXTRecord>();
         }
 
         /// <summary>
