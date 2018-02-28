@@ -59,14 +59,21 @@ namespace Makaretu.Dns
 
             // Find a specific class for the TYPE or default
             // to UnknownRecord.
-            ResourceRecord specific = new UnknownRecord();
-            if (TYPE == 1) specific = new ARecord();
-            if (TYPE == 28) specific = new AAAARecord();
-            if (TYPE == 47) specific = new NSECRecord();
+            ResourceRecord specific;
+            if (ResourceRegistry.Records.TryGetValue(TYPE, out Func<ResourceRecord> maker))
+            {
+                specific = maker();
+            }
+            else
+            {
+                specific = new UnknownRecord();
+            }
             specific.NAME = NAME;
             specific.TYPE = TYPE;
             specific.CLASS = CLASS;
             specific.TTL = TTL;
+
+            // Read the specific properties of the resource record.
             specific.ReadData(reader, length);
 
             return specific;
