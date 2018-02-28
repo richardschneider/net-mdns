@@ -27,6 +27,7 @@ namespace Makaretu.Dns
             Register<ARecord>();
             Register<AAAARecord>();
             Register<CNAMERecord>();
+            Register<HINFORecord>();
             Register<MXRecord>();
             Register<NSECRecord>();
             Register<NSRecord>();

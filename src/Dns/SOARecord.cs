@@ -36,7 +36,7 @@ namespace Makaretu.Dns
 
         /// <summary>
         ///  The domain-name of the name server that was the
-        //   original or primary source of data for this zone.
+        ///  original or primary source of data for this zone.
         /// </summary>
         public string MNAME { get; set; }
 
