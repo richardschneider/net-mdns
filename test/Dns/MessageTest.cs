@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace Makaretu.Dns
 {
@@ -69,8 +70,24 @@ namespace Makaretu.Dns
 
             Assert.AreEqual("appletv.local", msg.Answers[0].NAME);
             Assert.AreEqual(1, msg.Answers[0].TYPE);
-            Assert.AreEqual(0x8001, msg.Answers[0].CLASS);
+            Assert.AreEqual(0x8001, (ushort)msg.Answers[0].CLASS);
             Assert.AreEqual(TimeSpan.FromSeconds(30720), msg.Answers[0].TTL);
+            Assert.IsInstanceOfType(msg.Answers[0], typeof(ARecord));
+            Assert.AreEqual(IPAddress.Parse("153.109.7.90"), ((ARecord)msg.Answers[0]).ADDRESS);
+
+            var aaaa = (AAAARecord)msg.AdditionalRecords[0];
+            Assert.AreEqual("appletv.local", aaaa.NAME);
+            Assert.AreEqual(0x1C, aaaa.TYPE);
+            Assert.AreEqual(0x8001, (ushort)aaaa.CLASS);
+            Assert.AreEqual(TimeSpan.FromSeconds(30720), aaaa.TTL);
+            Assert.AreEqual(IPAddress.Parse("fe80::223:32ff:feb1:2152"), aaaa.ADDRESS);
+
+            var nsec = (NSECRecord)msg.AdditionalRecords[1];
+            Assert.AreEqual("appletv.local", nsec.NAME);
+            Assert.AreEqual(47, nsec.TYPE);
+            Assert.AreEqual(0x8001, (ushort)nsec.CLASS);
+            Assert.AreEqual(TimeSpan.FromSeconds(30720), nsec.TTL);
+            Assert.AreEqual("appletv.local", nsec.NextOwnerName);
         }
 
         [TestMethod]

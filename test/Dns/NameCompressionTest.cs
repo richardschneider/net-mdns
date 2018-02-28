@@ -29,6 +29,24 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        public void Writing_Past_MaxPointer()
+        {
+            var ms = new MemoryStream();
+            var writer = new DnsWriter(ms);
+            writer.WriteBytes(new byte[0x4000]);
+            writer.WriteDomainName("a");
+            writer.WriteDomainName("b");
+            writer.WriteDomainName("b");
+
+            ms.Position = 0;
+            var reader = new DnsReader(ms);
+            reader.ReadBytes(0x4000);
+            Assert.AreEqual("a", reader.ReadDomainName());
+            Assert.AreEqual("b", reader.ReadDomainName());
+            Assert.AreEqual("b", reader.ReadDomainName());
+        }
+
+        [TestMethod]
         public void Reading()
         {
             var bytes = new byte[]

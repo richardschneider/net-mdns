@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Ipfs.Engine
+namespace Makaretu
 {
     /// <summary>
     ///   Asserting an <see cref="Exception"/>.

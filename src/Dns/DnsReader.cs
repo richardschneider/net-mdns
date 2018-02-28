@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace Makaretu.Dns
@@ -156,6 +157,18 @@ namespace Makaretu.Dns
         public TimeSpan ReadTimeSpan()
         {
             return TimeSpan.FromSeconds(ReadUInt32());
+        }
+
+        /// <summary>
+        ///   Read an Internet address.
+        /// </summary>
+        /// <returns>
+        ///   An <see cref="IPAddress"/>.
+        /// </returns>
+        public IPAddress ReadIPAddress(int length = 4)
+        {
+            var address = ReadBytes(length);
+            return new IPAddress(address);
         }
     }
 }

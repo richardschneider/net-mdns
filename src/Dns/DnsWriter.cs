@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace Makaretu.Dns
@@ -10,9 +11,11 @@ namespace Makaretu.Dns
     /// </summary>
     public class DnsWriter
     {
+        const int maxPointer = 0x3FFF; 
         Stream stream;
         int position;
         Dictionary<string, int> pointers = new Dictionary<string, int>();
+        Stack<Stream> scopes = new Stack<Stream>();
 
         /// <summary>
         ///   Creates a new instance of the <see cref="DnsWriter"/> on the
@@ -24,6 +27,52 @@ namespace Makaretu.Dns
         public DnsWriter(Stream stream)
         {
             this.stream = stream;
+        }
+
+        /// <summary>
+        ///   Start a length prefixed stream.
+        /// </summary>
+        /// <remarks>
+        ///   A memory stream is created for writing.  When it is popped,
+        ///   the memory stream's position is writen as an UInt16 and its
+        ///   contents are copied to the current stream.
+        /// </remarks>
+        public void PushLengthPrefixedScope()
+        {
+            scopes.Push(stream);
+            stream = new MemoryStream();
+            position += 2; // count the length prefix
+        }
+
+        /// <summary>
+        ///   Start a length prefixed stream.
+        /// </summary>
+        /// <remarks>
+        ///   A memory stream is created for writing.  When it is popped,
+        ///   the memory stream's position is writen as an UInt16 and its
+        ///   contents are copied to the current stream.
+        /// </remarks>
+        public ushort PopLengthPrefixedScope()
+        {
+            var lp = stream;
+            var length = (ushort)lp.Position;
+            stream = scopes.Pop();
+            WriteUInt16(length);
+            position -= 2;
+            lp.Position = 0;
+            lp.CopyTo(stream);
+
+            return length;
+        }
+
+        /// <summary>
+        ///   Write a sequence of bytes.
+        /// </summary>
+        /// <param name="bytes"></param>
+        public void WriteBytes(byte[] bytes)
+        {
+            stream.Write(bytes, 0, bytes.Length);
+            position += bytes.Length;
         }
 
         /// <summary>
@@ -67,7 +116,10 @@ namespace Makaretu.Dns
                 WriteUInt16((ushort)(0xC000 | pointer));
                 return;
             }
-            pointers[name] = position;
+            if (position <= maxPointer)
+            {
+                pointers[name] = position;
+            }
 
             foreach (var label in name.Split('.'))
             {
@@ -106,6 +158,15 @@ namespace Makaretu.Dns
         public void WriteTimeSpan(TimeSpan value)
         {
             WriteUInt32((uint)value.TotalSeconds);
+        }
+
+        /// <summary>
+        ///   Write an IP address.
+        /// </summary>
+        /// <param name="value"></param>
+        public void WriteIPAddress(IPAddress value)
+        {
+            WriteBytes(value.GetAddressBytes());
         }
     }
 }
