@@ -34,8 +34,8 @@ namespace Makaretu.Mdns
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
         /// </summary>
-        /// <seealso cref="SendQuery"/>
-        /// <see cref="SendAnswer(object)"/>
+        /// <seealso cref="SendQuery(Message)"/>
+        /// <see cref="SendAnswer"/>
         public event EventHandler<MessageEventArgs> QueryReceived;
 
         /// <summary>
@@ -176,10 +176,10 @@ namespace Makaretu.Mdns
         }
 
         /// <summary>
-        ///   Ask for answer about a name
+        ///   Ask for answers about a name.
         /// </summary>
         /// <param name="name">
-        ///   A domain name that should end with ".local".
+        ///   A domain name that should end with ".local", e.g. "myservice.local".
         /// </param>
         /// <param name="klass">
         ///   The class, defaults to <see cref="Class.IN"/>.
@@ -204,17 +204,41 @@ namespace Makaretu.Mdns
                 QNAME = name,
                 QCLASS = klass
             });
+
+            SendQuery(msg);
+        }
+
+        /// <summary>
+        ///   Ask for answers.
+        /// </summary>
+        /// <param name="msg">
+        ///   A query message.
+        /// </param>
+        /// <remarks>
+        ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
+        ///   event.
+        /// </remarks>
+        public void SendQuery(Message msg)
+        {
             var packet = msg.ToByteArray();
             socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
         }
 
         /// <summary>
-        /// 
+        ///   Send an answer to a query.
         /// </summary>
-        /// <param name="answer"></param>
-        public void SendAnswer(object answer)
+        /// <param name="answer">
+        ///   The answer message.
+        /// </param>
+        /// <see cref="QueryReceived"/>
+        /// <seealso cref="Message.CreateResponse"/>
+        public void SendAnswer(Message answer)
         {
-            throw new NotImplementedException();
+            // All MDNS answers are authoritative.
+            answer.AA = true;
+
+            var packet = answer.ToByteArray();
+            socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
         }
 
         /// <summary>

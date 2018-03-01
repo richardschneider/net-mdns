@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,6 +51,56 @@ namespace Makaretu.Mdns
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
                 Assert.AreEqual("some-service.local", msg.Questions.First().QNAME);
                 Assert.AreEqual(Class.IN, msg.Questions.First().QCLASS);
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
+        public void ReceiveAnswer()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var done = new ManualResetEvent(false);
+            Message response = null;
+
+            var mdns = new MdnsService();
+            mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
+            mdns.QueryReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Questions.Any(q => q.QNAME == service))
+                {
+                    var res = msg.CreateResponse();
+                    res.Answers.Add(new ARecord
+                    {
+                        Name = service,
+                        Address = IPAddress.Parse("127.1.1.1")
+                    });
+                    mdns.SendAnswer(res);
+                }
+            };
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.Any(a => a.Name == service))
+                {
+                    Console.WriteLine("got " + service);
+                    response = msg;
+                    done.Set();
+                }
+            };
+            try
+            {
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "answer timeout");
+                Assert.IsNotNull(response);
+                Assert.IsTrue(response.IsResponse);
+                Assert.AreEqual(Message.Rcode.NoError, response.RCODE);
+                Assert.IsTrue(response.AA);
+                var a = (ARecord)response.Answers[0];
+                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
             }
             finally
             {
