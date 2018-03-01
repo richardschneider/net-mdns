@@ -27,7 +27,10 @@ namespace Makaretu.Dns
         /// <summary>
         ///   A two octet code that specifies the class of the query.
         /// </summary>
-        public Class Class { get; set; }
+        /// <value>
+        ///   Defaults to <see cref="Class.IN"/>.
+        /// </value>
+        public Class Class { get; set; } = Class.IN;
 
         /// <inheritdoc />
         public override IDnsSerialiser Read(DnsReader reader)

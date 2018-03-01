@@ -23,6 +23,7 @@ namespace Makaretu.Dns
         public HINFORecord() : base()
         {
             Type = 13;
+            TTL = ResourceRecord.DefaultHostTTL;
         }
 
         /// <summary>

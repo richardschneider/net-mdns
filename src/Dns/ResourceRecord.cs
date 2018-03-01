@@ -10,6 +10,26 @@ namespace Makaretu.Dns
     public class ResourceRecord : DnsObject
     {
         /// <summary>
+        ///   The default time interval that a resource record maybe cached.
+        /// </summary>
+        /// <value>
+        ///   Defaults to 1 day.
+        /// </value>
+        public static TimeSpan DefaultTTL = TimeSpan.FromDays(1);
+
+        /// <summary>
+        ///   The default time interval that a resource record containing
+        ///   a host name maybe cached.
+        /// </summary>
+        /// <value>
+        ///   Defaults to 1 day.
+        /// </value>
+        /// <remarks>
+        ///   Host names are in A, AAAA, and HINFO records.
+        /// </remarks>
+        public static TimeSpan DefaultHostTTL = TimeSpan.FromDays(1);
+
+        /// <summary>
         ///   An owner name, i.e., the name of the node to which this
         ///   resource record pertains
         /// </summary>
@@ -42,10 +62,11 @@ namespace Makaretu.Dns
         ///    cached.
         ///    
         ///    For example, SOA records are always distributed
-        ///    with a zero TTL to prohibit caching.Zero values can
+        ///    with a zero TTL to prohibit caching. Zero values can
         ///    also be used for extremely volatile data.
-        /// </remarks>>
-        public TimeSpan TTL { get; set; } = TimeSpan.FromDays(1);
+        /// </remarks>
+        /// <seealso cref="DefaultTTL"/>
+        public TimeSpan TTL { get; set; } = DefaultTTL;
 
         /// <inheritdoc />
         public override IDnsSerialiser Read(DnsReader reader)

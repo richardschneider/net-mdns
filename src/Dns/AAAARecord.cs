@@ -16,6 +16,7 @@ namespace Makaretu.Dns
         public AAAARecord() : base()
         {
             Type = 28;
+            TTL = ResourceRecord.DefaultHostTTL;
         }
 
         /// <summary>
