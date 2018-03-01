@@ -15,25 +15,25 @@ namespace Makaretu.Dns
         /// </summary>
         public ARecord() : base()
         {
-            TYPE = 1;
+            Type = 1;
         }
 
         /// <summary>
         ///    A 32 bit Internet address (IPv4).
         /// </summary>
-        public IPAddress ADDRESS { get; set; }
+        public IPAddress Address { get; set; }
 
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            ADDRESS = reader.ReadIPAddress(length);
+            Address = reader.ReadIPAddress(length);
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteIPAddress(ADDRESS);
+            writer.WriteIPAddress(Address);
         }
     }
 }

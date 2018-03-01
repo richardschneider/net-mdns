@@ -20,7 +20,7 @@ namespace Makaretu.Dns
         /// </summary>
         public MXRecord() : base()
         {
-            TYPE = 15;
+            Type = 15;
         }
 
         /// <summary>
@@ -28,27 +28,27 @@ namespace Makaretu.Dns
         ///  this RR among others at the same owner.Lower values
         ///  are preferred.
         /// </summary>
-        public ushort PREFERENCE { get; set; }
+        public ushort Preference { get; set; }
 
         /// <summary>
         ///  A domain-name which specifies a host willing to act as
         ///  a mail exchange for the owner name.
         /// </summary>
-        public string EXCHANGE { get; set; }
+        public string Exchange { get; set; }
 
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            PREFERENCE = reader.ReadUInt16();
-            EXCHANGE = reader.ReadDomainName();
+            Preference = reader.ReadUInt16();
+            Exchange = reader.ReadDomainName();
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteUInt16(PREFERENCE);
-            writer.WriteDomainName(EXCHANGE);
+            writer.WriteUInt16(Preference);
+            writer.WriteDomainName(Exchange);
         }
     }
 }

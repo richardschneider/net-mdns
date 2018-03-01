@@ -15,7 +15,7 @@ namespace Makaretu.Dns
         /// </summary>
         public SRVRecord() : base()
         {
-            TYPE = 33;
+            Type = 33;
         }
 
 

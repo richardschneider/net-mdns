@@ -15,17 +15,17 @@ namespace Makaretu.Dns
         {
             var a = new MXRecord
             {
-                NAME = "emanon.org",
-                PREFERENCE = 10,
-                EXCHANGE = "mail.emanon.org"
+                Name = "emanon.org",
+                Preference = 10,
+                Exchange = "mail.emanon.org"
             };
             var b = (MXRecord)new ResourceRecord().Read(a.ToByteArray());
-            Assert.AreEqual(a.NAME, b.NAME);
-            Assert.AreEqual(a.CLASS, b.CLASS);
-            Assert.AreEqual(a.TYPE, b.TYPE);
+            Assert.AreEqual(a.Name, b.Name);
+            Assert.AreEqual(a.Class, b.Class);
+            Assert.AreEqual(a.Type, b.Type);
             Assert.AreEqual(a.TTL, b.TTL);
-            Assert.AreEqual(a.PREFERENCE, b.PREFERENCE);
-            Assert.AreEqual(a.EXCHANGE, b.EXCHANGE);
+            Assert.AreEqual(a.Preference, b.Preference);
+            Assert.AreEqual(a.Exchange, b.Exchange);
         }
     }
 }

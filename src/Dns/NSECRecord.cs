@@ -16,7 +16,7 @@ namespace Makaretu.Dns
         /// </summary>
         public NSECRecord() : base()
         {
-            TYPE = 47;
+            Type = 47;
         }
 
         /// <summary>

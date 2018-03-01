@@ -7,7 +7,7 @@ namespace Makaretu.Dns
     /// <summary>
     ///   CLASS fields appear in resource records.
     /// </summary>
-    public enum CLASS : ushort
+    public enum Class : ushort
     {
         /// <summary>
         ///   The Internet.

@@ -22,26 +22,26 @@ namespace Makaretu.Dns
         /// </summary>
         public PTRRecord() : base()
         {
-            TYPE = 12;
+            Type = 12;
         }
 
         /// <summary>
         ///  A domain-name which points to some location in the
         ///  domain name space.
         /// </summary>
-        public string PTRDNAME { get; set; }
+        public string DomainName { get; set; }
 
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            PTRDNAME = reader.ReadDomainName();
+            DomainName = reader.ReadDomainName();
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteDomainName(PTRDNAME);
+            writer.WriteDomainName(DomainName);
         }
     }
 }

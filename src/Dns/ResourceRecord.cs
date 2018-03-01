@@ -13,20 +13,20 @@ namespace Makaretu.Dns
         ///   An owner name, i.e., the name of the node to which this
         ///   resource record pertains
         /// </summary>
-        public string NAME { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         ///    One of the RR TYPE codes.
         /// </summary>
-        public ushort TYPE { get; set; }
+        public ushort Type { get; set; }
 
         /// <summary>
         ///    One of the RR CLASS codes.
         /// </summary>
         /// <value>
-        ///   Defaults to <see cref="CLASS.IN"/>.
+        ///   Defaults to <see cref="Class.IN"/>.
         /// </value>
-        public CLASS CLASS { get; set; } = CLASS.IN;
+        public Class Class { get; set; } = Class.IN;
 
         /// <summary>
         ///    Specifies the time interval
@@ -51,16 +51,16 @@ namespace Makaretu.Dns
         public override IDnsSerialiser Read(DnsReader reader)
         {
             // Read standard properties of a resource record.
-            NAME = reader.ReadDomainName();
-            TYPE = reader.ReadUInt16();
-            CLASS = (CLASS)reader.ReadUInt16();
+            Name = reader.ReadDomainName();
+            Type = reader.ReadUInt16();
+            Class = (Class)reader.ReadUInt16();
             TTL = reader.ReadTimeSpan();
             int length = reader.ReadUInt16();
 
             // Find a specific class for the TYPE or default
             // to UnknownRecord.
             ResourceRecord specific;
-            if (ResourceRegistry.Records.TryGetValue(TYPE, out Func<ResourceRecord> maker))
+            if (ResourceRegistry.Records.TryGetValue(Type, out Func<ResourceRecord> maker))
             {
                 specific = maker();
             }
@@ -68,9 +68,9 @@ namespace Makaretu.Dns
             {
                 specific = new UnknownRecord();
             }
-            specific.NAME = NAME;
-            specific.TYPE = TYPE;
-            specific.CLASS = CLASS;
+            specific.Name = Name;
+            specific.Type = Type;
+            specific.Class = Class;
             specific.TTL = TTL;
 
             // Read the specific properties of the resource record.
@@ -80,7 +80,7 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
-        ///   Read the data that is specific to the resource record <see cref="Type"/>.
+        ///   Read the data that is specific to the resource record <see cref="System.Type"/>.
         /// </summary>
         /// <param name="reader">
         ///   The source of the DNS object's data.
@@ -99,9 +99,9 @@ namespace Makaretu.Dns
         /// <inheritdoc />
         public override void Write(DnsWriter writer)
         {
-            writer.WriteDomainName(NAME);
-            writer.WriteUInt16(TYPE);
-            writer.WriteUInt16((ushort)CLASS);
+            writer.WriteDomainName(Name);
+            writer.WriteUInt16(Type);
+            writer.WriteUInt16((ushort)Class);
             writer.WriteTimeSpan(TTL);
 
             writer.PushLengthPrefixedScope();
@@ -110,7 +110,7 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
-        ///   Write the data that is specific to the resource record <see cref="Type"/>.
+        ///   Write the data that is specific to the resource record <see cref="System.Type"/>.
         /// </summary>
         /// <param name="writer">
         ///   The destination for the DNS object's data.

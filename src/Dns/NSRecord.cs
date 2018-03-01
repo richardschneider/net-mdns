@@ -27,26 +27,26 @@ namespace Makaretu.Dns
         /// </summary>
         public NSRecord() : base()
         {
-            TYPE = 2;
+            Type = 2;
         }
 
         /// <summary>
         ///   A domain-name which specifies a host which should be
         ///   authoritative for the specified class and domain.
         /// </summary>
-        public string NSDNAME { get; set; }
+        public string Authority { get; set; }
 
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            NSDNAME = reader.ReadDomainName();
+            Authority = reader.ReadDomainName();
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteDomainName(NSDNAME);
+            writer.WriteDomainName(Authority);
         }
     }
 }

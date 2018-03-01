@@ -20,26 +20,26 @@ namespace Makaretu.Dns
         /// </summary>
         public CNAMERecord() : base()
         {
-            TYPE = 5;
+            Type = 5;
         }
 
         /// <summary>
         ///  A domain-name which specifies the canonical or primary
         ///  name for the owner. The owner name is an alias.
         /// </summary>
-        public string CNAME { get; set; }
+        public string Target { get; set; }
 
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            CNAME = reader.ReadDomainName();
+            Target = reader.ReadDomainName();
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteDomainName(CNAME);
+            writer.WriteDomainName(Target);
         }
     }
 }

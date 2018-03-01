@@ -19,7 +19,7 @@ namespace Makaretu.Dns
         /// </summary>
         public TXTRecord() : base()
         {
-            TYPE = 16;
+            Type = 16;
         }
 
         /// <summary>

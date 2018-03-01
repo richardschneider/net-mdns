@@ -25,14 +25,14 @@ namespace Makaretu.Dns
         /// <summary>
         ///   A two octet code that specifies the class of the query.
         /// </summary>
-        public CLASS QCLASS { get; set; }
+        public Class QCLASS { get; set; }
 
         /// <inheritdoc />
         public override IDnsSerialiser Read(DnsReader reader)
         {
             QNAME = reader.ReadDomainName();
             QTYPE = reader.ReadUInt16();
-            QCLASS = (CLASS)reader.ReadUInt16();
+            QCLASS = (Class)reader.ReadUInt16();
 
             return this;
         }

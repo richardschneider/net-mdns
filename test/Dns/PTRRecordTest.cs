@@ -15,15 +15,15 @@ namespace Makaretu.Dns
         {
             var a = new PTRRecord
             {
-                NAME = "emanon.org",
-                PTRDNAME = "somewhere.else.org"
+                Name = "emanon.org",
+                DomainName = "somewhere.else.org"
             };
             var b = (PTRRecord)new ResourceRecord().Read(a.ToByteArray());
-            Assert.AreEqual(a.NAME, b.NAME);
-            Assert.AreEqual(a.CLASS, b.CLASS);
-            Assert.AreEqual(a.TYPE, b.TYPE);
+            Assert.AreEqual(a.Name, b.Name);
+            Assert.AreEqual(a.Class, b.Class);
+            Assert.AreEqual(a.Type, b.Type);
             Assert.AreEqual(a.TTL, b.TTL);
-            Assert.AreEqual(a.PTRDNAME, b.PTRDNAME);
+            Assert.AreEqual(a.DomainName, b.DomainName);
         }
     }
 }

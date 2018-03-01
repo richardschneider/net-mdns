@@ -182,20 +182,20 @@ namespace Makaretu.Mdns
         ///   A domain name that should end with ".local".
         /// </param>
         /// <param name="klass">
-        ///   The class, defaults to <see cref="CLASS.IN"/>.
+        ///   The class, defaults to <see cref="Class.IN"/>.
         /// </param>
         /// <remarks>
         ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
         ///   event.
         /// </remarks>
-        public void SendQuery(string name, CLASS klass = CLASS.IN)
+        public void SendQuery(string name, Class klass = Class.IN)
         {
             if (socket == null)
                 throw new InvalidOperationException("MDNS is not started");
 
             var msg = new Message
             {
-                ID = 1,
+                Id = 1,
                 OPCODE = Message.Opcode.QUERY,
                 QR = false
             };

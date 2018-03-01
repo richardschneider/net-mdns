@@ -22,13 +22,13 @@ namespace Makaretu.Dns
         /// </summary>
         public HINFORecord() : base()
         {
-            TYPE = 13;
+            Type = 13;
         }
 
         /// <summary>
         ///  CPU type.
         /// </summary>
-        public string CPU { get; set; }
+        public string Cpu { get; set; }
 
         /// <summary>
         ///  Operating system type.
@@ -39,14 +39,14 @@ namespace Makaretu.Dns
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            CPU = reader.ReadString();
+            Cpu = reader.ReadString();
             OS = reader.ReadString();
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteString(CPU);
+            writer.WriteString(Cpu);
             writer.WriteString(OS);
         }
     }

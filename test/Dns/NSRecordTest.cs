@@ -15,15 +15,15 @@ namespace Makaretu.Dns
         {
             var a = new NSRecord
             {
-                NAME = "emanon.org",
-                NSDNAME = "mydomain.name"
+                Name = "emanon.org",
+                Authority = "mydomain.name"
             };
             var b = (NSRecord)new ResourceRecord().Read(a.ToByteArray());
-            Assert.AreEqual(a.NAME, b.NAME);
-            Assert.AreEqual(a.CLASS, b.CLASS);
-            Assert.AreEqual(a.TYPE, b.TYPE);
+            Assert.AreEqual(a.Name, b.Name);
+            Assert.AreEqual(a.Class, b.Class);
+            Assert.AreEqual(a.Type, b.Type);
             Assert.AreEqual(a.TTL, b.TTL);
-            Assert.AreEqual(a.NSDNAME, b.NSDNAME);
+            Assert.AreEqual(a.Authority, b.Authority);
         }
     }
 }

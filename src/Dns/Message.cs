@@ -16,7 +16,7 @@ namespace Makaretu.Dns
         /// the corresponding reply and can be used by the requester
         /// to match up replies to outstanding queries.
         /// </summary>
-        public ushort ID { get; set; }
+        public ushort Id { get; set; }
 
         /// <summary>
         ///   A one bit field that specifies whether this message is a query(0), or a response(1).
@@ -170,7 +170,7 @@ namespace Makaretu.Dns
         /// <inheritdoc />
         public override IDnsSerialiser Read(DnsReader reader)
         {
-            ID = reader.ReadUInt16();
+            Id = reader.ReadUInt16();
             var flags = reader.ReadUInt16();
             QR = (flags & 0x8000) == 0x8000;
             AA = (flags & 0x0400) == 0x0400;
@@ -211,7 +211,7 @@ namespace Makaretu.Dns
         /// <inheritdoc />
         public override void Write(DnsWriter writer)
         {
-            writer.WriteUInt16(ID);
+            writer.WriteUInt16(Id);
             var flags =
                 (Convert.ToInt32(QR) << 15) |
                 (((ushort)OPCODE & 0xf)<< 11) |

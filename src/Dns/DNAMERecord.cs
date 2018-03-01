@@ -20,7 +20,7 @@ namespace Makaretu.Dns
         /// </summary>
         public DNAMERecord() : base()
         {
-            TYPE = 39;
+            Type = 39;
         }
 
         /// <summary>

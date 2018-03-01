@@ -32,7 +32,7 @@ namespace Makaretu.Dns
             };
             var msg = new Message();
             msg.Read(bytes, 0, bytes.Length);
-            Assert.AreEqual(0, msg.ID);
+            Assert.AreEqual(0, msg.Id);
             Assert.AreEqual(1, msg.Questions.Count);
             Assert.AreEqual(0, msg.Answers.Count);
             Assert.AreEqual(0, msg.AuthorityRecords.Count);
@@ -40,7 +40,7 @@ namespace Makaretu.Dns
             var question = msg.Questions.First();
             Assert.AreEqual("appletv.local", question.QNAME);
             Assert.AreEqual(1, question.QTYPE);
-            Assert.AreEqual(CLASS.IN, question.QCLASS);
+            Assert.AreEqual(Class.IN, question.QCLASS);
         }
 
         /// <summary>
@@ -68,24 +68,24 @@ namespace Makaretu.Dns
             Assert.AreEqual(0, msg.AuthorityRecords.Count);
             Assert.AreEqual(2, msg.AdditionalRecords.Count);
 
-            Assert.AreEqual("appletv.local", msg.Answers[0].NAME);
-            Assert.AreEqual(1, msg.Answers[0].TYPE);
-            Assert.AreEqual(0x8001, (ushort)msg.Answers[0].CLASS);
+            Assert.AreEqual("appletv.local", msg.Answers[0].Name);
+            Assert.AreEqual(1, msg.Answers[0].Type);
+            Assert.AreEqual(0x8001, (ushort)msg.Answers[0].Class);
             Assert.AreEqual(TimeSpan.FromSeconds(30720), msg.Answers[0].TTL);
             Assert.IsInstanceOfType(msg.Answers[0], typeof(ARecord));
-            Assert.AreEqual(IPAddress.Parse("153.109.7.90"), ((ARecord)msg.Answers[0]).ADDRESS);
+            Assert.AreEqual(IPAddress.Parse("153.109.7.90"), ((ARecord)msg.Answers[0]).Address);
 
             var aaaa = (AAAARecord)msg.AdditionalRecords[0];
-            Assert.AreEqual("appletv.local", aaaa.NAME);
-            Assert.AreEqual(0x1C, aaaa.TYPE);
-            Assert.AreEqual(0x8001, (ushort)aaaa.CLASS);
+            Assert.AreEqual("appletv.local", aaaa.Name);
+            Assert.AreEqual(0x1C, aaaa.Type);
+            Assert.AreEqual(0x8001, (ushort)aaaa.Class);
             Assert.AreEqual(TimeSpan.FromSeconds(30720), aaaa.TTL);
             Assert.AreEqual(IPAddress.Parse("fe80::223:32ff:feb1:2152"), aaaa.ADDRESS);
 
             var nsec = (NSECRecord)msg.AdditionalRecords[1];
-            Assert.AreEqual("appletv.local", nsec.NAME);
-            Assert.AreEqual(47, nsec.TYPE);
-            Assert.AreEqual(0x8001, (ushort)nsec.CLASS);
+            Assert.AreEqual("appletv.local", nsec.Name);
+            Assert.AreEqual(47, nsec.Type);
+            Assert.AreEqual(0x8001, (ushort)nsec.Class);
             Assert.AreEqual(TimeSpan.FromSeconds(30720), nsec.TTL);
             Assert.AreEqual("appletv.local", nsec.NextOwnerName);
         }

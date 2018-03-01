@@ -15,7 +15,7 @@ namespace Makaretu.Dns
         {
             var a = new TXTRecord
             {
-                NAME = "the.printer.local",
+                Name = "the.printer.local",
                 Strings = new List<string>
                 {
                     "paper=A4",
@@ -23,9 +23,9 @@ namespace Makaretu.Dns
                 }
             };
             var b = (TXTRecord)new ResourceRecord().Read(a.ToByteArray());
-            Assert.AreEqual(a.NAME, b.NAME);
-            Assert.AreEqual(a.CLASS, b.CLASS);
-            Assert.AreEqual(a.TYPE, b.TYPE);
+            Assert.AreEqual(a.Name, b.Name);
+            Assert.AreEqual(a.Class, b.Class);
+            Assert.AreEqual(a.Type, b.Type);
             Assert.AreEqual(a.TTL, b.TTL);
             CollectionAssert.AreEqual(a.Strings, b.Strings);
         }

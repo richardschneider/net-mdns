@@ -15,7 +15,7 @@ namespace Makaretu.Dns
         /// </summary>
         public AAAARecord() : base()
         {
-            TYPE = 28;
+            Type = 28;
         }
 
         /// <summary>

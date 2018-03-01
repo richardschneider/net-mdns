@@ -15,15 +15,15 @@ namespace Makaretu.Dns
         {
             var a = new CNAMERecord
             {
-                NAME = "emanon.org",
-                CNAME = "somewhere.else.org"
+                Name = "emanon.org",
+                Target = "somewhere.else.org"
             };
             var b = (CNAMERecord)new ResourceRecord().Read(a.ToByteArray());
-            Assert.AreEqual(a.NAME, b.NAME);
-            Assert.AreEqual(a.CLASS, b.CLASS);
-            Assert.AreEqual(a.TYPE, b.TYPE);
+            Assert.AreEqual(a.Name, b.Name);
+            Assert.AreEqual(a.Class, b.Class);
+            Assert.AreEqual(a.Type, b.Type);
             Assert.AreEqual(a.TTL, b.TTL);
-            Assert.AreEqual(a.CNAME, b.CNAME);
+            Assert.AreEqual(a.Target, b.Target);
         }
     }
 }

@@ -51,11 +51,11 @@ namespace Makaretu.Dns
         public static void Register<T>() where T : ResourceRecord, new()
         {
             var rr = new T();
-            if (rr.TYPE == 0)
+            if (rr.Type == 0)
             {
                 throw new ArgumentException("The RR TYPE is not defined", "TYPE");
             }
-            Records.Add(rr.TYPE, () => new T());
+            Records.Add(rr.Type, () => new T());
         }
 
     }

@@ -30,7 +30,7 @@ namespace Makaretu.Dns
         /// </remarks>
         public SOARecord() : base()
         {
-            TYPE = 6;
+            Type = 6;
             TTL = TimeSpan.FromSeconds(0);
         }
 
@@ -38,13 +38,13 @@ namespace Makaretu.Dns
         ///  The domain-name of the name server that was the
         ///  original or primary source of data for this zone.
         /// </summary>
-        public string MNAME { get; set; }
+        public string PrimaryName { get; set; }
 
         /// <summary>
         ///  A domain-name which specifies the mailbox of the
         ///  person responsible for this zone.
         /// </summary>
-        public string RNAME { get; set; }
+        public string Mailbox { get; set; }
 
         /// <summary>
         ///  The unsigned 32 bit version number of the original copy
@@ -55,52 +55,52 @@ namespace Makaretu.Dns
         ///  value wraps and should be compared using sequence space
         ///  arithmetic.
         /// </remarks>
-        public uint SERIAL { get; set; }
+        public uint SerialNumber { get; set; }
 
         /// <summary>
         ///   Interval before the zone should be refreshed.
         /// </summary>
-        public TimeSpan REFRESH { get; set; }
+        public TimeSpan Refresh { get; set; }
 
         /// <summary>
         ///   interval that should elapse before a failed refresh should be retried.
         /// </summary>
-        public TimeSpan RETRY { get; set; }
+        public TimeSpan Retry { get; set; }
 
         /// <summary>
         ///   Specifies the upper limit on
         ///   the time interval that can elapse before the zone is no
         ///   longer authoritative.
         /// </summary>
-        public TimeSpan EXPIRE { get; set; }
+        public TimeSpan Expire { get; set; }
 
         /// <summary>
         ///  Minimum TTL field that should be exported with any RR from this zone.
         /// </summary>
-        public TimeSpan MINIMUM { get; set; }
+        public TimeSpan Minimum { get; set; }
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            MNAME = reader.ReadDomainName();
-            RNAME = reader.ReadDomainName();
-            SERIAL = reader.ReadUInt32();
-            REFRESH = reader.ReadTimeSpan();
-            RETRY = reader.ReadTimeSpan();
-            EXPIRE = reader.ReadTimeSpan();
-            MINIMUM = reader.ReadTimeSpan();
+            PrimaryName = reader.ReadDomainName();
+            Mailbox = reader.ReadDomainName();
+            SerialNumber = reader.ReadUInt32();
+            Refresh = reader.ReadTimeSpan();
+            Retry = reader.ReadTimeSpan();
+            Expire = reader.ReadTimeSpan();
+            Minimum = reader.ReadTimeSpan();
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteDomainName(MNAME);
-            writer.WriteDomainName(RNAME);
-            writer.WriteUInt32(SERIAL);
-            writer.WriteTimeSpan(REFRESH);
-            writer.WriteTimeSpan(RETRY);
-            writer.WriteTimeSpan(EXPIRE);
-            writer.WriteTimeSpan(MINIMUM);
+            writer.WriteDomainName(PrimaryName);
+            writer.WriteDomainName(Mailbox);
+            writer.WriteUInt32(SerialNumber);
+            writer.WriteTimeSpan(Refresh);
+            writer.WriteTimeSpan(Retry);
+            writer.WriteTimeSpan(Expire);
+            writer.WriteTimeSpan(Minimum);
         }
     }
 }

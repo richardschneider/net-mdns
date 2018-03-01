@@ -19,25 +19,25 @@ namespace Makaretu.Dns
         /// </summary>
         public NULLRecord() : base()
         {
-            TYPE = 10;
+            Type = 10;
         }
 
         /// <summary>
         ///    Specfic data for the resource.
         /// </summary>
-        public byte[] RDATA { get; set; }
+        public byte[] Data { get; set; }
 
 
         /// <inheritdoc />
         protected override void ReadData(DnsReader reader, int length)
         {
-            RDATA = reader.ReadBytes(length);
+            Data = reader.ReadBytes(length);
         }
 
         /// <inheritdoc />
         protected override void WriteData(DnsWriter writer)
         {
-            writer.WriteBytes(RDATA);
+            writer.WriteBytes(Data);
         }
     }
 }

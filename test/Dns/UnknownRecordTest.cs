@@ -15,13 +15,13 @@ namespace Makaretu.Dns
         {
             var a = new UnknownRecord
             {
-                NAME = "emanon.org",
+                Name = "emanon.org",
                 RDATA = new byte[] { 10, 11, 12  },
             };
             var b = (UnknownRecord)new ResourceRecord().Read(a.ToByteArray());
-            Assert.AreEqual(a.NAME, b.NAME);
-            Assert.AreEqual(a.CLASS, b.CLASS);
-            Assert.AreEqual(a.TYPE, b.TYPE);
+            Assert.AreEqual(a.Name, b.Name);
+            Assert.AreEqual(a.Class, b.Class);
+            Assert.AreEqual(a.Type, b.Type);
             Assert.AreEqual(a.TTL, b.TTL);
             CollectionAssert.AreEqual(a.RDATA, b.RDATA);
         }
