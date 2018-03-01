@@ -27,6 +27,7 @@ namespace Makaretu.Dns
             Register<ARecord>();
             Register<AAAARecord>();
             Register<CNAMERecord>();
+            Register<DNAMERecord>();
             Register<HINFORecord>();
             Register<MXRecord>();
             Register<NSECRecord>();
@@ -34,6 +35,7 @@ namespace Makaretu.Dns
             Register<NULLRecord>();
             Register<PTRRecord>();
             Register<SOARecord>();
+            Register<SRVRecord>();
             Register<TXTRecord>();
         }
 

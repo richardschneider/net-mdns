@@ -100,6 +100,13 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Write a domain name.
         /// </summary>
+        /// <param name="name">
+        ///   The name to write.
+        /// </param>
+        /// <param name="uncompressed">
+        ///   Determines if the <paramref name="name"/> must be uncompressed.  The
+        ///   defaultl is false (allow compression).
+        /// </param>
         /// <remarks>
         ///   A domain name is represented as a sequence of labels, where
         ///   each label consists of a length octet followed by that
@@ -108,10 +115,10 @@ namespace Makaretu.Dns
         ///   that this field may be an odd number of octets; no
         ///   padding is used.
         /// </remarks>
-        public void WriteDomainName(string name)
+        public void WriteDomainName(string name, bool uncompressed = false)
         {
             // Check for name already used.
-            if (pointers.TryGetValue(name, out int pointer))
+            if (!uncompressed && pointers.TryGetValue(name, out int pointer))
             {
                 WriteUInt16((ushort)(0xC000 | pointer));
                 return;
