@@ -32,7 +32,7 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Only used in QCLASS.
         /// </summary>
-        /// <seealso cref="Question.QCLASS"/>
+        /// <seealso cref="Question.Class"/>
         ANY = 255
     }
 }

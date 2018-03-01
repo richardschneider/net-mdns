@@ -49,8 +49,8 @@ namespace Makaretu.Mdns
                 Assert.IsTrue(ready.WaitOne(TimeSpan.FromSeconds(1)), "ready timeout");
                 mdns.SendQuery("some-service.local");
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
-                Assert.AreEqual("some-service.local", msg.Questions.First().QNAME);
-                Assert.AreEqual(Class.IN, msg.Questions.First().QCLASS);
+                Assert.AreEqual("some-service.local", msg.Questions.First().Name);
+                Assert.AreEqual(Class.IN, msg.Questions.First().Class);
             }
             finally
             {
@@ -70,7 +70,7 @@ namespace Makaretu.Mdns
             mdns.QueryReceived += (s, e) =>
             {
                 var msg = e.Message;
-                if (msg.Questions.Any(q => q.QNAME == service))
+                if (msg.Questions.Any(q => q.Name == service))
                 {
                     var res = msg.CreateResponse();
                     res.Answers.Add(new ARecord
@@ -86,7 +86,6 @@ namespace Makaretu.Mdns
                 var msg = e.Message;
                 if (msg.Answers.Any(a => a.Name == service))
                 {
-                    Console.WriteLine("got " + service);
                     response = msg;
                     done.Set();
                 }

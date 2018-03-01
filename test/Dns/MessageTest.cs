@@ -38,9 +38,9 @@ namespace Makaretu.Dns
             Assert.AreEqual(0, msg.AuthorityRecords.Count);
             Assert.AreEqual(0, msg.AdditionalRecords.Count);
             var question = msg.Questions.First();
-            Assert.AreEqual("appletv.local", question.QNAME);
-            Assert.AreEqual(1, question.QTYPE);
-            Assert.AreEqual(Class.IN, question.QCLASS);
+            Assert.AreEqual("appletv.local", question.Name);
+            Assert.AreEqual(1, question.Type);
+            Assert.AreEqual(Class.IN, question.Class);
         }
 
         /// <summary>

@@ -201,8 +201,8 @@ namespace Makaretu.Mdns
             };
             msg.Questions.Add(new Question
             {
-                QNAME = name,
-                QCLASS = klass
+                Name = name,
+                Class = klass
             });
 
             SendQuery(msg);
