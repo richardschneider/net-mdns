@@ -132,6 +132,48 @@ namespace Makaretu.Mdns
         }
 
         [TestMethod]
+        public void ReceiveErrorAnswer()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var done = new ManualResetEvent(false);
+
+            var mdns = new MdnsService();
+            mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
+            mdns.QueryReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Questions.Any(q => q.Name == service))
+                {
+                    var res = msg.CreateResponse();
+                    res.RCODE = Message.Rcode.Refused;
+                    res.Answers.Add(new ARecord
+                    {
+                        Name = service,
+                        Address = IPAddress.Parse("127.1.1.1")
+                    });
+                    mdns.SendAnswer(res);
+                }
+            };
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.Any(a => a.Name == service))
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                mdns.Start();
+                Assert.IsFalse(done.WaitOne(TimeSpan.FromSeconds(1)), "answer was not ignored");
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
         public void Nics()
         {
             var done = new ManualResetEvent(false);
