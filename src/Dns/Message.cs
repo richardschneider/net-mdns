@@ -12,7 +12,7 @@ namespace Makaretu.Dns
     {
         /// <summary>
         /// A 16 bit identifier assigned by the program that
-        /// generates any kind of query.This identifier is copied
+        /// generates any kind of query. This identifier is copied
         /// the corresponding reply and can be used by the requester
         /// to match up replies to outstanding queries.
         /// </summary>
@@ -167,6 +167,18 @@ namespace Makaretu.Dns
         /// </summary>
         public List<ResourceRecord> AdditionalRecords { get; } = new List<ResourceRecord>();
 
+        /// <summary>
+        ///   Create a response for the query message.
+        /// </summary>
+        /// <returns></returns>
+        public Message CreateResponse()
+        {
+            return new Message
+            {
+                Id = Id,
+                QR = true
+            };
+        }
         /// <inheritdoc />
         public override IDnsSerialiser Read(DnsReader reader)
         {

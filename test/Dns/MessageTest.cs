@@ -115,5 +115,14 @@ namespace Makaretu.Dns
             Assert.AreEqual(expected.Z, actual.Z);
             Assert.AreEqual(expected.RCODE, actual.RCODE);
         }
+
+        [TestMethod]
+        public void Response()
+        {
+            var query = new Message { Id = 1234 };
+            var response = query.CreateResponse();
+            Assert.IsTrue(response.IsResponse);
+            Assert.AreEqual(query.Id, response.Id);
+        }
     }
 }
