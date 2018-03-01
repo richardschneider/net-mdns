@@ -265,13 +265,23 @@ namespace Makaretu.Mdns
         /// <remarks>
         ///   Decodes the <paramref name="datagram"/> and then raises
         ///   either the <see cref="QueryReceived"/> or <see cref="AnswerReceived"/> event.
+        ///   <para>
+        ///   Multicast DNS messages received with an OPCODE other than zero MUST be silently ignored.
+        ///   </para>
         /// </remarks>
         void OnDnsMessage(byte[] datagram, int length)
         {
             Console.WriteLine($"got datagram, {length} bytes");
             var msg = new Message();
+
             // TODO: log and ignore message format errors.
             msg.Read(datagram, 0, length);
+
+            if (msg.OPCODE != Message.Opcode.QUERY)
+            {
+                // TODO: log
+                return;
+            }
 
             // Dispatch the message.
             // TODO: error handling

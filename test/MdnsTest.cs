@@ -59,6 +59,30 @@ namespace Makaretu.Mdns
         }
 
         [TestMethod]
+        public void SendNonQuery()
+        {
+            var query = new Message
+            {
+                OPCODE = Message.Opcode.STATUS,
+                QR = false
+            };
+            var done = new ManualResetEvent(false);
+ 
+            var mdns = new MdnsService();
+            mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(query);
+            mdns.QueryReceived += (s, e) => done.Set();
+            try
+            {
+                mdns.Start();
+                Assert.IsFalse(done.WaitOne(TimeSpan.FromSeconds(1)), "query was not ignored");
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
         public void ReceiveAnswer()
         {
             var service = Guid.NewGuid().ToString() + ".local";
