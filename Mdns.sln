@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mdns", "src\Mdns.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MdnsTests", "test\MdnsTests.csproj", "{B459FBC7-4A28-4170-AD83-7348A403407F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spike", "Spike\Spike.csproj", "{B7019D35-A153-4143-979C-C493A74FA7EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{B459FBC7-4A28-4170-AD83-7348A403407F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B459FBC7-4A28-4170-AD83-7348A403407F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B459FBC7-4A28-4170-AD83-7348A403407F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7019D35-A153-4143-979C-C493A74FA7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7019D35-A153-4143-979C-C493A74FA7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7019D35-A153-4143-979C-C493A74FA7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7019D35-A153-4143-979C-C493A74FA7EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

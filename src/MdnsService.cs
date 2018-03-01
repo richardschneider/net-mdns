@@ -234,7 +234,11 @@ namespace Makaretu.Mdns
         {
             Console.WriteLine($"got datagram, {length} bytes");
             var msg = new Message();
+            // TODO: log and ignore message format errors.
             msg.Read(datagram, 0, length);
+
+            // Dispatch the message.
+            // TODO: error handling
             if (msg.IsQuery)
             {
                 QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
