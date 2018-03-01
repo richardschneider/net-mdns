@@ -119,10 +119,11 @@ namespace Makaretu.Dns
         [TestMethod]
         public void Response()
         {
-            var query = new Message { Id = 1234 };
+            var query = new Message { Id = 1234, Opcode = MessageOperation.InverseQuery };
             var response = query.CreateResponse();
             Assert.IsTrue(response.IsResponse);
             Assert.AreEqual(query.Id, response.Id);
+            Assert.AreEqual(query.Opcode, response.Opcode);
         }
     }
 }
