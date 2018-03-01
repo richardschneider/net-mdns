@@ -96,24 +96,24 @@ namespace Makaretu.Dns
             var expected = new Message
             {
                 QR = true,
-                OPCODE = Message.Opcode.STATUS,
+                Opcode = MessageOperation.Status,
                 AA = true,
                 TC = true,
                 RD = true,
                 RA = true,
                 Z = 7,
-                RCODE = Message.Rcode.Refused
+                Status = MessageStatus.Refused
             };
             var actual = new Message();
             actual.Read(expected.ToByteArray());
             Assert.AreEqual(expected.QR, actual.QR);
-            Assert.AreEqual(expected.OPCODE, actual.OPCODE);
+            Assert.AreEqual(expected.Opcode, actual.Opcode);
             Assert.AreEqual(expected.AA, actual.AA);
             Assert.AreEqual(expected.TC, actual.TC);
             Assert.AreEqual(expected.RD, actual.RD);
             Assert.AreEqual(expected.RA, actual.RA);
             Assert.AreEqual(expected.Z, actual.Z);
-            Assert.AreEqual(expected.RCODE, actual.RCODE);
+            Assert.AreEqual(expected.Status, actual.Status);
         }
 
         [TestMethod]

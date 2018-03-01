@@ -33,33 +33,19 @@ namespace Makaretu.Dns
         /// </summary>
         public bool IsResponse { get { return QR; } }
 
+
         /// <summary>
-        ///   The type of query.
+        ///   The kind of query in this message. 
         /// </summary>
-        public enum Opcode
-        {
-            /// <summary>
-            ///   Standard query.
-            /// </summary>
-            QUERY = 0,
-
-            /// <summary>
-            ///   Inverse query.
-            /// </summary>
-            IQUERY = 1,
-
-            /// <summary>
-            ///   A server status request.
-            /// </summary>
-            STATUS = 2
-        }
-
-        /// <summary>
-        ///   A four bit field that specifies the kind of query in this
-        ///   message. This value is set by the originator of a query
+        /// <value>
+        ///   One of the <see cref="MessageOperation"/> values.
+        /// </value>
+        /// <remarks>
+        ///    This value is set by the originator of a query
         ///   and copied into the response.
-        /// </summary>
-        public Opcode OPCODE { get; set; }
+        /// </remarks>
+        /// <seealso cref="Message.CreateResponse"/>
+        public MessageOperation Opcode { get; set; }
 
         /// <summary>
         ///    Authoritative Answer - this bit is valid in responses,
@@ -103,49 +89,12 @@ namespace Makaretu.Dns
         public int Z { get; set; }
 
         /// <summary>
-        ///   Response codes.
-        /// </summary>
-        public enum Rcode
-        {
-            /// <summary>
-            ///    No error condition
-            /// </summary>
-            NoError = 0,
-
-            /// <summary>
-            ///    The name server was unable to interpret the query.
-            /// </summary>
-            FormatError = 1,
-
-            /// <summary>
-            ///    The name server was unable to process this query due to a
-            ///    problem with the name server.
-            /// </summary>
-            ServerFailure = 2,
-
-            /// <summary>
-            ///    Meaningful only for responses from an authoritative name
-            ///    server, this code signifies that the domain name 
-            ///    referenced in the query does not exist.
-            /// </summary>
-            NameError = 3,
-
-            /// <summary>
-            ///    The name server does not support the requested kind of query.
-            /// </summary>
-            NotImplemented = 4,
-
-            /// <summary>
-            ///    The name server refuses to perform the specified operation for
-            ///    policy reasons. 
-            /// </summary>
-            Refused = 5,
-        }
-
-        /// <summary>
         ///     Response code - this 4 bit field is set as part of responses.
         /// </summary>
-        public Rcode RCODE { get; set; }
+        /// <value>
+        ///   One of the <see cref="MessageStatus"/> values.
+        /// </value>
+        public MessageStatus Status { get; set; }
 
         /// <summary>
         ///   The list of question.
@@ -176,6 +125,7 @@ namespace Makaretu.Dns
             return new Message
             {
                 Id = Id,
+                Opcode = Opcode,
                 QR = true
             };
         }
@@ -189,9 +139,9 @@ namespace Makaretu.Dns
             TC = (flags & 0x0200) == 0x0200;
             RD = (flags & 0x0100) == 0x0100;
             RA = (flags & 0x0080) == 0x0080;
-            OPCODE = (Message.Opcode)((flags & 0x7800) >> 11);
+            Opcode = (MessageOperation)((flags & 0x7800) >> 11);
             Z = (flags & 0x0070) >> 4;
-            RCODE = (Message.Rcode)(flags & 0x000F);
+            Status = (MessageStatus)(flags & 0x000F);
             var qdcount = reader.ReadUInt16();
             var ancount = reader.ReadUInt16();
             var nscount = reader.ReadUInt16();
@@ -226,13 +176,13 @@ namespace Makaretu.Dns
             writer.WriteUInt16(Id);
             var flags =
                 (Convert.ToInt32(QR) << 15) |
-                (((ushort)OPCODE & 0xf)<< 11) |
+                (((ushort)Opcode & 0xf)<< 11) |
                 (Convert.ToInt32(AA) << 10) |
                 (Convert.ToInt32(TC) << 9) |
                 (Convert.ToInt32(RD) << 8) |
                 (Convert.ToInt32(RA) << 7) |
                 ((Z & 0x7) << 4) |
-                ((ushort)RCODE & 0xf);
+                ((ushort)Status & 0xf);
             writer.WriteUInt16((ushort)flags);
             writer.WriteUInt16((ushort)Questions.Count);
             writer.WriteUInt16((ushort)Answers.Count);

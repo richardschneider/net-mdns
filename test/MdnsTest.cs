@@ -63,7 +63,7 @@ namespace Makaretu.Mdns
         {
             var query = new Message
             {
-                OPCODE = Message.Opcode.STATUS,
+                Opcode = MessageOperation.Status,
                 QR = false
             };
             var done = new ManualResetEvent(false);
@@ -120,7 +120,7 @@ namespace Makaretu.Mdns
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "answer timeout");
                 Assert.IsNotNull(response);
                 Assert.IsTrue(response.IsResponse);
-                Assert.AreEqual(Message.Rcode.NoError, response.RCODE);
+                Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
                 var a = (ARecord)response.Answers[0];
                 Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
@@ -145,7 +145,7 @@ namespace Makaretu.Mdns
                 if (msg.Questions.Any(q => q.Name == service))
                 {
                     var res = msg.CreateResponse();
-                    res.RCODE = Message.Rcode.Refused;
+                    res.Status = MessageStatus.Refused;
                     res.Answers.Add(new ARecord
                     {
                         Name = service,

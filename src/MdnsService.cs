@@ -208,7 +208,7 @@ namespace Makaretu.Mdns
             var msg = new Message
             {
                 Id = 1,
-                OPCODE = Message.Opcode.QUERY,
+                Opcode = MessageOperation.Query,
                 QR = false
             };
             msg.Questions.Add(new Question
@@ -278,7 +278,7 @@ namespace Makaretu.Mdns
             // TODO: log and ignore message format errors.
             msg.Read(datagram, 0, length);
 
-            if (msg.OPCODE != Message.Opcode.QUERY || msg.RCODE != Message.Rcode.NoError)
+            if (msg.Opcode != MessageOperation.Query || msg.Status != MessageStatus.NoError)
             {
                 return;
             }
