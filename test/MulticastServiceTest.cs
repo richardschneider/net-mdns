@@ -195,5 +195,51 @@ namespace Makaretu.Dns
                 mdns.Stop();
             }
         }
+
+        [TestMethod]
+        public void SendQuery_TooBig()
+        {
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            mdns.NetworkInterfaceDiscovered += (s, e) => done.Set();
+            mdns.Start();
+            try
+            {
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "no nic");
+                var query = new Message();
+                query.Questions.Add(new Question { Name = "foo.bar.org" });
+                query.AdditionalRecords.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
+                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
+                    mdns.SendQuery(query);
+                });
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
+        public void SendAnswer_TooBig()
+        {
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            mdns.NetworkInterfaceDiscovered += (s, e) => done.Set();
+            mdns.Start();
+            try
+            {
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "no nic");
+                var answer = new Message();
+                answer.Answers.Add(new ARecord { Name = "foo.bar.org", Address = IPAddress.Loopback });
+                answer.AdditionalRecords.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
+                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
+                    mdns.SendAnswer(answer);
+                });
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
     }
 }

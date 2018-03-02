@@ -34,6 +34,9 @@ namespace Makaretu.Dns
         Timer nicTimer;
         bool ip6;
         IPEndPoint mdnsEndpoint;
+        // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
+        const int packetOverhead = 48;
+        int maxPacketSize;
 
         /// <summary>
         ///   Set the default TTLs.
@@ -111,6 +114,7 @@ namespace Makaretu.Dns
         /// </summary>
         public void Start()
         {
+            maxPacketSize = 9000 - packetOverhead;
             listenerCancellation = new CancellationTokenSource();
             knownNics.Clear();
             socket = new Socket(
@@ -154,6 +158,7 @@ namespace Makaretu.Dns
                         SocketOptionLevel.IPv6,
                         SocketOptionName.AddMembership,
                         mopt);
+                    maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv6Properties().Mtu - packetOverhead);
                 }
                 else
                 {
@@ -163,6 +168,7 @@ namespace Makaretu.Dns
                         SocketOptionLevel.IP,
                         SocketOptionName.AddMembership,
                         mopt);
+                    maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv4Properties().Mtu - packetOverhead);
                 }
                 knownNics.Add(nic);
             }
@@ -218,11 +224,11 @@ namespace Makaretu.Dns
         ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
         ///   event.
         /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        ///   When the service has not started.
+        /// </exception>
         public void SendQuery(string name, Class klass = Class.IN)
         {
-            if (socket == null)
-                throw new InvalidOperationException("MDNS is not started");
-
             var msg = new Message
             {
                 Id = 1,
@@ -248,10 +254,15 @@ namespace Makaretu.Dns
         ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
         ///   event.
         /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        ///   When the service has not started.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///   When the serialised <paramref name="msg"/> is too large.
+        /// </exception>
         public void SendQuery(Message msg)
         {
-            var packet = msg.ToByteArray();
-            socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
+            Send(msg);
         }
 
         /// <summary>
@@ -260,6 +271,15 @@ namespace Makaretu.Dns
         /// <param name="answer">
         ///   The answer message.
         /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///   When the service has not started.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///   When the serialised <paramref name="msg"/> is too large.
+        /// </exception>
+        /// <remarks>
+        ///   The <see cref="Message.AA"/> flag is always set to true.
+        /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
         public void SendAnswer(Message answer)
@@ -267,7 +287,19 @@ namespace Makaretu.Dns
             // All MDNS answers are authoritative.
             answer.AA = true;
 
-            var packet = answer.ToByteArray();
+            Send(answer);
+        }
+
+        private void Send(Message msg)
+        {
+            if (socket == null)
+                throw new InvalidOperationException("MDNS is not started");
+
+            var packet = msg.ToByteArray();
+            if (packet.Length > maxPacketSize)
+            {
+                throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
+            }
             socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
         }
 
