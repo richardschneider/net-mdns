@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MulticastService.html",
-          "hash": "Ee6AayB9soo6LdDbiTPH2Q=="
+          "hash": "orlKqFdEWMIfyw0y/Pr7GQ=="
         }
       },
       "is_incremental": false,
@@ -65,35 +65,11 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "articles/async.md",
-      "output": {
-        ".html": {
-          "relative_path": "articles/async.html",
-          "hash": "u7px+nc1LYG1LZqID1BjOA=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "articles/cancellation.md",
-      "output": {
-        ".html": {
-          "relative_path": "articles/cancellation.html",
-          "hash": "i2nXciHLJLQ2NcD8T3hjsQ=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
       "source_relative_path": "articles/intro.md",
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "wSBzD8Fz+eM4WN4Oe+M5Qw=="
+          "hash": "ITzfsSiHdvuIQqhB032t5g=="
         }
       },
       "is_incremental": false,
@@ -105,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "YuhYJurCh6nyu5IQKA8soA=="
+          "hash": "zVX3qKNENE5WxhqE+z1grA=="
         }
       },
       "is_incremental": false,
@@ -145,15 +121,12 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "XtzdeTVIQ7+zNUy0ASucJg=="
+          "hash": "ax+9d2kQEeApPmidvdwqRw=="
         }
       },
       "is_incremental": false,
@@ -189,13 +162,13 @@
           "can_incremental": false,
           "incrementalPhase": "build"
         },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
           "incrementalPhase": "build"
         }
       }
