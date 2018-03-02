@@ -1,6 +1,6 @@
 A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.org/html/rfc6762).  
 The source code is on [GitHub](https://github.com/richardschneider/net-mdns) and the 
-package is published on [NuGet](https://www.nuget.org/packages/Ipfs.Dns.Multicast).
+package is published on [NuGet](https://www.nuget.org/packages/Makaretu.Dns.Multicast).
 
 The [MulticastService](xref:Makaretu.Dns.MulticastService) is used to send to 
 [queries](xref:Makaretu.Dns.MulticastService.SendQuery) and 
