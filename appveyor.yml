@@ -32,9 +32,8 @@ environment:
 # tools we need for bulding/testing/deploying
 install:
    - choco install gitversion.portable -pre -y
-#  - nuget update -self
-#  - choco install docfx -y
-#  - npm install gh-pages -g
+   - choco install docfx -y
+   - npm install gh-pages -g
 
 # gitversion will change the assembly info
 pull_requests:
@@ -49,15 +48,7 @@ build_script:
   - dotnet pack -c %CONFIGURATION% --no-build --no-restore -p:Version=%GitVersion_MajorMinorPatch% -p:AssemblyVersion=%GitVersion_MajorMinorPatch%
 
 after_build:
-  - cmd: appveyor PushArtifact "src\bin\%CONFIGURATION%\Makaretu.Mdns.%GitVersion_MajorMinorPatch%.nupkg"
-# Build documentation in doc\_site
-# See https://github.com/dotnet/docfx/issues/1752#issuecomment-308909959
-#  - set MSBUILD_EXE_PATH=C:\Program Files\dotnet\sdk\2.0.0\MSBuild.dll
-#  - copy doc\MSBuild.dll.config "C:\Program Files\dotnet\sdk\2.0.0\MSBuild.dll.config" /Y
-#  - docfx doc\docfx.json
-#  - 7z a -tzip docs.zip doc\_site
-#  - appveyor PushArtifact docs.zip
-#  - if defined git_token gh-pages -d doc\_site -m "new docs %GitVersion_FullSemVer%"
+  - cmd: appveyor PushArtifact "src\bin\%CONFIGURATION%\Makaretu.Dns.Multicast.%GitVersion_MajorMinorPatch%.nupkg"
 
 test_script:
   - dotnet test -c %CONFIGURATION% --no-build --no-restore test
@@ -75,6 +66,11 @@ after_test:
     - if defined COVERALLS_REPO_TOKEN 
         packages\coveralls.net.0.6.0\tools\csmacnz.coveralls.exe 
         --opencover -i ./coverage.xml --useRelativePaths --serviceName appveyor --jobId %APPVEYOR_BUILD_NUMBER%
+# Build documentation in doc\_site
+    - docfx doc\docfx.json --logLevel Warning
+    - 7z a -tzip docs.zip doc\_site
+    - appveyor PushArtifact docs.zip
+    - if defined git_token gh-pages -d doc\_site -m "new docs %GitVersion_FullSemVer%"
 
 # publish NuGet package on tag build
 nuget:
