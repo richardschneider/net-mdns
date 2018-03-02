@@ -55,6 +55,9 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
         /// </summary>
+        /// <value>
+        ///   Contains the query <see cref="Message"/>.
+        /// </value>
         /// <seealso cref="SendQuery(Message)"/>
         /// <see cref="SendAnswer"/>
         public event EventHandler<MessageEventArgs> QueryReceived;
@@ -62,11 +65,17 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Raised when any local MDNS service responds to a query.
         /// </summary>
+        /// <value>
+        ///   Contains the answer <see cref="Message"/>.
+        /// </value>
         public event EventHandler<MessageEventArgs> AnswerReceived;
 
         /// <summary>
         ///   Raised when one or more network interfaces are discovered. 
         /// </summary>
+        /// <value>
+        ///   Contains the network interface(s).
+        /// </value>
         public event EventHandler<NetworkInterfaceEventArgs> NetworkInterfaceDiscovered;
 
         /// <summary>

@@ -1,7 +1,4 @@
 - name: Introduction
   href: intro.md
-- name: Asynchronous I/O
-  href: async.md
-  items:
-    - name: Cancellation
-      href: cancellation.md
+- name: Class Reference
+  href: ../api/Makaretu.Dns.yml
