@@ -1,4 +1,4 @@
-﻿using Makaretu.Mdns;
+﻿using Makaretu.Dns;
 using System;
 
 namespace Spike
@@ -9,7 +9,7 @@ namespace Spike
         {
             Console.WriteLine("Hello World!");
 
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             mdns.QueryReceived += (s, e) =>
             {
                 Console.WriteLine("got a query");

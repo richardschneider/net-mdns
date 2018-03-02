@@ -2,20 +2,20 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard14;netstandard2</TargetFrameworks>
-    <AssemblyName>Makaretu.Mdns</AssemblyName>
-    <RootNamespace>Makaretu.Mdns</RootNamespace>
-    <DocumentationFile>Makaretu.Mdns.xml</DocumentationFile>
+    <AssemblyName>Makaretu.Dns.Multicast</AssemblyName>
+    <RootNamespace>Makaretu.Dns</RootNamespace>
+    <DocumentationFile>Makaretu.Dns.Multicast.xml</DocumentationFile>
     <DebugType>full</DebugType>
     
-    <!-- developer build is always 0.42 -->
+    <!-- developer build is always 0.2 -->
     <AssemblyVersion>0.42</AssemblyVersion>
     <Version>0.42</Version>
     
     <!-- Nuget specs -->
-    <PackageId>Makaretu.Mdns</PackageId>
+    <PackageId>Makaretu.Dns.Multicast</PackageId>
     <Authors>Richard Schneider</Authors>
     <Title>Multicast DNS</Title>
-    <Description>A simple Multicast Domain Name Server based on RFC ???.  Can be used as both a client (sending queries) or a server (responding to queries).</Description>
+    <Description>A simple Multicast Domain Name Service based on RFC 6762.  Can be used as both a client (sending queries) or a server (responding to queries).</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Copyright>© 2018 Richard Schneider</Copyright>

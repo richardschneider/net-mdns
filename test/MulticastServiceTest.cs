@@ -8,23 +8,23 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Makaretu.Mdns
+namespace Makaretu.Dns
 {
     
     [TestClass]
-    public class MdnsTest
+    public class MulticastServiceTest
     {
         [TestMethod]
         public void Can_Create()
         {
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             Assert.IsNotNull(mdns);
         }
 
         [TestMethod]
         public void StartStop()
         {
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             mdns.Start();
             mdns.Stop();
         }
@@ -36,7 +36,7 @@ namespace Makaretu.Mdns
             var done = new ManualResetEvent(false);
             Message msg = null;
 
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
             mdns.QueryReceived += (s, e) => 
             {
@@ -68,7 +68,7 @@ namespace Makaretu.Mdns
             };
             var done = new ManualResetEvent(false);
  
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(query);
             mdns.QueryReceived += (s, e) => done.Set();
             try
@@ -89,7 +89,7 @@ namespace Makaretu.Mdns
             var done = new ManualResetEvent(false);
             Message response = null;
 
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
             mdns.QueryReceived += (s, e) =>
             {
@@ -137,7 +137,7 @@ namespace Makaretu.Mdns
             var service = Guid.NewGuid().ToString() + ".local";
             var done = new ManualResetEvent(false);
 
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
             mdns.QueryReceived += (s, e) =>
             {
@@ -177,7 +177,7 @@ namespace Makaretu.Mdns
         public void Nics()
         {
             var done = new ManualResetEvent(false);
-            var mdns = new MdnsService();
+            var mdns = new MulticastService();
             IEnumerable<NetworkInterface> nics = null;
             mdns.NetworkInterfaceDiscovered += (s, e) =>
             {

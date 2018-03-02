@@ -10,12 +10,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Makaretu.Mdns
+namespace Makaretu.Dns
 {
     /// <summary>
-    ///   Muticast Domain Name Service
+    ///   Muticast Domain Name Service.
     /// </summary>
-    public class MdnsService
+    /// <remarks>
+    ///   Sends and receives DNS queries and answers via the multicast mechachism
+    ///   defined in <see href="https://tools.ietf.org/html/rfc6762"/>.
+    ///   <para>
+    ///   Use <see cref="Start"/> to start listening for multicast messages.
+    ///   One of the events, <see cref="QueryReceived"/> or <see cref="AnswerReceived"/>, is
+    ///   raised when a <see cref="Message"/> is received.
+    ///   </para>
+    /// </remarks>
+    public class MulticastService
     {
         IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
@@ -31,7 +40,7 @@ namespace Makaretu.Mdns
         /// </summary>
         /// <seealso cref="ResourceRecord.DefaultTTL"/>
         /// <seealso cref="ResourceRecord.DefaultHostTTL"/>
-        static MdnsService()
+        static MulticastService()
         {
             // https://tools.ietf.org/html/rfc6762 section 10
             ResourceRecord.DefaultTTL = TimeSpan.FromMinutes(75);
@@ -61,9 +70,9 @@ namespace Makaretu.Mdns
         public event EventHandler<NetworkInterfaceEventArgs> NetworkInterfaceDiscovered;
 
         /// <summary>
-        ///   Create a new instance of the <see cref="MdnsService"/> class.
+        ///   Create a new instance of the <see cref="MulticastService"/> class.
         /// </summary>
-        public MdnsService()
+        public MulticastService()
         {
             if (Socket.OSSupportsIPv4)
                 ip6 = false;

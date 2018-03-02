@@ -200,5 +200,5 @@ FakesAssemblies/
 *.opt
 
 # VS 2017 creates this
-src/Makaretu.Mdns.xml
+src/Makaretu.Dns.Multicast.xml
 
