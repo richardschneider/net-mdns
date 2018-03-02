@@ -127,7 +127,7 @@ raised when a <a class="xref" href="https://richardschneider.github.io/net-dns/a
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService__ctor.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L84">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L87">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService__ctor_" data-uid="Makaretu.Dns.MulticastService.#ctor*"></a>
   <h4 id="Makaretu_Dns_MulticastService__ctor" data-uid="Makaretu.Dns.MulticastService.#ctor">MulticastService()</h4>
@@ -145,7 +145,7 @@ raised when a <a class="xref" href="https://richardschneider.github.io/net-dns/a
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L265">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L285">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendAnswer_" data-uid="Makaretu.Dns.MulticastService.SendAnswer*"></a>
   <h4 id="Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message_" data-uid="Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message)">SendAnswer(Message)</h4>
@@ -174,6 +174,30 @@ raised when a <a class="xref" href="https://richardschneider.github.io/net-dns/a
       </tr>
     </tbody>
   </table>
+  <h5 id="Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.Message.html#Makaretu_Dns_Message_AA">AA</a> flag is always set to true.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+        <td><p>When the service has not started.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+        <td><p>When the serialised <code data-dev-comment-type="paramref" class="paramref">msg</code> is too large.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <h5 id="Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message__seealso">See Also</h5>
   <div class="seealso">
       <div><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.Message.html#Makaretu_Dns_Message_CreateResponse">CreateResponse()</a></div>
@@ -183,7 +207,7 @@ raised when a <a class="xref" href="https://richardschneider.github.io/net-dns/a
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_Message_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L251">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L263">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendQuery_" data-uid="Makaretu.Dns.MulticastService.SendQuery*"></a>
   <h4 id="Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_Message_" data-uid="Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)">SendQuery(Message)</h4>
@@ -216,12 +240,33 @@ raised when a <a class="xref" href="https://richardschneider.github.io/net-dns/a
   <div class="markdown level1 remarks"><p>Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
 event.</p>
 </div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+        <td><p>When the service has not started.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+        <td><p>When the serialised <code data-dev-comment-type="paramref" class="paramref">msg</code> is too large.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_Class_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(System.String%2CMakaretu.Dns.Class)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L221">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L230">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendQuery_" data-uid="Makaretu.Dns.MulticastService.SendQuery*"></a>
   <h4 id="Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_Class_" data-uid="Makaretu.Dns.MulticastService.SendQuery(System.String,Makaretu.Dns.Class)">SendQuery(String, Class)</h4>
@@ -260,12 +305,28 @@ event.</p>
   <div class="markdown level1 remarks"><p>Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
 event.</p>
 </div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+        <td><p>When the service has not started.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_Start.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.Start%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L112">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L115">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_Start_" data-uid="Makaretu.Dns.MulticastService.Start*"></a>
   <h4 id="Makaretu_Dns_MulticastService_Start" data-uid="Makaretu.Dns.MulticastService.Start">Start()</h4>
@@ -281,7 +342,7 @@ event.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_Stop.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.Stop%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L186">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L192">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_Stop_" data-uid="Makaretu.Dns.MulticastService.Stop*"></a>
   <h4 id="Makaretu_Dns_MulticastService_Stop" data-uid="Makaretu.Dns.MulticastService.Stop">Stop()</h4>
@@ -302,7 +363,7 @@ event.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_AnswerReceived.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.AnswerReceived%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L71">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L74">View Source</a>
   </span>
   <h4 id="Makaretu_Dns_MulticastService_AnswerReceived" data-uid="Makaretu.Dns.MulticastService.AnswerReceived">AnswerReceived</h4>
   <div class="markdown level1 summary"><p>Raised when any local MDNS service responds to a query.</p>
@@ -333,7 +394,7 @@ event.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_NetworkInterfaceDiscovered.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L79">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L82">View Source</a>
   </span>
   <h4 id="Makaretu_Dns_MulticastService_NetworkInterfaceDiscovered" data-uid="Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered">NetworkInterfaceDiscovered</h4>
   <div class="markdown level1 summary"><p>Raised when one or more network interfaces are discovered. </p>
@@ -364,7 +425,7 @@ event.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_QueryReceived.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.QueryReceived%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L63">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L66">View Source</a>
   </span>
   <h4 id="Makaretu_Dns_MulticastService_QueryReceived" data-uid="Makaretu.Dns.MulticastService.QueryReceived">QueryReceived</h4>
   <div class="markdown level1 summary"><p>Raised when any local MDNS service sends a query.</p>
