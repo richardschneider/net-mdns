@@ -56,7 +56,7 @@ test_script:
 after_test: 
 # Generate coverage report
     - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe 
-        -register:user -filter:"+[Makaretu.Dns]MulticastService -[*Tests]*" 
+        -register:user -filter:"+[Makaretu.Dns]MulticastService* -[*Tests]*" 
         -target:"c:\Program Files\dotnet\dotnet.exe" 
         -targetargs:"test -c Release --no-build --no-restore --framework net461 test" 
         -output:coverage.xml  

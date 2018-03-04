@@ -279,7 +279,7 @@ namespace Makaretu.Dns
         ///   When the service has not started.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        ///   When the serialised <paramref name="msg"/> is too large.
+        ///   When the serialised <paramref name="answer"/> is too large.
         /// </exception>
         /// <remarks>
         ///   The <see cref="Message.AA"/> flag is always set to true.
