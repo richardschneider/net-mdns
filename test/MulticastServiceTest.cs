@@ -74,7 +74,7 @@ namespace Makaretu.Dns
             try
             {
                 mdns.Start();
-                Assert.IsFalse(done.WaitOne(TimeSpan.FromSeconds(1)), "query was not ignored");
+                Assert.IsFalse(done.WaitOne(TimeSpan.FromSeconds(0.5)), "query was not ignored");
             }
             finally
             {
@@ -165,7 +165,7 @@ namespace Makaretu.Dns
             try
             {
                 mdns.Start();
-                Assert.IsFalse(done.WaitOne(TimeSpan.FromSeconds(1)), "answer was not ignored");
+                Assert.IsFalse(done.WaitOne(TimeSpan.FromSeconds(0.5)), "answer was not ignored");
             }
             finally
             {

@@ -1,4 +1,5 @@
-﻿using Makaretu.Dns;
+﻿using Common.Logging;
+using Makaretu.Dns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace Makaretu.Dns
     /// </remarks>
     public class MulticastService
     {
+        static ILog log = LogManager.GetLogger(typeof(MulticastService));
+
         IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         int MulticastPort = 5353;
@@ -36,6 +39,7 @@ namespace Makaretu.Dns
         IPEndPoint mdnsEndpoint;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
         const int packetOverhead = 48;
+        const int maxDatagramSize = 9000;
         int maxPacketSize;
 
         /// <summary>
@@ -114,7 +118,7 @@ namespace Makaretu.Dns
         /// </summary>
         public void Start()
         {
-            maxPacketSize = 9000 - packetOverhead;
+            maxPacketSize = maxDatagramSize - packetOverhead;
             listenerCancellation = new CancellationTokenSource();
             knownNics.Clear();
             socket = new Socket(
@@ -322,26 +326,38 @@ namespace Makaretu.Dns
         /// </remarks>
         void OnDnsMessage(byte[] datagram, int length)
         {
-            Console.WriteLine($"got datagram, {length} bytes");
             var msg = new Message();
 
-            // TODO: log and ignore message format errors.
-            msg.Read(datagram, 0, length);
-
+            try
+            {
+                msg.Read(datagram, 0, length);
+            }
+            catch (Exception e)
+            {
+                log.Warn("Received malformed message", e);
+                return; // eat the exception
+            }
             if (msg.Opcode != MessageOperation.Query || msg.Status != MessageStatus.NoError)
             {
                 return;
             }
 
             // Dispatch the message.
-            // TODO: error handling
-            if (msg.IsQuery)
+            try
             {
-                QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+                if (msg.IsQuery)
+                {
+                    QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+                }
+                else if (msg.IsResponse)
+                {
+                    AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+                }
             }
-            if (msg.IsResponse)
+            catch (Exception e)
             {
-                AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+                log.Error("Receive handler failed", e);
+                // eat the exception
             }
         }
 
@@ -356,7 +372,6 @@ namespace Makaretu.Dns
         {
             var cancel = listenerCancellation.Token;
 
-            Console.WriteLine("start listening");
             cancel.Register(() =>
             {
                 if (socket != null)
@@ -365,7 +380,7 @@ namespace Makaretu.Dns
                     socket = null;
                 }
             });
-            var datagram = new byte[8 * 1024];
+            var datagram = new byte[maxDatagramSize];
             var buffer = new ArraySegment<byte>(datagram);
             try
             {
@@ -378,17 +393,16 @@ namespace Makaretu.Dns
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (!cancel.IsCancellationRequested)
             {
-                if (!cancel.IsCancellationRequested)
-                    Console.WriteLine(e.Message);
+                log.Error("Listener failed", e);
+                // eat the exception
             }
             if (socket != null)
             {
                 socket.Dispose();
                 socket = null;
             }
-            Console.WriteLine("stop listening");
         }
     }
 }
