@@ -39,7 +39,7 @@ namespace Makaretu.Dns
         IPEndPoint mdnsEndpoint;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
         const int packetOverhead = 48;
-        const int maxDatagramSize = 9000;
+        const int maxDatagramSize = Message.MaxLength;
         int maxPacketSize;
 
         /// <summary>
