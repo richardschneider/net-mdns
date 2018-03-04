@@ -393,9 +393,10 @@ namespace Makaretu.Dns
                     }
                 }
             }
-            catch (Exception e) when (!cancel.IsCancellationRequested)
+            catch (Exception e)
             {
-                log.Error("Listener failed", e);
+                if (!cancel.IsCancellationRequested)
+                    log.Error("Listener failed", e);
                 // eat the exception
             }
             if (socket != null)
