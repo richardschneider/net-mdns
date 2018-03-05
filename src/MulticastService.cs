@@ -282,14 +282,17 @@ namespace Makaretu.Dns
         ///   When the serialised <paramref name="answer"/> is too large.
         /// </exception>
         /// <remarks>
-        ///   The <see cref="Message.AA"/> flag is always set to true.
+        ///   The <see cref="Message.AA"/> flag is always set to true and
+        ///   <see cref="Message.Id"/> set to zero.
         /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
         public void SendAnswer(Message answer)
         {
-            // All MDNS answers are authoritative.
+            // All MDNS answers are authoritative and have a transaction
+            // ID of zero.
             answer.AA = true;
+            answer.Id = 0;
 
             Send(answer);
         }
