@@ -198,10 +198,15 @@ namespace Makaretu.Dns
             // Tell others.
             if (nics.Length > 0)
             {
-                NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+                lock (socketLock)
                 {
-                    NetworkInterfaces = nics
-                });
+                    if (socket == null || nicTimer == null)
+                        return;
+                    NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+                    {
+                        NetworkInterfaces = nics
+                    });
+                }
             }
         }
 
