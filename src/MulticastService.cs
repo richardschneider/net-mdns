@@ -57,7 +57,22 @@ namespace Makaretu.Dns
         /// <summary>
         ///   The multicast socket.
         /// </summary>
+        /// <remarks>
+        ///   Always use socketLock to gain access.
+        /// </remarks>
         Socket socket;
+        Object socketLock = new object();
+        void CloseSocket()
+        {
+            lock (socketLock)
+            {
+                if (socket != null)
+                {
+                    socket.Dispose();
+                    socket = null;
+                }
+            }
+        }
 
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
@@ -150,31 +165,34 @@ namespace Makaretu.Dns
                 .ToArray();
             foreach (var nic in nics)
             {
-                if (socket == null)
-                    return;
+                lock (socketLock)
+                {
+                    if (socket == null || nicTimer == null)
+                        return;
 
-                IPInterfaceProperties properties = nic.GetIPProperties();
-                if (ip6)
-                {
-                    var interfaceIndex = properties.GetIPv6Properties().Index;
-                    var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
-                    socket.SetSocketOption(
-                        SocketOptionLevel.IPv6,
-                        SocketOptionName.AddMembership,
-                        mopt);
-                    maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv6Properties().Mtu - packetOverhead);
+                    IPInterfaceProperties properties = nic.GetIPProperties();
+                    if (ip6)
+                    {
+                        var interfaceIndex = properties.GetIPv6Properties().Index;
+                        var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
+                        socket.SetSocketOption(
+                            SocketOptionLevel.IPv6,
+                            SocketOptionName.AddMembership,
+                            mopt);
+                        maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv6Properties().Mtu - packetOverhead);
+                    }
+                    else
+                    {
+                        var interfaceIndex = properties.GetIPv4Properties().Index;
+                        var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
+                        socket.SetSocketOption(
+                            SocketOptionLevel.IP,
+                            SocketOptionName.AddMembership,
+                            mopt);
+                        maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv4Properties().Mtu - packetOverhead);
+                    }
+                    knownNics.Add(nic);
                 }
-                else
-                {
-                    var interfaceIndex = properties.GetIPv4Properties().Index;
-                    var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
-                    socket.SetSocketOption(
-                        SocketOptionLevel.IP,
-                        SocketOptionName.AddMembership,
-                        mopt);
-                    maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv4Properties().Mtu - packetOverhead);
-                }
-                knownNics.Add(nic);
             }
 
             // Tell others.
@@ -208,11 +226,7 @@ namespace Makaretu.Dns
                 listenerCancellation.Cancel();
             }
 
-            if (socket != null)
-            {
-                socket.Dispose();
-                socket = null;
-            }
+            CloseSocket();
         }
 
         /// <summary>
@@ -299,15 +313,18 @@ namespace Makaretu.Dns
 
         private void Send(Message msg)
         {
-            if (socket == null)
-                throw new InvalidOperationException("MDNS is not started");
-
             var packet = msg.ToByteArray();
             if (packet.Length > maxPacketSize)
             {
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
             }
-            socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
+
+            lock (socketLock)
+            {
+                if (socket == null)
+                    throw new InvalidOperationException("MDNS is not started");
+                socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
+            }
         }
 
         /// <summary>
@@ -375,14 +392,7 @@ namespace Makaretu.Dns
         {
             var cancel = listenerCancellation.Token;
 
-            cancel.Register(() =>
-            {
-                if (socket != null)
-                {
-                    socket.Dispose();
-                    socket = null;
-                }
-            });
+            cancel.Register(CloseSocket);
             var datagram = new byte[maxDatagramSize];
             var buffer = new ArraySegment<byte>(datagram);
             try
@@ -402,11 +412,7 @@ namespace Makaretu.Dns
                     log.Error("Listener failed", e);
                 // eat the exception
             }
-            if (socket != null)
-            {
-                socket.Dispose();
-                socket = null;
-            }
+            CloseSocket();
         }
     }
 }
