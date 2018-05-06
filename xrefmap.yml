@@ -23,6 +23,7 @@ references:
   name: Message
   href: api/Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_Message_
   commentId: Overload:Makaretu.Dns.MessageEventArgs.Message
+  isSpec: "True"
   fullName: Makaretu.Dns.MessageEventArgs.Message
   nameWithType: MessageEventArgs.Message
 - uid: Makaretu.Dns.MulticastService
@@ -41,6 +42,7 @@ references:
   name: MulticastService
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService__ctor_
   commentId: Overload:Makaretu.Dns.MulticastService.#ctor
+  isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.MulticastService
   nameWithType: MulticastService.MulticastService
 - uid: Makaretu.Dns.MulticastService.AnswerReceived
@@ -71,6 +73,7 @@ references:
   name: SendAnswer
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_
   commentId: Overload:Makaretu.Dns.MulticastService.SendAnswer
+  isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.SendAnswer
   nameWithType: MulticastService.SendAnswer
 - uid: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
@@ -89,6 +92,7 @@ references:
   name: SendQuery
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_
   commentId: Overload:Makaretu.Dns.MulticastService.SendQuery
+  isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.SendQuery
   nameWithType: MulticastService.SendQuery
 - uid: Makaretu.Dns.MulticastService.Start
@@ -101,6 +105,7 @@ references:
   name: Start
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_Start_
   commentId: Overload:Makaretu.Dns.MulticastService.Start
+  isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.Start
   nameWithType: MulticastService.Start
 - uid: Makaretu.Dns.MulticastService.Stop
@@ -113,6 +118,7 @@ references:
   name: Stop
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_Stop_
   commentId: Overload:Makaretu.Dns.MulticastService.Stop
+  isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.Stop
   nameWithType: MulticastService.Stop
 - uid: Makaretu.Dns.NetworkInterfaceEventArgs
@@ -131,5 +137,6 @@ references:
   name: NetworkInterfaces
   href: api/Makaretu.Dns.NetworkInterfaceEventArgs.html#Makaretu_Dns_NetworkInterfaceEventArgs_NetworkInterfaces_
   commentId: Overload:Makaretu.Dns.NetworkInterfaceEventArgs.NetworkInterfaces
+  isSpec: "True"
   fullName: Makaretu.Dns.NetworkInterfaceEventArgs.NetworkInterfaces
   nameWithType: NetworkInterfaceEventArgs.NetworkInterfaces
