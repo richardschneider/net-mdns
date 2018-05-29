@@ -63,11 +63,11 @@ references:
   commentId: E:Makaretu.Dns.MulticastService.QueryReceived
   fullName: Makaretu.Dns.MulticastService.QueryReceived
   nameWithType: MulticastService.QueryReceived
-- uid: Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message)
+- uid: Makaretu.Dns.MulticastService.SendAnswer(Message)
   name: SendAnswer(Message)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message_
-  commentId: M:Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message)
-  fullName: Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_Message_
+  commentId: M:Makaretu.Dns.MulticastService.SendAnswer(Message)
+  fullName: Makaretu.Dns.MulticastService.SendAnswer(Message)
   nameWithType: MulticastService.SendAnswer(Message)
 - uid: Makaretu.Dns.MulticastService.SendAnswer*
   name: SendAnswer
@@ -76,17 +76,17 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.SendAnswer
   nameWithType: MulticastService.SendAnswer
-- uid: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
+- uid: Makaretu.Dns.MulticastService.SendQuery(Message)
   name: SendQuery(Message)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_Message_
-  commentId: M:Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
-  fullName: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_Message_
+  commentId: M:Makaretu.Dns.MulticastService.SendQuery(Message)
+  fullName: Makaretu.Dns.MulticastService.SendQuery(Message)
   nameWithType: MulticastService.SendQuery(Message)
-- uid: Makaretu.Dns.MulticastService.SendQuery(System.String,Makaretu.Dns.Class)
+- uid: Makaretu.Dns.MulticastService.SendQuery(System.String,Class)
   name: SendQuery(String, Class)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_Class_
-  commentId: M:Makaretu.Dns.MulticastService.SendQuery(System.String,Makaretu.Dns.Class)
-  fullName: Makaretu.Dns.MulticastService.SendQuery(System.String, Makaretu.Dns.Class)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_System_String_Class_
+  commentId: M:Makaretu.Dns.MulticastService.SendQuery(System.String,Class)
+  fullName: Makaretu.Dns.MulticastService.SendQuery(System.String, Class)
   nameWithType: MulticastService.SendQuery(String, Class)
 - uid: Makaretu.Dns.MulticastService.SendQuery*
   name: SendQuery
