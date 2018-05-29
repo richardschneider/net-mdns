@@ -31,7 +31,6 @@ namespace Makaretu.Dns
         int MulticastPort = 5353;
         CancellationTokenSource listenerCancellation;
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
-        Timer nicTimer;
         bool ip6;
         IPEndPoint mdnsEndpoint;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
@@ -141,18 +140,35 @@ namespace Makaretu.Dns
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             socket.Bind(endpoint);
 
-            // Start a task to find the network interface.
-            nicTimer = new Timer(
-                FindNetworkInterfaces, 
-                this, 
-                TimeSpan.Zero, 
-                NetworkInterfaceDiscoveryInterval);
+            // Start a task to find the network interfaces.
+            PollNetworkInterfaces();
 
             // Start a task to listen for MDNS messages.
-            Task.Run((Action)Listener, listenerCancellation.Token);
+            Listener();
         }
 
-        void FindNetworkInterfaces(object state)
+        async void PollNetworkInterfaces()
+        {
+            try
+            {
+                while (true)
+                {
+                    FindNetworkInterfaces();
+                    await Task.Delay(NetworkInterfaceDiscoveryInterval, listenerCancellation.Token);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                //  eat it
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                // eat it.
+            }
+        }
+
+        void FindNetworkInterfaces()
         {
             var nics = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
@@ -164,7 +180,7 @@ namespace Makaretu.Dns
             {
                 lock (socketLock)
                 {
-                    if (socket == null || nicTimer == null)
+                    if (socket == null)
                         return;
 
                     IPInterfaceProperties properties = nic.GetIPProperties();
@@ -197,7 +213,7 @@ namespace Makaretu.Dns
             {
                 lock (socketLock)
                 {
-                    if (socket == null || nicTimer == null)
+                    if (socket == null)
                         return;
                     NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
                     {
@@ -218,11 +234,6 @@ namespace Makaretu.Dns
             QueryReceived = null;
             AnswerReceived = null;
             NetworkInterfaceDiscovered = null;
-            if (nicTimer != null)
-            {
-                nicTimer.Dispose();
-                nicTimer = null;
-            }
             if (listenerCancellation != null)
             {
                 listenerCancellation.Cancel();
