@@ -262,7 +262,6 @@ namespace Makaretu.Dns
         {
             var msg = new Message
             {
-                Id = 1,
                 Opcode = MessageOperation.Query,
                 QR = false
             };
