@@ -241,5 +241,59 @@ namespace Makaretu.Dns
                 mdns.Stop();
             }
         }
+
+        [TestMethod]
+        public void Multiple_Services()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var done = new ManualResetEvent(false);
+            Message response = null;
+
+            var a = new MulticastService();
+            a.QueryReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Questions.Any(q => q.Name == service))
+                {
+                    var res = msg.CreateResponse();
+                    res.Answers.Add(new ARecord
+                    {
+                        Name = service,
+                        Address = IPAddress.Parse("127.1.1.1")
+                    });
+                    a.SendAnswer(res);
+                }
+            };
+
+            var b = new MulticastService();
+            b.NetworkInterfaceDiscovered += (s, e) => b.SendQuery(service);
+            b.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.Any(ans => ans.Name == service))
+                {
+                    response = msg;
+                    done.Set();
+                }
+            };
+            try
+            {
+                a.Start();
+                b.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "answer timeout");
+                Assert.IsNotNull(response);
+                Assert.IsTrue(response.IsResponse);
+                Assert.AreEqual(MessageStatus.NoError, response.Status);
+                Assert.IsTrue(response.AA);
+                var answer = (ARecord)response.Answers[0];
+                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), answer.Address);
+            }
+            finally
+            {
+                b.Stop();
+                a.Stop();
+            }
+        }
+
     }
 }
