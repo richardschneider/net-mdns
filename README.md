@@ -24,6 +24,8 @@ Published releases are available on [NuGet](https://www.nuget.org/packages/Makar
     
 ## Usage
 
+### Discovery
+
 Get all the Apple TVs. The query is sent when a network interface is discovered.
 
 ```csharp
@@ -32,6 +34,37 @@ using Makaretu.Dns;
 var mdns = new MulticastService();
 mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery("appletv.local");
 mdns.AnswerReceived += (s, e) => { // do something with e.Message };
+mdns.Start();
+```
+
+### Broadcasting
+
+Respond to a query for the service.
+
+```csharp
+using Makaretu.Dns;
+
+var service = "...";
+var mdns = new MulticastService();
+mdns.QueryReceived += (s, e) =>
+{
+    var msg = e.Message;
+    if (msg.Questions.Any(q => q.Name == service))
+    {
+        var res = msg.CreateResponse();
+        var addresses = MulticastService.GetIPAddresses()
+            .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+        foreach (var address in addresses)
+        {
+            res.Answers.Add(new ARecord
+            {
+                Name = service,
+                Address = address
+            });
+        }
+        mdns.SendAnswer(res);
+    }
+};
 mdns.Start();
 ```
 

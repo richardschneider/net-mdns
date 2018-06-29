@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -256,11 +257,16 @@ namespace Makaretu.Dns
                 if (msg.Questions.Any(q => q.Name == service))
                 {
                     var res = msg.CreateResponse();
-                    res.Answers.Add(new ARecord
+                    var addresses = MulticastService.GetIPAddresses()
+                        .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                    foreach (var address in addresses)
                     {
-                        Name = service,
-                        Address = IPAddress.Parse("127.1.1.1")
-                    });
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = address
+                        });
+                    }
                     a.SendAnswer(res);
                 }
             };
@@ -285,8 +291,7 @@ namespace Makaretu.Dns
                 Assert.IsTrue(response.IsResponse);
                 Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
-                var answer = (ARecord)response.Answers[0];
-                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), answer.Address);
+                Assert.AreNotEqual(0, response.Answers.Count);
             }
             finally
             {
