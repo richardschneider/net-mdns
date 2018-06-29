@@ -124,6 +124,22 @@ namespace Makaretu.Dns
         /// <seealso cref="NetworkInterfaceDiscovered"/>
         TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
 
+
+        /// <summary>
+        ///   Get the network interfaces that are useable to us
+        /// </summary>
+        /// <returns>
+        ///   An enumerable of <see cref="NetworkInterface"/>.
+        /// </returns>
+        protected static IEnumerable<NetworkInterface> GetNetworkInterfaces()
+        {
+            return NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Unknown)
+                .Where(nic => nic.SupportsMulticast);            
+        }
+
+
         /// <summary>
         ///   Get the IP addresses of the local machine.
         /// </summary>
@@ -132,10 +148,7 @@ namespace Makaretu.Dns
         /// </returns>
         public static IEnumerable<IPAddress> GetIPAddresses()
         {
-            return NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Where(nic => nic.SupportsMulticast)
+            return GetNetworkInterfaces()
                 .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
                 .Select(u => u.Address);
         }
@@ -186,10 +199,7 @@ namespace Makaretu.Dns
 
         void FindNetworkInterfaces()
         {
-            var nics = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Where(nic => nic.SupportsMulticast)
+            var nics = GetNetworkInterfaces()
                 .Where(nic => !knownNics.Any(k => k.Id == nic.Id))
                 .ToArray();
             foreach (var nic in nics)
