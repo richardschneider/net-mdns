@@ -125,6 +125,22 @@ namespace Makaretu.Dns
         TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
 
         /// <summary>
+        ///   Get the IP addresses of the local machine.
+        /// </summary>
+        /// <returns>
+        ///   A sequence of IP addresses of the local machine.
+        /// </returns>
+        public static IEnumerable<IPAddress> GetIPAddresses()
+        {
+            return NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .Where(nic => nic.SupportsMulticast)
+                .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
+                .Select(u => u.Address);
+        }
+
+        /// <summary>
         ///   Start the service.
         /// </summary>
         public void Start()

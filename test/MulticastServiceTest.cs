@@ -295,5 +295,11 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void IPAddresses()
+        {
+            var addresses = MulticastService.GetIPAddresses().ToArray();
+            Assert.AreNotEqual(0, addresses.Length);
+        }
     }
 }
