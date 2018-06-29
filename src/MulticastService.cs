@@ -212,23 +212,33 @@ namespace Makaretu.Dns
                     IPInterfaceProperties properties = nic.GetIPProperties();
                     if (ip6)
                     {
-                        var interfaceIndex = properties.GetIPv6Properties().Index;
+                        var ipProperties = properties.GetIPv6Properties();
+                        var interfaceIndex = ipProperties.Index;
                         var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
                         socket.SetSocketOption(
                             SocketOptionLevel.IPv6,
                             SocketOptionName.AddMembership,
                             mopt);
-                        maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv6Properties().Mtu - packetOverhead);
+                        if (ipProperties.Mtu > packetOverhead)
+                        {
+                            // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
+                            maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                        }
                     }
                     else
                     {
-                        var interfaceIndex = properties.GetIPv4Properties().Index;
+                        var ipProperties = properties.GetIPv4Properties();
+                        var interfaceIndex = ipProperties.Index;
                         var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
                         socket.SetSocketOption(
                             SocketOptionLevel.IP,
                             SocketOptionName.AddMembership,
                             mopt);
-                        maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv4Properties().Mtu - packetOverhead);
+                        if (ipProperties.Mtu > packetOverhead)
+                        {
+                            // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
+                            maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                        }
                     }
                     knownNics.Add(nic);
                 }
