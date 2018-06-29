@@ -51,6 +51,19 @@ references:
   commentId: E:Makaretu.Dns.MulticastService.AnswerReceived
   fullName: Makaretu.Dns.MulticastService.AnswerReceived
   nameWithType: MulticastService.AnswerReceived
+- uid: Makaretu.Dns.MulticastService.GetIPAddresses
+  name: GetIPAddresses()
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_GetIPAddresses
+  commentId: M:Makaretu.Dns.MulticastService.GetIPAddresses
+  fullName: Makaretu.Dns.MulticastService.GetIPAddresses()
+  nameWithType: MulticastService.GetIPAddresses()
+- uid: Makaretu.Dns.MulticastService.GetIPAddresses*
+  name: GetIPAddresses
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_GetIPAddresses_
+  commentId: Overload:Makaretu.Dns.MulticastService.GetIPAddresses
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.GetIPAddresses
+  nameWithType: MulticastService.GetIPAddresses
 - uid: Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered
   name: NetworkInterfaceDiscovered
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_NetworkInterfaceDiscovered
