@@ -124,6 +124,22 @@ namespace Makaretu.Dns
         /// <seealso cref="NetworkInterfaceDiscovered"/>
         TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
 
+
+        /// <summary>
+        ///   Get the network interfaces that are useable to us
+        /// </summary>
+        /// <returns>
+        ///   An enumerable of <see cref="NetworkInterface"/>.
+        /// </returns>
+        protected static IEnumerable<NetworkInterface> GetNetworkInterfaces()
+        {
+            return NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Unknown)
+                .Where(nic => nic.SupportsMulticast);            
+        }
+
+
         /// <summary>
         ///   Get the IP addresses of the local machine.
         /// </summary>
@@ -132,10 +148,7 @@ namespace Makaretu.Dns
         /// </returns>
         public static IEnumerable<IPAddress> GetIPAddresses()
         {
-            return NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Where(nic => nic.SupportsMulticast)
+            return GetNetworkInterfaces()
                 .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
                 .Select(u => u.Address);
         }
@@ -186,10 +199,7 @@ namespace Makaretu.Dns
 
         void FindNetworkInterfaces()
         {
-            var nics = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Where(nic => nic.SupportsMulticast)
+            var nics = GetNetworkInterfaces()
                 .Where(nic => !knownNics.Any(k => k.Id == nic.Id))
                 .ToArray();
             foreach (var nic in nics)
@@ -202,23 +212,33 @@ namespace Makaretu.Dns
                     IPInterfaceProperties properties = nic.GetIPProperties();
                     if (ip6)
                     {
-                        var interfaceIndex = properties.GetIPv6Properties().Index;
+                        var ipProperties = properties.GetIPv6Properties();
+                        var interfaceIndex = ipProperties.Index;
                         var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
                         socket.SetSocketOption(
                             SocketOptionLevel.IPv6,
                             SocketOptionName.AddMembership,
                             mopt);
-                        maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv6Properties().Mtu - packetOverhead);
+                        if (ipProperties.Mtu > packetOverhead)
+                        {
+                            // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
+                            maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                        }
                     }
                     else
                     {
-                        var interfaceIndex = properties.GetIPv4Properties().Index;
+                        var ipProperties = properties.GetIPv4Properties();
+                        var interfaceIndex = ipProperties.Index;
                         var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
                         socket.SetSocketOption(
                             SocketOptionLevel.IP,
                             SocketOptionName.AddMembership,
                             mopt);
-                        maxPacketSize = Math.Min(maxPacketSize, properties.GetIPv4Properties().Mtu - packetOverhead);
+                        if (ipProperties.Mtu > packetOverhead)
+                        {
+                            // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
+                            maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                        }
                     }
                     knownNics.Add(nic);
                 }
