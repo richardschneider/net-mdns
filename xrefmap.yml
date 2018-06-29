@@ -64,6 +64,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.GetIPAddresses
   nameWithType: MulticastService.GetIPAddresses
+- uid: Makaretu.Dns.MulticastService.GetNetworkInterfaces
+  name: GetNetworkInterfaces()
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_GetNetworkInterfaces
+  commentId: M:Makaretu.Dns.MulticastService.GetNetworkInterfaces
+  fullName: Makaretu.Dns.MulticastService.GetNetworkInterfaces()
+  nameWithType: MulticastService.GetNetworkInterfaces()
+- uid: Makaretu.Dns.MulticastService.GetNetworkInterfaces*
+  name: GetNetworkInterfaces
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_GetNetworkInterfaces_
+  commentId: Overload:Makaretu.Dns.MulticastService.GetNetworkInterfaces
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.GetNetworkInterfaces
+  nameWithType: MulticastService.GetNetworkInterfaces
 - uid: Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered
   name: NetworkInterfaceDiscovered
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_NetworkInterfaceDiscovered
