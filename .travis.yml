@@ -8,7 +8,6 @@ os:
   - osx
 
 install:
-  - cat /etc/os-release
   - dotnet restore
 
 script:
