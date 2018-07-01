@@ -13,7 +13,7 @@ A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.or
 
 - Targets .NET Standard 1.4 and 2.0
 - Supports IPv6 and IPv4 platforms
-- CI on Circle (Debian GNU/Linux), Travis (Ubuntu Trusty) and AppVeyor (Windows Server 2016)
+- CI on Circle (Debian GNU/Linux), Travis (Ubuntu Trusty and OSX) and AppVeyor (Windows Server 2016)
 - Periodically checks for new network interfaces
 
 ## Getting started
