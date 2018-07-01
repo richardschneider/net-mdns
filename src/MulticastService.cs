@@ -287,6 +287,9 @@ namespace Makaretu.Dns
         /// <param name="klass">
         ///   The class, defaults to <see cref="Class.IN"/>.
         /// </param>
+        /// <param name="type">
+        ///   The question type, defaults to (ushort)0 ('Unused').
+        /// </param>
         /// <remarks>
         ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
         ///   event.
@@ -294,7 +297,7 @@ namespace Makaretu.Dns
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
-        public void SendQuery(string name, Class klass = Class.IN)
+        public void SendQuery(string name, Class klass = Class.IN, DnsType type = default(DnsType))
         {
             var msg = new Message
             {
@@ -304,7 +307,8 @@ namespace Makaretu.Dns
             msg.Questions.Add(new Question
             {
                 Name = name,
-                Class = klass
+                Class = klass,
+                Type = type
             });
 
             SendQuery(msg);
