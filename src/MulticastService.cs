@@ -135,8 +135,9 @@ namespace Makaretu.Dns
         {
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Unknown)
-                .Where(nic => nic.SupportsMulticast);            
+                .Where(nic =>
+                    nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                    nic.NetworkInterfaceType != NetworkInterfaceType.Unknown);
         }
 
 

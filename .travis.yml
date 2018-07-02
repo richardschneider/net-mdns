@@ -3,9 +3,11 @@ mono: none
 dotnet: 2.0.0
 dist: trusty
 sudo: required
+os:
+  - linux
+  - osx
 
 install:
-  - cat /etc/os-release
   - dotnet restore
 
 script:
