@@ -108,12 +108,12 @@ references:
   commentId: M:Makaretu.Dns.MulticastService.SendQuery(Message)
   fullName: Makaretu.Dns.MulticastService.SendQuery(Message)
   nameWithType: MulticastService.SendQuery(Message)
-- uid: Makaretu.Dns.MulticastService.SendQuery(System.String,Class)
-  name: SendQuery(String, Class)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_System_String_Class_
-  commentId: M:Makaretu.Dns.MulticastService.SendQuery(System.String,Class)
-  fullName: Makaretu.Dns.MulticastService.SendQuery(System.String, Class)
-  nameWithType: MulticastService.SendQuery(String, Class)
+- uid: Makaretu.Dns.MulticastService.SendQuery(System.String,Class,DnsType)
+  name: SendQuery(String, Class, DnsType)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_System_String_Class_DnsType_
+  commentId: M:Makaretu.Dns.MulticastService.SendQuery(System.String,Class,DnsType)
+  fullName: Makaretu.Dns.MulticastService.SendQuery(System.String, Class, DnsType)
+  nameWithType: MulticastService.SendQuery(String, Class, DnsType)
 - uid: Makaretu.Dns.MulticastService.SendQuery*
   name: SendQuery
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_
