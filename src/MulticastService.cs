@@ -133,16 +133,11 @@ namespace Makaretu.Dns
         /// </returns>
         protected static IEnumerable<NetworkInterface> GetNetworkInterfaces()
         {
-            foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                Console.WriteLine($"NIC: ({nic.Id}) {nic.Name}");
-                Console.WriteLine($"     {nic.NetworkInterfaceType} {nic.OperationalStatus}");
-                Console.WriteLine($"     multicast {nic.SupportsMulticast}");
-            }
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback && nic.NetworkInterfaceType != NetworkInterfaceType.Unknown)
-                .Where(nic => nic.SupportsMulticast);            
+                .Where(nic =>
+                    nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                    nic.NetworkInterfaceType != NetworkInterfaceType.Unknown);
         }
 
 
