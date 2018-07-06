@@ -179,10 +179,11 @@ namespace Makaretu.Dns
         {
             try
             {
+                var cancellationToken = listenerCancellation.Token;
                 while (true)
                 {
                     FindNetworkInterfaces();
-                    await Task.Delay(NetworkInterfaceDiscoveryInterval, listenerCancellation.Token);
+                    await Task.Delay(NetworkInterfaceDiscoveryInterval, cancellationToken);
                 }
             }
             catch (TaskCanceledException)
@@ -198,7 +199,7 @@ namespace Makaretu.Dns
 
         void FindNetworkInterfaces()
         {
-            var nics = GetNetworkInterfaces().ToList();
+            var nics = GetNetworkInterfaces().ToArray();
 
             lock (socketLock)
             {
@@ -206,7 +207,7 @@ namespace Makaretu.Dns
                     return;
 
                 // First we must drop membership for old nics
-                var oldNics = knownNics.Where(nic => nics.All(k => k.Id != nic.Id)).ToList();
+                var oldNics = knownNics.Where(nic => nics.All(k => k.Id != nic.Id)).ToArray();
                 foreach (var nic in oldNics)
                 {
                     try
