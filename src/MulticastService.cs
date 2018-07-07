@@ -24,7 +24,7 @@ namespace Makaretu.Dns
     /// </remarks>
     public class MulticastService
     {
-        static ILog log = LogManager.GetLogger(typeof(MulticastService));
+        static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
 
         IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
@@ -135,9 +135,7 @@ namespace Makaretu.Dns
         {
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic =>
-                    nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                    nic.NetworkInterfaceType != NetworkInterfaceType.Unknown);
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback);
         }
 
 
@@ -181,10 +179,11 @@ namespace Makaretu.Dns
         {
             try
             {
+                var cancellationToken = listenerCancellation.Token;
                 while (true)
                 {
                     FindNetworkInterfaces();
-                    await Task.Delay(NetworkInterfaceDiscoveryInterval, listenerCancellation.Token);
+                    await Task.Delay(NetworkInterfaceDiscoveryInterval, cancellationToken);
                 }
             }
             catch (TaskCanceledException)
@@ -200,61 +199,102 @@ namespace Makaretu.Dns
 
         void FindNetworkInterfaces()
         {
-            var nics = GetNetworkInterfaces()
-                .Where(nic => !knownNics.Any(k => k.Id == nic.Id))
-                .ToArray();
-            foreach (var nic in nics)
-            {
-                lock (socketLock)
-                {
-                    if (socket == null)
-                        return;
+            var nics = GetNetworkInterfaces().ToArray();
 
-                    IPInterfaceProperties properties = nic.GetIPProperties();
-                    if (ip6)
+            lock (socketLock)
+            {
+                if (socket == null)
+                    return;
+
+                // First we must drop membership for old nics
+                var oldNics = knownNics.Where(nic => nics.All(k => k.Id != nic.Id)).ToArray();
+                foreach (var nic in oldNics)
+                {
+                    try
                     {
-                        var ipProperties = properties.GetIPv6Properties();
-                        var interfaceIndex = ipProperties.Index;
-                        var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
-                        socket.SetSocketOption(
-                            SocketOptionLevel.IPv6,
-                            SocketOptionName.AddMembership,
-                            mopt);
-                        if (ipProperties.Mtu > packetOverhead)
+                        knownNics.Remove(nic);
+                        IPInterfaceProperties properties = nic.GetIPProperties();
+                        if (ip6)
                         {
-                            // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
-                            maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                            var ipProperties = properties.GetIPv6Properties();
+                            var interfaceIndex = ipProperties.Index;
+                            var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
+                            socket.SetSocketOption(
+                                SocketOptionLevel.IPv6,
+                                SocketOptionName.DropMembership,
+                                mopt);
+                        }
+                        else
+                        {
+                            var ipProperties = properties.GetIPv4Properties();
+                            var interfaceIndex = ipProperties.Index;
+                            var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
+                            socket.SetSocketOption(
+                                SocketOptionLevel.IP,
+                                SocketOptionName.DropMembership,
+                                mopt);
+
                         }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        var ipProperties = properties.GetIPv4Properties();
-                        var interfaceIndex = ipProperties.Index;
-                        var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
-                        socket.SetSocketOption(
-                            SocketOptionLevel.IP,
-                            SocketOptionName.AddMembership,
-                            mopt);
-                        if (ipProperties.Mtu > packetOverhead)
-                        {
-                            // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
-                            maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
-                        }
+                        log.Error("Drop Membership", e);
+                        // eat it.
                     }
-                    knownNics.Add(nic);
                 }
-            }
 
-            // Tell others.
-            if (nics.Length > 0)
-            {
-                lock (socketLock)
+                var newNics = new List<NetworkInterface>();
+                foreach (var nic in nics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
                 {
-                    if (socket == null)
-                        return;
+                    try
+                    {
+                        IPInterfaceProperties properties = nic.GetIPProperties();
+                        if (ip6)
+                        {
+                            var ipProperties = properties.GetIPv6Properties();
+                            var interfaceIndex = ipProperties.Index;
+                            var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
+                            socket.SetSocketOption(
+                                SocketOptionLevel.IPv6,
+                                SocketOptionName.AddMembership,
+                                mopt);
+                            if (ipProperties.Mtu > packetOverhead)
+                            {
+                                // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
+                                maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                            }
+                        }
+                        else
+                        {
+                            var ipProperties = properties.GetIPv4Properties();
+                            var interfaceIndex = ipProperties.Index;
+                            var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
+                            socket.SetSocketOption(
+                                SocketOptionLevel.IP,
+                                SocketOptionName.AddMembership,
+                                mopt);
+                            if (ipProperties.Mtu > packetOverhead)
+                            {
+                                // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
+                                maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
+                            }
+                        }
+                        newNics.Add(nic);
+                        knownNics.Add(nic);
+                    }
+                    catch (Exception e)
+                    {
+                        log.Error("Add Membership", e);
+                        // eat it.
+                    }
+                }
+
+                // Tell others
+                if (newNics.Any())
+                {
                     NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
                     {
-                        NetworkInterfaces = nics
+                        NetworkInterfaces = newNics
                     });
                 }
             }
@@ -271,9 +311,10 @@ namespace Makaretu.Dns
             QueryReceived = null;
             AnswerReceived = null;
             NetworkInterfaceDiscovered = null;
-            if (listenerCancellation != null)
+            using (var lc = listenerCancellation)
             {
-                listenerCancellation.Cancel();
+                listenerCancellation = null;
+                lc?.Cancel();
             }
 
             CloseSocket();
