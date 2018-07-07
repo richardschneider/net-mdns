@@ -59,8 +59,6 @@ namespace Makaretu.Dns
 
         }
 
-        ServiceProfile x;
-
         void OnQuery(object sender, MessageEventArgs e)
         {
             var request = e.Message;
