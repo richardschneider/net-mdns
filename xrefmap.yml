@@ -83,6 +83,19 @@ references:
   commentId: E:Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered
   fullName: Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered
   nameWithType: MulticastService.NetworkInterfaceDiscovered
+- uid: Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval
+  name: NetworkInterfaceDiscoveryInterval
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_NetworkInterfaceDiscoveryInterval
+  commentId: P:Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval
+  fullName: Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval
+  nameWithType: MulticastService.NetworkInterfaceDiscoveryInterval
+- uid: Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval*
+  name: NetworkInterfaceDiscoveryInterval
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_NetworkInterfaceDiscoveryInterval_
+  commentId: Overload:Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval
+  nameWithType: MulticastService.NetworkInterfaceDiscoveryInterval
 - uid: Makaretu.Dns.MulticastService.QueryReceived
   name: QueryReceived
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_QueryReceived
