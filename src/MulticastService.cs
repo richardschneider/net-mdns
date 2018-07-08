@@ -467,8 +467,11 @@ namespace Makaretu.Dns
             }
 
             receiver.Dispose();
-            listenerCancellation.Dispose();
-            listenerCancellation = null;
+            if (listenerCancellation != null)
+            {
+                listenerCancellation.Dispose();
+                listenerCancellation = null;
+            }
         }
     }
 }
