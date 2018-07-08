@@ -38,7 +38,7 @@ namespace Makaretu.Dns
 
             if (addresses == null)
             {
-                addresses = MulticastService.GetIPAddresses();
+                addresses = new MulticastService().GetIPAddresses();
             }
             foreach (var address in addresses)
             {
