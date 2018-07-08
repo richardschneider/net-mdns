@@ -1,4 +1,6 @@
-﻿using Makaretu.Dns;
+﻿using Common.Logging;
+using Common.Logging.Simple;
+using Makaretu.Dns;
 using System;
 using System.Linq;
 
@@ -10,12 +12,23 @@ namespace Spike
         {
             Console.WriteLine("Multicast DNS spike");
 
-            foreach (var a in MulticastService.GetIPAddresses())
+            // set logger factory
+            var properties = new Common.Logging.Configuration.NameValueCollection();
+            properties["level"] = "TRACE";
+            properties["showLogName"] = "true";
+            properties["showDateTime"] = "true";
+            LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter(properties);
+
+            var mdns = new MulticastService
+            {
+                NetworkInterfaceDiscoveryInterval = TimeSpan.FromSeconds(1),
+            };
+
+            foreach (var a in mdns.GetIPAddresses())
             {
                 Console.WriteLine($"IP address {a}");
             }
 
-            var mdns = new MulticastService();
             mdns.QueryReceived += (s, e) =>
             {
                 var names = e.Message.Questions
