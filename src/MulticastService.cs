@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -426,6 +427,8 @@ namespace Makaretu.Dns
         /// </remarks>
         async void Listener()
         {
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
             // Stop the previous listener.
             if (listenerCancellation != null)
             {
@@ -433,16 +436,20 @@ namespace Makaretu.Dns
             }
 
             listenerCancellation = new CancellationTokenSource();
-            UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily)
+            UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
+            if (isWindows)
             {
-                ExclusiveAddressUse = false
-            };
+                receiver.ExclusiveAddressUse = false;
+            }
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.SetSocketOption(
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
                 true);
-            receiver.ExclusiveAddressUse = false;
+            if (isWindows)
+            {
+                receiver.ExclusiveAddressUse = false;
+            }
             receiver.Client.Bind(endpoint);
             receiver.JoinMulticastGroup(mdnsEndpoint.Address);
 
