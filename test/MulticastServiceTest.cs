@@ -257,7 +257,7 @@ namespace Makaretu.Dns
                 if (msg.Questions.Any(q => q.Name == service))
                 {
                     var res = msg.CreateResponse();
-                    var addresses = MulticastService.GetIPAddresses()
+                    var addresses = a.GetIPAddresses()
                         .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork);
                     foreach (var address in addresses)
                     {
@@ -303,8 +303,10 @@ namespace Makaretu.Dns
         [TestMethod]
         public void IPAddresses()
         {
-            var addresses = MulticastService.GetIPAddresses().ToArray();
+            var mdns = new MulticastService();
+            var addresses = mdns.GetIPAddresses().ToArray();
             Assert.AreNotEqual(0, addresses.Length);
         }
+
     }
 }
