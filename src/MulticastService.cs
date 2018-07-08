@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,17 +26,21 @@ namespace Makaretu.Dns
     public class MulticastService
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
+        static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
+        static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
 
-        IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
-        IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
-        int MulticastPort = 5353;
-        CancellationTokenSource listenerCancellation;
-        List<NetworkInterface> knownNics = new List<NetworkInterface>();
-        bool ip6;
-        IPEndPoint mdnsEndpoint;
+        const int MulticastPort = 5353;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
         const int packetOverhead = 48;
         const int maxDatagramSize = Message.MaxLength;
+
+        CancellationTokenSource serviceCancellation;
+        CancellationTokenSource listenerCancellation;
+
+        List<NetworkInterface> knownNics = new List<NetworkInterface>();
+
+        bool ip6;
+        IPEndPoint mdnsEndpoint;
         int maxPacketSize;
 
         /// <summary>
@@ -51,24 +56,13 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
-        ///   The multicast socket.
+        ///   The multicast sender.
         /// </summary>
         /// <remarks>
         ///   Always use socketLock to gain access.
         /// </remarks>
-        Socket socket;
-        Object socketLock = new object();
-        void CloseSocket()
-        {
-            lock (socketLock)
-            {
-                if (socket != null)
-                {
-                    socket.Dispose();
-                    socket = null;
-                }
-            }
-        }
+        UdpClient sender;
+        Object senderLock = new object();
 
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
@@ -108,7 +102,9 @@ namespace Makaretu.Dns
             else
                 throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
 
-            mdnsEndpoint = new IPEndPoint(ip6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
+            mdnsEndpoint = new IPEndPoint(
+                ip6 ? MulticastAddressIp6 : MulticastAddressIp4, 
+                MulticastPort);
         }
 
         /// <summary>
@@ -122,22 +118,27 @@ namespace Makaretu.Dns
         ///   new network interfaces. 
         /// </remarks>
         /// <seealso cref="NetworkInterfaceDiscovered"/>
-        TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
-
+        public TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
 
         /// <summary>
-        ///   Get the network interfaces that are useable to us
+        ///   Get the network interfaces that are useable.
         /// </summary>
         /// <returns>
-        ///   An enumerable of <see cref="NetworkInterface"/>.
+        ///   A sequence of <see cref="NetworkInterface"/>.
         /// </returns>
-        protected static IEnumerable<NetworkInterface> GetNetworkInterfaces()
+        /// <remarks>
+        ///   The following filters are applied
+        ///   <list type="bullet">
+        ///   <item><description>is enabled</description></item>
+        ///   <item><description>not a loopback</description></item>
+        ///   </list>
+        /// </remarks>
+        public IEnumerable<NetworkInterface> GetNetworkInterfaces()
         {
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
                 .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback);
         }
-
 
         /// <summary>
         ///   Get the IP addresses of the local machine.
@@ -145,7 +146,7 @@ namespace Makaretu.Dns
         /// <returns>
         ///   A sequence of IP addresses of the local machine.
         /// </returns>
-        public static IEnumerable<IPAddress> GetIPAddresses()
+        public IEnumerable<IPAddress> GetIPAddresses()
         {
             return GetNetworkInterfaces()
                 .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
@@ -157,33 +158,59 @@ namespace Makaretu.Dns
         /// </summary>
         public void Start()
         {
+            serviceCancellation = new CancellationTokenSource();
             maxPacketSize = maxDatagramSize - packetOverhead;
-            listenerCancellation = new CancellationTokenSource();
             knownNics.Clear();
-            socket = new Socket(
-                ip6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork,
-                SocketType.Dgram,
-                ProtocolType.Udp);
-            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
-            socket.Bind(endpoint);
+
+            sender = new UdpClient(mdnsEndpoint.AddressFamily);
+            sender.JoinMulticastGroup(mdnsEndpoint.Address);
+            sender.MulticastLoopback = true;
 
             // Start a task to find the network interfaces.
             PollNetworkInterfaces();
+        }
 
-            // Start a task to listen for MDNS messages.
-            Listener();
+        /// <summary>
+        ///   Stop the service.
+        /// </summary>
+        /// <remarks>
+        ///   Clears all the event handlers.
+        /// </remarks>
+        public void Stop()
+        {
+            // All event handlers are cleared.
+            QueryReceived = null;
+            AnswerReceived = null;
+            NetworkInterfaceDiscovered = null;
+
+            // Stop any long runnings tasks.
+            using (var sc = serviceCancellation)
+            {
+                serviceCancellation = null;
+                sc?.Cancel();
+            }
+            using (var lc = listenerCancellation)
+            {
+                listenerCancellation = null;
+                lc?.Cancel();
+            }
+
+            if (sender != null)
+            {
+                sender.Dispose();
+                sender = null;
+            }
         }
 
         async void PollNetworkInterfaces()
         {
+            var cancel = serviceCancellation.Token;
             try
             {
-                var cancellationToken = listenerCancellation.Token;
-                while (true)
+                while (!cancel.IsCancellationRequested)
                 {
                     FindNetworkInterfaces();
-                    await Task.Delay(NetworkInterfaceDiscoveryInterval, cancellationToken);
+                    await Task.Delay(NetworkInterfaceDiscoveryInterval, cancel);
                 }
             }
             catch (TaskCanceledException)
@@ -200,125 +227,39 @@ namespace Makaretu.Dns
         void FindNetworkInterfaces()
         {
             var nics = GetNetworkInterfaces().ToArray();
+            var newNics = new List<NetworkInterface>();
 
-            lock (socketLock)
+            lock (senderLock)
             {
-                if (socket == null)
-                    return;
-
-                // First we must drop membership for old nics
-                var oldNics = knownNics.Where(nic => nics.All(k => k.Id != nic.Id)).ToArray();
-                foreach (var nic in oldNics)
-                {
-                    try
-                    {
-                        knownNics.Remove(nic);
-                        IPInterfaceProperties properties = nic.GetIPProperties();
-                        if (ip6)
-                        {
-                            var ipProperties = properties.GetIPv6Properties();
-                            var interfaceIndex = ipProperties.Index;
-                            var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
-                            socket.SetSocketOption(
-                                SocketOptionLevel.IPv6,
-                                SocketOptionName.DropMembership,
-                                mopt);
-                        }
-                        else
-                        {
-                            var ipProperties = properties.GetIPv4Properties();
-                            var interfaceIndex = ipProperties.Index;
-                            var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
-                            socket.SetSocketOption(
-                                SocketOptionLevel.IP,
-                                SocketOptionName.DropMembership,
-                                mopt);
-
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        log.Error("Drop Membership", e);
-                        // eat it.
-                    }
-                }
-
-                var newNics = new List<NetworkInterface>();
                 foreach (var nic in nics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
                 {
-                    try
-                    {
-                        IPInterfaceProperties properties = nic.GetIPProperties();
-                        if (ip6)
-                        {
-                            var ipProperties = properties.GetIPv6Properties();
-                            var interfaceIndex = ipProperties.Index;
-                            var mopt = new IPv6MulticastOption(MulticastAddressIp6, interfaceIndex);
-                            socket.SetSocketOption(
-                                SocketOptionLevel.IPv6,
-                                SocketOptionName.AddMembership,
-                                mopt);
-                            if (ipProperties.Mtu > packetOverhead)
-                            {
-                                // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
-                                maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
-                            }
-                        }
-                        else
-                        {
-                            var ipProperties = properties.GetIPv4Properties();
-                            var interfaceIndex = ipProperties.Index;
-                            var mopt = new MulticastOption(MulticastAddressIp4, interfaceIndex);
-                            socket.SetSocketOption(
-                                SocketOptionLevel.IP,
-                                SocketOptionName.AddMembership,
-                                mopt);
-                            if (ipProperties.Mtu > packetOverhead)
-                            {
-                                // Only change maxPacketSize if Mtu is available (and it that is not the case on MacOS)
-                                maxPacketSize = Math.Min(maxPacketSize, ipProperties.Mtu - packetOverhead);
-                            }
-                        }
-                        newNics.Add(nic);
-                        knownNics.Add(nic);
-                    }
-                    catch (Exception e)
-                    {
-                        log.Error("Add Membership", e);
-                        // eat it.
-                    }
-                }
-
-                // Tell others
-                if (newNics.Any())
-                {
-                    NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
-                    {
-                        NetworkInterfaces = newNics
-                    });
+                    newNics.Add(nic);
+                    knownNics.Add(nic);
                 }
             }
-        }
 
-        /// <summary>
-        ///   Stop the service.
-        /// </summary>
-        /// <remarks>
-        ///   Clears all the event handlers.
-        /// </remarks>
-        public void Stop()
-        {
-            QueryReceived = null;
-            AnswerReceived = null;
-            NetworkInterfaceDiscovered = null;
-            using (var lc = listenerCancellation)
+            // If any new NIC discovered.
+            if (newNics.Any())
             {
-                listenerCancellation = null;
-                lc?.Cancel();
-            }
+                if (log.IsDebugEnabled)
+                {
+                    foreach (var nic in newNics)
+                    {
+                        log.Debug($"Found nic '{nic.Name}'.");
+                    }
+                }
 
-            CloseSocket();
+                // Start a task to listen for MDNS messages.
+                Listener();
+
+                // Tell others.
+                NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+                {
+                    NetworkInterfaces = newNics
+                });
+            }
         }
+
 
         /// <summary>
         ///   Ask for answers about a name.
@@ -405,7 +346,7 @@ namespace Makaretu.Dns
             Send(answer);
         }
 
-        private void Send(Message msg)
+        void Send(Message msg)
         {
             var packet = msg.ToByteArray();
             if (packet.Length > maxPacketSize)
@@ -413,11 +354,13 @@ namespace Makaretu.Dns
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
             }
 
-            lock (socketLock)
+            lock (senderLock)
             {
-                if (socket == null)
+                if (sender == null)
                     throw new InvalidOperationException("MDNS is not started");
-                socket.SendTo(packet, 0, packet.Length, SocketFlags.None, mdnsEndpoint);
+                sender.SendAsync(packet, packet.Length, mdnsEndpoint).Wait();
+                if (log.IsDebugEnabled)
+                    log.Debug($"Sent msg to {mdnsEndpoint}");
             }
         }
 
@@ -484,20 +427,43 @@ namespace Makaretu.Dns
         /// </remarks>
         async void Listener()
         {
-            var cancel = listenerCancellation.Token;
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-            cancel.Register(CloseSocket);
-            var datagram = new byte[maxDatagramSize];
-            var buffer = new ArraySegment<byte>(datagram);
+            // Stop the previous listener.
+            if (listenerCancellation != null)
+            {
+                listenerCancellation.Cancel();
+            }
+
+            listenerCancellation = new CancellationTokenSource();
+            UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
+            if (isWindows)
+            {
+                receiver.ExclusiveAddressUse = false;
+            }
+            var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
+            receiver.Client.SetSocketOption(
+                SocketOptionLevel.Socket, 
+                SocketOptionName.ReuseAddress,
+                true);
+            if (isWindows)
+            {
+                receiver.ExclusiveAddressUse = false;
+            }
+            receiver.Client.Bind(endpoint);
+            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
+
+            var cancel = listenerCancellation.Token;
+            cancel.Register(() => receiver.Dispose());
             try
             {
                 while (!cancel.IsCancellationRequested)
                 {
-                    var n = await socket.ReceiveAsync(buffer, SocketFlags.None);
-                    if (n != 0 && !cancel.IsCancellationRequested)
-                    {
-                        OnDnsMessage(datagram, n);
-                    }
+                    var result = await receiver.ReceiveAsync();
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Received msg from {result.RemoteEndPoint}");
+
+                    OnDnsMessage(result.Buffer, result.Buffer.Length);
                 }
             }
             catch (Exception e)
@@ -506,7 +472,13 @@ namespace Makaretu.Dns
                     log.Error("Listener failed", e);
                 // eat the exception
             }
-            CloseSocket();
+
+            receiver.Dispose();
+            if (listenerCancellation != null)
+            {
+                listenerCancellation.Dispose();
+                listenerCancellation = null;
+            }
         }
     }
 }
