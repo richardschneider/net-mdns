@@ -68,8 +68,23 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
 
-<p>A simple Multicast Domain Name Service based on <a href="https://tools.ietf.org/html/rfc6762">RFC 6762</a>.  The source code is on <a href="https://github.com/richardschneider/net-mdns">GitHub</a> and the package is published on <a href="https://www.nuget.org/packages/Makaretu.Dns.Multicast">NuGet</a>.</p>
-<p>The <a class="xref" href="../api/Makaretu.Dns.MulticastService.html">MulticastService</a> is used to send <a href="xref:Makaretu.Dns.MulticastService.SendQuery">queries</a> and <a href="xref:Makaretu.Dns.MulticastService.SendAnswer">answers</a>.  It also listens for DNS <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.Message.html">Messages</a> and raises either the <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_QueryReceived">QueryReceived</a> or <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a> event.</p>
+<p>Simple Multicast DNS for C# and F#.  The source code is on <a href="https://github.com/richardschneider/net-mdns">GitHub</a> 
+and the package is published on <a href="https://www.nuget.org/packages/Makaretu.Dns.Multicast">NuGet</a>.</p>
+<p>It conforms to</p>
+<ul>
+<li><a href="https://tools.ietf.org/html/rfc6762">RFC 6762 - Multicast DNS</a></li>
+<li><a href="https://tools.ietf.org/html/rfc6763">RFC 6761 - DNS-Based Service Discovery</a></li>
+</ul>
+<p>The above RFCs are commonly referred to as <a href="https://developer.apple.com/bonjour/">Bonjour</a> or 
+<a href="http://www.zeroconf.org/">Zero Config</a>.</p>
+<p>The <a class="xref" href="../api/Makaretu.Dns.MulticastService.html">MulticastService</a> is used to send <a href="https://en.wikipedia.org/wiki/Domain_Name_System">DNS</a>
+<a href="xref:Makaretu.Dns.MulticastService.SendQuery">queries</a> and 
+<a href="xref:Makaretu.Dns.MulticastService.SendAnswer">answers</a> over the link local network.
+It also listens for DNS <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.Message.html">Messages</a> and raises either the 
+<a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_QueryReceived">QueryReceived</a> or <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a> event.</p>
+<p>To broadcast a service, simply create a <a class="xref" href="../api/Makaretu.Dns.ServiceProfile.html">ServiceProfile</a> 
+and then <a href="xref:Makaretu.Dns.ServiceDiscovery.Advertise">Advertise</a> it.  Any queries for the service or 
+service instance will be answered with information from the profile.</p>
 </article>
           </div>
           
