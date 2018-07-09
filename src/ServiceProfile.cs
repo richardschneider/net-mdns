@@ -17,7 +17,7 @@ namespace Makaretu.Dns
         ///   Creates a new instance of the <see cref="ServiceProfile"/> class.
         /// </summary>
         /// <remarks>
-        ///   All details must be filled in by the caller.
+        ///   All details must be filled in by the caller, especially the <see cref="Resources"/>.
         /// </remarks>
         public ServiceProfile()
         {
@@ -37,8 +37,12 @@ namespace Makaretu.Dns
         ///   The TCP/UDP port of the service.
         /// </param>
         /// <param name="addresses">
-        ///   The IP addresses of the specific service instance.
+        ///   The IP addresses of the specific service instance. If <b>null</b> then
+        ///   <see cref="MulticastService.GetIPAddresses"/> is used.
         /// </param>
+        /// <remarks>
+        ///   The SRV, TXT and A/AAAA resoruce records are added to the <see cref="Resources"/>.
+        /// </remarks>
         public ServiceProfile(string instanceName, string serviceName, ushort port, IEnumerable<IPAddress> addresses = null)
         {
             InstanceName = instanceName;
@@ -54,7 +58,7 @@ namespace Makaretu.Dns
             Resources.Add(new TXTRecord
             {
                 Name = fqn,
-                Strings = { "foo=bar" }
+                Strings = { "txtvers=1" }
             });
 
             if (addresses == null)

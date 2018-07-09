@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Makaretu.Dns
 {
-    public class ServiceDiscovery
+    public class ServiceDiscovery : IDisposable
     {
         /// <summary>
         ///   The service discovery service name.
@@ -16,11 +16,15 @@ namespace Makaretu.Dns
         public const string ServiceName = "_services._dns-sd._udp.local";
 
         MulticastService mdns;
+        bool ownsMdns;
+
         List<ServiceProfile> profiles = new List<ServiceProfile>();
 
         public ServiceDiscovery()
             : this(new MulticastService())
         {
+            ownsMdns = true;
+
             // Auto start.
             mdns.Start();
         }
@@ -92,6 +96,31 @@ namespace Makaretu.Dns
                 mdns.SendAnswer(response);
             }
         }
+
+        #region IDisposable Support
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (mdns != null)
+                {
+                    mdns.QueryReceived -= OnQuery;
+                    mdns.AnswerReceived -= OnAnswer;
+                    if (ownsMdns)
+                    {
+                        mdns.Stop();
+                    }
+                    mdns = null;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 
 }
