@@ -24,7 +24,7 @@ namespace Spike
                 NetworkInterfaceDiscoveryInterval = TimeSpan.FromSeconds(1),
             };
 
-            foreach (var a in mdns.GetIPAddresses())
+            foreach (var a in MulticastService.GetIPAddresses())
             {
                 Console.WriteLine($"IP address {a}");
             }

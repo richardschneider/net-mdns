@@ -132,7 +132,7 @@ namespace Makaretu.Dns
         ///   <item><description>not a loopback</description></item>
         ///   </list>
         /// </remarks>
-        public IEnumerable<NetworkInterface> GetNetworkInterfaces()
+        public static IEnumerable<NetworkInterface> GetNetworkInterfaces()
         {
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
@@ -145,7 +145,7 @@ namespace Makaretu.Dns
         /// <returns>
         ///   A sequence of IP addresses of the local machine.
         /// </returns>
-        public IEnumerable<IPAddress> GetIPAddresses()
+        public static IEnumerable<IPAddress> GetIPAddresses()
         {
             return GetNetworkInterfaces()
                 .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
