@@ -61,5 +61,16 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("x", "_sdtest._udp", 1024, new[] { IPAddress.IPv6Loopback });
             Assert.IsTrue(service.Resources.Any(r => r.Type == DnsType.AAAA));
         }
+
+        [TestMethod]
+        public void TXTRecords()
+        {
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024);
+            var txt = service.Resources.OfType<TXTRecord>().First();
+            txt.Strings.AddRange(new [] { "a=1", "b=2" });
+            CollectionAssert.Contains(txt.Strings, "txtvers=1");
+            CollectionAssert.Contains(txt.Strings, "a=1");
+            CollectionAssert.Contains(txt.Strings, "b=2");
+        }
     }
 }
