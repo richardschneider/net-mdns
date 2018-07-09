@@ -41,5 +41,25 @@ namespace Makaretu.Dns
             Assert.IsTrue(service.Resources.OfType<ARecord>().Any());
         }
 
+        [TestMethod]
+        public void Addresses_Default()
+        {
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024);
+            Assert.IsTrue(service.Resources.Any(r => r.Type == DnsType.A || r.Type == DnsType.AAAA));
+        }
+
+        [TestMethod]
+        public void Addresses_IPv4()
+        {
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024, new[] { IPAddress.Loopback });
+            Assert.IsTrue(service.Resources.Any(r => r.Type == DnsType.A));
+        }
+
+        [TestMethod]
+        public void Addresses_IPv6()
+        {
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024, new[] { IPAddress.IPv6Loopback });
+            Assert.IsTrue(service.Resources.Any(r => r.Type == DnsType.AAAA));
+        }
     }
 }
