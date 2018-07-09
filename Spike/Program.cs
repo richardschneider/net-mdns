@@ -13,10 +13,12 @@ namespace Spike
             Console.WriteLine("Multicast DNS spike");
 
             // set logger factory
-            var properties = new Common.Logging.Configuration.NameValueCollection();
-            properties["level"] = "TRACE";
-            properties["showLogName"] = "true";
-            properties["showDateTime"] = "true";
+            var properties = new Common.Logging.Configuration.NameValueCollection
+            {
+                ["level"] = "TRACE",
+                ["showLogName"] = "true",
+                ["showDateTime"] = "true"
+            };
             LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter(properties);
 
             var mdns = new MulticastService

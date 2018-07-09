@@ -144,5 +144,25 @@ namespace Makaretu.Dns
         ///   </para>
         /// </remarks>
         public List<ResourceRecord> Resources { get; set; } = new List<ResourceRecord>();
+
+        /// <summary>
+        ///   Add a property of the service to the TXT record.
+        /// </summary>
+        /// <param name="key">
+        ///   The name of the property.
+        /// </param>
+        /// <param name="value">
+        ///   The value of the property.
+        /// </param>
+        public void AddProperty(string key, string value)
+        {
+            var txt = Resources.OfType<TXTRecord>().FirstOrDefault();
+            if (txt == null)
+            {
+                txt = new TXTRecord { Name = FullyQualifiedName };
+                Resources.Add(txt);
+            }
+            txt.Strings.Add(key + "=" + value);
+        }
     }
 }

@@ -72,5 +72,20 @@ namespace Makaretu.Dns
             CollectionAssert.Contains(txt.Strings, "a=1");
             CollectionAssert.Contains(txt.Strings, "b=2");
         }
+
+        [TestMethod]
+        public void AddProperty()
+        {
+            var service = new ServiceProfile
+            {
+                InstanceName = "x",
+                ServiceName = "_sdtest._udp"
+            };
+            service.AddProperty("a", "1");
+
+            var txt = service.Resources.OfType<TXTRecord>().First();
+            Assert.AreEqual(service.FullyQualifiedName, txt.Name);
+            CollectionAssert.Contains(txt.Strings, "a=1");
+        }
     }
 }
