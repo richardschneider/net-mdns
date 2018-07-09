@@ -7,11 +7,15 @@
 [![Version](https://img.shields.io/nuget/v/Makaretu.Dns.Multicast.svg)](https://www.nuget.org/packages/Makaretu.Dns.Multicast)
 [![docs](https://cdn.rawgit.com/richardschneider/net-mdns/master/doc/images/docs-latest-green.svg)](https://richardschneider.github.io/net-mdns/articles/intro.html)
 
-A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.org/html/rfc6762).  Can be used as both a client (sending queries) or a server (responding to queries).
+A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.org/html/rfc6762).  Can be used 
+as both a client (sending queries) or a server (responding to queries).
+
+A higher level DNS Service Disovery based on [RFC 6763](https://tools.ietf.org/html/rfc6763) that automatically responds to any query for the 
+service or service instance.
 
 ## Features
 
-- Targets .NET Standard 1.4 and 2.0
+- Targets Framework 4.6.1, .NET Standard 1.4 and 2.0
 - Supports IPv6 and IPv4 platforms
 - CI on Circle (Debian GNU/Linux), Travis (Ubuntu Trusty and OSX) and AppVeyor (Windows Server 2016)
 - Periodically checks for new network interfaces
@@ -22,9 +26,23 @@ Published releases are available on [NuGet](https://www.nuget.org/packages/Makar
 
     PM> Install-Package Makaretu.Mdns
     
-## Usage
+## Usage Service Discovery
 
-### Discovery
+### Advertising
+
+Always broadcast the service ("foo") running on local host with port 1024.
+
+```csharp
+using Makaretu.Dns;
+
+var service = new ServiceProfile("x", "_foo._tcp", 1024);
+var sd = new ServiceDiscovery();
+sd.Advertise(service);
+```
+
+## Usage Multicast
+
+### Queries
 
 Get all the Apple TVs. The query is sent when a network interface is discovered.
 
@@ -39,7 +57,7 @@ mdns.Start();
 
 ### Broadcasting
 
-Respond to a query for the service.
+Respond to a query for the service.  Note that `ServiceDiscovery.Advertise` is much easier.
 
 ```csharp
 using Makaretu.Dns;

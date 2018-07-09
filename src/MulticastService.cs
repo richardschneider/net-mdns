@@ -38,8 +38,7 @@ namespace Makaretu.Dns
         CancellationTokenSource listenerCancellation;
 
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
-
-        bool ip6;
+        readonly bool ip6;
         IPEndPoint mdnsEndpoint;
         int maxPacketSize;
 
@@ -62,7 +61,7 @@ namespace Makaretu.Dns
         ///   Always use socketLock to gain access.
         /// </remarks>
         UdpClient sender;
-        Object senderLock = new object();
+        readonly Object senderLock = new object();
 
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
@@ -162,10 +161,6 @@ namespace Makaretu.Dns
             maxPacketSize = maxDatagramSize - packetOverhead;
             knownNics.Clear();
 
-            sender = new UdpClient(mdnsEndpoint.AddressFamily);
-            sender.JoinMulticastGroup(mdnsEndpoint.Address);
-            sender.MulticastLoopback = true;
-
             // Start a task to find the network interfaces.
             PollNetworkInterfaces();
         }
@@ -226,33 +221,50 @@ namespace Makaretu.Dns
 
         void FindNetworkInterfaces()
         {
-            var nics = GetNetworkInterfaces().ToArray();
+            var currentNics = GetNetworkInterfaces().ToList();
             var newNics = new List<NetworkInterface>();
+            var oldNics = new List<NetworkInterface>();
 
             lock (senderLock)
             {
-                foreach (var nic in nics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
+                foreach (var nic in knownNics.Where(k => !currentNics.Any(n => k.Id == n.Id)))
+                {
+                    oldNics.Add(nic);
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug($"Removed nic '{nic.Name}'.");
+                    }
+                }
+                foreach (var nic in currentNics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
                 {
                     newNics.Add(nic);
-                    knownNics.Add(nic);
-                }
-            }
-
-            // If any new NIC discovered.
-            if (newNics.Any())
-            {
-                if (log.IsDebugEnabled)
-                {
-                    foreach (var nic in newNics)
+                    if (log.IsDebugEnabled)
                     {
                         log.Debug($"Found nic '{nic.Name}'.");
                     }
                 }
+            }
+            knownNics = currentNics;
+
+            // If any NIC change, then get new sockets.
+            if (newNics.Any() || oldNics.Any())
+            {
+                // Recreate the sender
+                if (sender != null)
+                {
+                    sender.Dispose();
+                }
+                sender = new UdpClient(mdnsEndpoint.AddressFamily);
+                sender.JoinMulticastGroup(mdnsEndpoint.Address);
+                sender.MulticastLoopback = true;
 
                 // Start a task to listen for MDNS messages.
                 Listener();
+            }
 
-                // Tell others.
+            // Tell others.
+            if (newNics.Any())
+            { 
                 NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
                 {
                     NetworkInterfaces = newNics
@@ -441,7 +453,6 @@ namespace Makaretu.Dns
             {
                 receiver.ExclusiveAddressUse = false;
             }
-            var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.SetSocketOption(
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
@@ -450,6 +461,7 @@ namespace Makaretu.Dns
             {
                 receiver.ExclusiveAddressUse = false;
             }
+            var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.Bind(endpoint);
             receiver.JoinMulticastGroup(mdnsEndpoint.Address);
 
