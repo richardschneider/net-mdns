@@ -15,5 +15,5 @@ It also listens for DNS [Messages](xref:Makaretu.Dns.Message) and raises either 
 [QueryReceived](xref:Makaretu.Dns.MulticastService.QueryReceived) or [AnswerReceived](xref:Makaretu.Dns.MulticastService.AnswerReceived) event.
 
 To broadcast a service, simply create a [ServiceProfile](xref:Makaretu.Dns.ServiceProfile) 
-and then [Advertise](xref:Makaretu.Dns.ServiceDiscovery.Advertise) it.  This then responnds to any queries
-about any service, the service, or the service instance.
+and then [Advertise](xref:Makaretu.Dns.ServiceDiscovery.Advertise) it.  Any queries for the service or 
+service instance will be answered with information from the profile.

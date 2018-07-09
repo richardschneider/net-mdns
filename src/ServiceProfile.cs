@@ -102,7 +102,7 @@ namespace Makaretu.Dns
         ///   It consists of a pair of DNS labels, following the
         ///   <see href="https://www.ietf.org/rfc/rfc2782.txt">SRV records</see> convention.
         ///   The first label of the pair is an underscore character (_) followed by 
-        ///   the <see cref="https://tools.ietf.org/html/rfc6335">service name</see>. 
+        ///   the <see href="https://tools.ietf.org/html/rfc6335">service name</see>. 
         ///   The second label is either "_tcp" (for application
         ///   protocols that run over TCP) or "_udp" (for all others). 
         /// </remarks>

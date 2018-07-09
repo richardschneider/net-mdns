@@ -38,8 +38,7 @@ namespace Makaretu.Dns
         CancellationTokenSource listenerCancellation;
 
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
-
-        bool ip6;
+        readonly bool ip6;
         IPEndPoint mdnsEndpoint;
         int maxPacketSize;
 
@@ -62,7 +61,7 @@ namespace Makaretu.Dns
         ///   Always use socketLock to gain access.
         /// </remarks>
         UdpClient sender;
-        Object senderLock = new object();
+        readonly Object senderLock = new object();
 
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
