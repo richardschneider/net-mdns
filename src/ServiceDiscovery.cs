@@ -122,7 +122,7 @@ namespace Makaretu.Dns
                     mdns.AnswerReceived -= OnAnswer;
                     if (ownsMdns)
                     {
-                        mdns.Stop();
+                        mdns.Dispose();
                     }
                     mdns = null;
                 }

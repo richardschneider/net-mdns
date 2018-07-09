@@ -90,33 +90,32 @@ namespace Makaretu.Dns
             var done = new ManualResetEvent(false);
             Message response = null;
 
-            var mdns = new MulticastService();
-            mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
-            mdns.QueryReceived += (s, e) =>
+            using (var mdns = new MulticastService())
             {
-                var msg = e.Message;
-                if (msg.Questions.Any(q => q.Name == service))
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
+                mdns.QueryReceived += (s, e) =>
                 {
-                    var res = msg.CreateResponse();
-                    res.Answers.Add(new ARecord
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
                     {
-                        Name = service,
-                        Address = IPAddress.Parse("127.1.1.1")
-                    });
-                    mdns.SendAnswer(res);
-                }
-            };
-            mdns.AnswerReceived += (s, e) =>
-            {
-                var msg = e.Message;
-                if (msg.Answers.Any(a => a.Name == service))
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("127.1.1.1")
+                        });
+                        mdns.SendAnswer(res);
+                    }
+                };
+                mdns.AnswerReceived += (s, e) =>
                 {
-                    response = msg;
-                    done.Set();
-                }
-            };
-            try
-            {
+                    var msg = e.Message;
+                    if (msg.Answers.Any(answer => answer.Name == service))
+                    {
+                        response = msg;
+                        done.Set();
+                    }
+                };
                 mdns.Start();
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "answer timeout");
                 Assert.IsNotNull(response);
@@ -125,10 +124,6 @@ namespace Makaretu.Dns
                 Assert.IsTrue(response.AA);
                 var a = (ARecord)response.Answers[0];
                 Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
-            }
-            finally
-            {
-                mdns.Stop();
             }
         }
 
@@ -306,6 +301,21 @@ namespace Makaretu.Dns
             var mdns = new MulticastService();
             var addresses = mdns.GetIPAddresses().ToArray();
             Assert.AreNotEqual(0, addresses.Length);
+        }
+
+        [TestMethod]
+        public void Disposable()
+        {
+            using (var mdns = new MulticastService())
+            {
+                Assert.IsNotNull(mdns);
+            }
+
+            using (var mdns = new MulticastService())
+            {
+                Assert.IsNotNull(mdns);
+                mdns.Start();
+            }
         }
 
     }

@@ -23,7 +23,7 @@ namespace Makaretu.Dns
     ///   raised when a <see cref="Message"/> is received.
     ///   </para>
     /// </remarks>
-    public class MulticastService
+    public class MulticastService : IDisposable
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
@@ -492,5 +492,24 @@ namespace Makaretu.Dns
                 listenerCancellation = null;
             }
         }
+
+        #region IDisposable Support
+
+        /// <inheritdoc />
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Stop();
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
+
     }
 }
