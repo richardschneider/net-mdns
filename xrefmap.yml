@@ -289,6 +289,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceProfile.ServiceProfile
   nameWithType: ServiceProfile.ServiceProfile
+- uid: Makaretu.Dns.ServiceProfile.AddProperty(System.String,System.String)
+  name: AddProperty(String, String)
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_AddProperty_System_String_System_String_
+  commentId: M:Makaretu.Dns.ServiceProfile.AddProperty(System.String,System.String)
+  fullName: Makaretu.Dns.ServiceProfile.AddProperty(System.String, System.String)
+  nameWithType: ServiceProfile.AddProperty(String, String)
+- uid: Makaretu.Dns.ServiceProfile.AddProperty*
+  name: AddProperty
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_AddProperty_
+  commentId: Overload:Makaretu.Dns.ServiceProfile.AddProperty
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceProfile.AddProperty
+  nameWithType: ServiceProfile.AddProperty
 - uid: Makaretu.Dns.ServiceProfile.Domain
   name: Domain
   href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_Domain
