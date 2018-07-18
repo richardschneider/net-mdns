@@ -61,26 +61,9 @@ namespace Makaretu.Dns
                 Strings = { "txtvers=1" }
             });
 
-            if (addresses == null)
+            foreach (var address in addresses ?? MulticastService.GetIPAddresses())
             {
-                addresses = MulticastService.GetIPAddresses();
-            }
-            foreach (var address in addresses)
-            {
-                switch (address.AddressFamily)
-                {
-                    case AddressFamily.InterNetwork:
-                        Resources.Add(new ARecord { Name = fqn, Address = address });
-                        break;
-                    case AddressFamily.InterNetworkV6:
-                        if (address.ScopeId == 0)
-                        {
-                            Resources.Add(new AAAARecord { Name = fqn, Address = address });
-                        }
-                        break;
-                    default:
-                        throw new  NotSupportedException();
-                }
+                Resources.Add(AddressRecord.Create(fqn, address));
             }
         }
 
