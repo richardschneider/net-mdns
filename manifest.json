@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MulticastService.html",
-          "hash": "rNRxhHT2cSKnTIbh5FH0Bg=="
+          "hash": "qHkqNtueQSWyrPGobktaaQ=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceDiscovery.html",
-          "hash": "jbuU/Dri89a3FI7xI6tQDA=="
+          "hash": "w9XEZuzpiCg+ZV6ovHw7Yg=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceProfile.html",
-          "hash": "WbB0IHVRUVOPAGpaZRjZOQ=="
+          "hash": "eUqw4qA7yGI3FwqEsfNiXA=="
         }
       },
       "is_incremental": false,
@@ -189,13 +189,13 @@
           "can_incremental": false,
           "incrementalPhase": "build"
         },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
           "incrementalPhase": "build"
         }
       }
