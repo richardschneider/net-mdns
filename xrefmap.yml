@@ -121,6 +121,19 @@ references:
   commentId: E:Makaretu.Dns.MulticastService.QueryReceived
   fullName: Makaretu.Dns.MulticastService.QueryReceived
   nameWithType: MulticastService.QueryReceived
+- uid: Makaretu.Dns.MulticastService.ResolveAsync(Message,System.Threading.CancellationToken)
+  name: ResolveAsync(Message, CancellationToken)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_ResolveAsync_Message_System_Threading_CancellationToken_
+  commentId: M:Makaretu.Dns.MulticastService.ResolveAsync(Message,System.Threading.CancellationToken)
+  fullName: Makaretu.Dns.MulticastService.ResolveAsync(Message, System.Threading.CancellationToken)
+  nameWithType: MulticastService.ResolveAsync(Message, CancellationToken)
+- uid: Makaretu.Dns.MulticastService.ResolveAsync*
+  name: ResolveAsync
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_ResolveAsync_
+  commentId: Overload:Makaretu.Dns.MulticastService.ResolveAsync
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.ResolveAsync
+  nameWithType: MulticastService.ResolveAsync
 - uid: Makaretu.Dns.MulticastService.SendAnswer(Message)
   name: SendAnswer(Message)
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_Message_

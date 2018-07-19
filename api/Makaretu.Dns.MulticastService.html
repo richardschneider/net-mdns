@@ -85,35 +85,11 @@
     <h5>Implements</h5>
     <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
   </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString">Object.ToString()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.equals#System_Object_Equals_System_Object_">Object.Equals(Object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.equals#System_Object_Equals_System_Object_System_Object_">Object.Equals(Object, Object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.referenceequals#System_Object_ReferenceEquals_System_Object_System_Object_">Object.ReferenceEquals(Object, Object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.gethashcode#System_Object_GetHashCode">Object.GetHashCode()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.gettype#System_Object_GetType">Object.GetType()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.memberwiseclone#System_Object_MemberwiseClone">Object.MemberwiseClone()</a>
-    </div>
-  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Makaretu.Dns.html">Makaretu.Dns</a></h6>
   <h6><strong>Assembly</strong>: Makaretu.Dns.Multicast.dll</h6>
   <h5 id="Makaretu_Dns_MulticastService_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class MulticastService : IDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public class MulticastService : IResolver, IDisposable</code></pre>
   </div>
   <h5 id="Makaretu_Dns_MulticastService_remarks"><strong>Remarks</strong></h5>
   <div class="markdown level0 remarks"><p>Sends and receives DNS queries and answers via the multicast mechachism
@@ -191,7 +167,7 @@ new network interfaces. </p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_Dispose.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L512">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L542">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_Dispose_" data-uid="Makaretu.Dns.MulticastService.Dispose*"></a>
   <h4 id="Makaretu_Dns_MulticastService_Dispose" data-uid="Makaretu.Dns.MulticastService.Dispose">Dispose()</h4>
@@ -206,7 +182,7 @@ new network interfaces. </p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_Dispose_System_Boolean_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.Dispose(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L503">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L533">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_Dispose_" data-uid="Makaretu.Dns.MulticastService.Dispose*"></a>
   <h4 id="Makaretu_Dns_MulticastService_Dispose_System_Boolean_" data-uid="Makaretu.Dns.MulticastService.Dispose(System.Boolean)">Dispose(Boolean)</h4>
@@ -303,10 +279,62 @@ new network interfaces. </p>
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_ResolveAsync_Message_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.ResolveAsync(Message%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L276">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_MulticastService_ResolveAsync_" data-uid="Makaretu.Dns.MulticastService.ResolveAsync*"></a>
+  <h4 id="Makaretu_Dns_MulticastService_ResolveAsync_Message_System_Threading_CancellationToken_" data-uid="Makaretu.Dns.MulticastService.ResolveAsync(Message,System.Threading.CancellationToken)">ResolveAsync(Message, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Message&gt; ResolveAsync(Message request, CancellationToken cancel = default(CancellationToken))</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Message</span></td>
+        <td><span class="parametername">request</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancel</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<span class="xref">Message</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendAnswer_Message_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendAnswer(Message)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L355">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L385">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendAnswer_" data-uid="Makaretu.Dns.MulticastService.SendAnswer*"></a>
   <h4 id="Makaretu_Dns_MulticastService_SendAnswer_Message_" data-uid="Makaretu.Dns.MulticastService.SendAnswer(Message)">SendAnswer(Message)</h4>
@@ -369,7 +397,7 @@ if exceeds the maximum packet length.
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_Message_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(Message)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L328">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L358">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendQuery_" data-uid="Makaretu.Dns.MulticastService.SendQuery*"></a>
   <h4 id="Makaretu_Dns_MulticastService_SendQuery_Message_" data-uid="Makaretu.Dns.MulticastService.SendQuery(Message)">SendQuery(Message)</h4>
@@ -428,7 +456,7 @@ event.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_System_String_Class_DnsType_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(System.String%2CClass%2CDnsType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L295">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L325">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendQuery_" data-uid="Makaretu.Dns.MulticastService.SendQuery*"></a>
   <h4 id="Makaretu_Dns_MulticastService_SendQuery_System_String_Class_DnsType_" data-uid="Makaretu.Dns.MulticastService.SendQuery(System.String,Class,DnsType)">SendQuery(String, Class, DnsType)</h4>
