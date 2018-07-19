@@ -343,8 +343,12 @@ namespace Makaretu.Dns
         ///   When the serialised <paramref name="answer"/> is too large.
         /// </exception>
         /// <remarks>
-        ///   The <see cref="Message.AA"/> flag is always set to true and
-        ///   <see cref="Message.Id"/> set to zero.
+        ///   The <see cref="Message.AA"/> flag is set to true,
+        ///   the <see cref="Message.Id"/> set to zero and any questions are removed.
+        ///   <para>
+        ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see> 
+        ///   if exceeds the maximum packet length.
+        ///   </para>
         /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
@@ -354,6 +358,11 @@ namespace Makaretu.Dns
             // ID of zero.
             answer.AA = true;
             answer.Id = 0;
+
+            // All MDNS answers must not contain any questions.
+            answer.Questions.Clear();
+
+            answer.Truncate(maxPacketSize);
 
             Send(answer);
         }
@@ -371,8 +380,6 @@ namespace Makaretu.Dns
                 if (sender == null)
                     throw new InvalidOperationException("MDNS is not started");
                 sender.SendAsync(packet, packet.Length, mdnsEndpoint).Wait();
-                if (log.IsDebugEnabled)
-                    log.Debug($"Sent msg to {mdnsEndpoint}");
             }
         }
 
@@ -472,9 +479,6 @@ namespace Makaretu.Dns
                 while (!cancel.IsCancellationRequested)
                 {
                     var result = await receiver.ReceiveAsync();
-                    if (log.IsDebugEnabled)
-                        log.Debug($"Received msg from {result.RemoteEndPoint}");
-
                     OnDnsMessage(result.Buffer, result.Buffer.Length);
                 }
             }
