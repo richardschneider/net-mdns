@@ -56,11 +56,16 @@ namespace Makaretu.Dns
             ServiceName = serviceName;
             var fqn = FullyQualifiedName;
 
+            var simpleServiceName = ServiceName
+                .Replace("._tcp", "")
+                .Replace("._udp", "")
+                .TrimStart('_');
+            var hostName = $"{InstanceName}.{simpleServiceName}.{Domain}";
             Resources.Add(new SRVRecord
             {
                 Name = fqn,
                 Port = port,
-                Target = fqn
+                Target = hostName
             });
             Resources.Add(new TXTRecord
             {
@@ -70,7 +75,7 @@ namespace Makaretu.Dns
 
             foreach (var address in addresses ?? MulticastService.GetIPAddresses())
             {
-                Resources.Add(AddressRecord.Create(fqn, address));
+                Resources.Add(AddressRecord.Create(hostName, address));
             }
         }
 

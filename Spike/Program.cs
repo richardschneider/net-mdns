@@ -53,9 +53,9 @@ namespace Spike
             };
 
             var sd = new ServiceDiscovery(mdns);
-            sd.Advertise(new ServiceProfile("xyzzy", "_xservice._tcp", 5011));
-            sd.Advertise(new ServiceProfile("omega", "_xservice._tcp", 666));
-            sd.Advertise(new ServiceProfile("alpha", "_zservice._tcp", 5012));
+            sd.Advertise(new ServiceProfile("x1", "_xservice._tcp", 5011));
+            sd.Advertise(new ServiceProfile("x2", "_xservice._tcp", 666));
+            sd.Advertise(new ServiceProfile("z1", "_zservice._tcp", 5012));
 
             mdns.Start();
             Console.ReadKey();

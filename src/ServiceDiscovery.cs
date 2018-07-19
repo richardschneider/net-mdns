@@ -100,6 +100,8 @@ namespace Makaretu.Dns
             var response = localDomain.ResolveAsync(request).Result;
             if (response.Status == MessageStatus.NoError)
             {
+                // TODO: pass additional records.  Need to make sure that
+                // additionals is not in answers.
                 response.AdditionalRecords.Clear();
                 mdns.SendAnswer(response);
                 Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
