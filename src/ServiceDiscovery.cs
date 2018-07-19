@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Makaretu.Dns.Resolving;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -21,6 +22,11 @@ namespace Makaretu.Dns
 
         MulticastService mdns;
         readonly bool ownsMdns;
+
+        NameServer localDomain = new NameServer {
+            Catalog = new Catalog(),
+            AnswerAllQuestions = true
+        };
 
         List<ServiceProfile> profiles = new List<ServiceProfile>();
 
@@ -63,6 +69,19 @@ namespace Makaretu.Dns
         public void Advertise(ServiceProfile service)
         {
             profiles.Add(service);
+
+            var catalog = localDomain.Catalog;
+            catalog.Add(
+                new PTRRecord { Name = ServiceName, DomainName = service.QualifiedServiceName },
+                authoritative: true);
+            catalog.Add(
+                new PTRRecord { Name = service.QualifiedServiceName, DomainName = service.FullyQualifiedName },
+                authoritative: true);
+
+            foreach (var r in service.Resources)
+            {
+                catalog.Add(r, authoritative: true);
+            }
         }
 
         void OnAnswer(object sender, MessageEventArgs e)
@@ -78,38 +97,16 @@ namespace Makaretu.Dns
         void OnQuery(object sender, MessageEventArgs e)
         {
             var request = e.Message;
-            var response = request.CreateResponse();
-
-            // If a SD meta-query, then respond with all advertised service names.
-            if (request.Questions.Any(q => DnsObject.NamesEquals(q.Name, ServiceName) && q.Type == DnsType.PTR))
+            var response = localDomain.ResolveAsync(request).Result;
+            if (response.Status == MessageStatus.NoError)
             {
-                var ptrs = profiles
-                    .Select(p => p.QualifiedServiceName)
-                    .Distinct()
-                    .Select(s => new PTRRecord { Name = ServiceName, DomainName = s });
-                response.Answers.AddRange(ptrs);
-            }
-
-            // If a query for a service, then respond with a PTR to server.
-            var servicePtrs = request.Questions
-                .Where(q => q.Type == DnsType.PTR || q.Type == DnsType.ANY)
-                .SelectMany(q => profiles.Where(p => DnsObject.NamesEquals(q.Name, p.QualifiedServiceName)))
-                .Select(p => new PTRRecord { Name = p.QualifiedServiceName, DomainName = p.FullyQualifiedName });
-            response.Answers.AddRange(servicePtrs);
-
-            // If a query for the service instance, the respond with all details.
-            var resources = request.Questions
-                .SelectMany(q => profiles.Where(p => DnsObject.NamesEquals(q.Name, p.FullyQualifiedName)))
-                .SelectMany(p => p.Resources);
-            response.Answers.AddRange(resources);
-
-            if (response.Answers.Count > 0)
-            {
+                response.AdditionalRecords.Clear();
                 mdns.SendAnswer(response);
+                Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
             }
         }
 
-        #region IDisposable Support
+#region IDisposable Support
 
         /// <inheritdoc />
         protected virtual void Dispose(bool disposing)
@@ -134,7 +131,7 @@ namespace Makaretu.Dns
         {
             Dispose(true);
         }
-        #endregion
+#endregion
     }
 
 }

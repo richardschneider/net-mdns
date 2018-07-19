@@ -34,13 +34,13 @@ namespace Spike
             mdns.QueryReceived += (s, e) =>
             {
                 var names = e.Message.Questions
-                    .Select(q => q.Name);
+                    .Select(q => q.Name + " " + q.Type);
                 Console.WriteLine($"got a query for {String.Join(", ", names)}");
             };
             mdns.AnswerReceived += (s, e) =>
             {
                 var names = e.Message.Answers
-                    .Select(q => q.Name)
+                    .Select(q => q.Name + " " + q.Type)
                     .Distinct();
                 Console.WriteLine($"got answer for {String.Join(", ", names)}");
             };

@@ -227,7 +227,7 @@ namespace Makaretu.Dns
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "no nic");
                 var answer = new Message();
                 answer.Answers.Add(new ARecord { Name = "foo.bar.org", Address = IPAddress.Loopback });
-                answer.AdditionalRecords.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
+                answer.Answers.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
                 ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
                     mdns.SendAnswer(answer);
                 });
