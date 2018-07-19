@@ -10,7 +10,7 @@
 A simple Multicast Domain Name Service based on [RFC 6762](https://tools.ietf.org/html/rfc6762).  Can be used 
 as both a client (sending queries) or a server (responding to queries).
 
-A higher level DNS Service Disovery based on [RFC 6763](https://tools.ietf.org/html/rfc6763) that automatically responds to any query for the 
+A higher level DNS Service Discovery based on [RFC 6763](https://tools.ietf.org/html/rfc6763) that automatically responds to any query for the 
 service or service instance.
 
 ## Features
@@ -38,6 +38,17 @@ using Makaretu.Dns;
 var service = new ServiceProfile("x", "_foo._tcp", 1024);
 var sd = new ServiceDiscovery();
 sd.Advertise(service);
+```
+
+### Discovery
+
+Find all services running on the local link.
+
+```csharp
+using Makaretu.Dns;
+
+var sd = new ServiceDiscovery();
+sd.ServiceDiscovered += (s, serviceName => { // Do something };
 ```
 
 ## Usage Multicast

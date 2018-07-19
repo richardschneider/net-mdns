@@ -97,16 +97,16 @@ namespace Makaretu.Dns
         [TestMethod]
         public void Advertises_ServiceInstance_Address()
         {
-            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
+            var service = new ServiceProfile("x2", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
             var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(service.FullyQualifiedName, Class.IN, DnsType.A);
+                mdns.SendQuery(service.HostName, Class.IN, DnsType.A);
             mdns.AnswerReceived += (s, e) =>
             {
                 var msg = e.Message;
-                if (msg.Answers.OfType<ARecord>().Any(p => p.Name == service.FullyQualifiedName))
+                if (msg.Answers.OfType<ARecord>().Any(p => p.Name == service.HostName))
                 {
                     done.Set();
                 }
@@ -125,6 +125,36 @@ namespace Makaretu.Dns
                 mdns.Stop();
             }
         }
+
+        [TestMethod]
+        public void Discover_AllServices()
+        {
+            var service = new ServiceProfile("x", "_sdtest-2._udp", 1024);
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns);
+            
+            mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
+            sd.ServiceDiscovered += (s, serviceName) =>
+            {
+                if (serviceName == service.QualifiedServiceName)
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service);
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "DNS-SD query timeout");
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
+
 
     }
 }

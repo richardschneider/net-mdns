@@ -10,6 +10,7 @@ namespace Makaretu.Dns
     ///   DNS based Service Discovery is a way of using standard DNS programming interfaces, servers, 
     ///   and packet formats to browse the network for services.
     /// </summary>
+    /// <seealso href="https://tools.ietf.org/html/rfc6763">RFC 6763 DNS-Based Service Discovery</seealso>
     public class ServiceDiscovery : IDisposable
     {
         /// <summary>
@@ -57,6 +58,32 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        ///   Raised when a DNS-SD response is received.
+        /// </summary>
+        /// <value>
+        ///   Contains the service name.
+        /// </value>
+        /// <remarks>
+        ///   <b>ServiceDiscovery</b> passively monitors the network for any answers
+        ///   to a DNS-SD query. When an anwser is received this event is raised.
+        ///   <para>
+        ///   Use <see cref="QueryAllServices"/> to initiate a DNS-SD question.
+        ///   </para>
+        /// </remarks>
+        public event EventHandler<string> ServiceDiscovered;
+
+        /// <summary>
+        ///    Asks other MDNS services to send their service names.
+        /// </summary>
+        /// <remarks>
+        ///   When an answer is received, <see cref="ServiceDiscovered"/> is raised.
+        /// </remarks>
+        public void QueryAllServices()
+        {
+            mdns.SendQuery(ServiceName, type: DnsType.PTR);
+        }
+
+        /// <summary>
         ///   Advertise a service profile.
         /// </summary>
         /// <param name="service">
@@ -88,10 +115,14 @@ namespace Makaretu.Dns
         {
             var msg = e.Message;
 
-            // The answer must contain a PTR
-            var pointers = msg.Answers.OfType<PTRRecord>();
-
-            // TODO
+            // Any DNS-SD answers?
+            var sd = msg.Answers
+                .OfType<PTRRecord>()
+                .Where(r => r.Name == ServiceName);
+            foreach (var ptr in sd)
+            {
+                ServiceDiscovered?.Invoke(this, ptr.DomainName);
+            }
         }
 
         void OnQuery(object sender, MessageEventArgs e)

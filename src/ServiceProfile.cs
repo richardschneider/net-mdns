@@ -60,12 +60,12 @@ namespace Makaretu.Dns
                 .Replace("._tcp", "")
                 .Replace("._udp", "")
                 .TrimStart('_');
-            var hostName = $"{InstanceName}.{simpleServiceName}.{Domain}";
+            HostName = $"{InstanceName}.{simpleServiceName}.{Domain}";
             Resources.Add(new SRVRecord
             {
                 Name = fqn,
                 Port = port,
-                Target = hostName
+                Target = HostName
             });
             Resources.Add(new TXTRecord
             {
@@ -75,7 +75,7 @@ namespace Makaretu.Dns
 
             foreach (var address in addresses ?? MulticastService.GetIPAddresses())
             {
-                Resources.Add(AddressRecord.Create(hostName, address));
+                Resources.Add(AddressRecord.Create(HostName, address));
             }
         }
 
@@ -118,6 +118,15 @@ namespace Makaretu.Dns
         ///   <see cref="ServiceName"/>.<see cref="Domain"/>
         /// </value>
         public string QualifiedServiceName => $"{ServiceName}.{Domain}";
+
+        /// <summary>
+        ///   The fully qualified name of the instance's host.
+        /// </summary>
+        /// <remarks>
+        ///   This can be used to query the address records (A and AAAA)
+        ///   of the service instance.
+        /// </remarks>
+        public string HostName { get; set; }
 
         /// <summary>
         ///   The instance name, service name and domain.
