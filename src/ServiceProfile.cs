@@ -13,6 +13,13 @@ namespace Makaretu.Dns
     /// <seealso cref="ServiceDiscovery.Advertise(ServiceProfile)"/>
     public class ServiceProfile
     {
+        // Enforce multicast defaults, especially TTL.
+        static ServiceProfile()
+        {
+            // Make sure MulticastService is inited.
+            MulticastService.ReferenceEquals(null, null);
+        }
+
         /// <summary>
         ///   Creates a new instance of the <see cref="ServiceProfile"/> class.
         /// </summary>

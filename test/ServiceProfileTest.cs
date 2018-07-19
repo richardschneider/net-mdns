@@ -87,5 +87,13 @@ namespace Makaretu.Dns
             Assert.AreEqual(service.FullyQualifiedName, txt.Name);
             CollectionAssert.Contains(txt.Strings, "a=1");
         }
+
+        [TestMethod]
+        public void TTLs()
+        {
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024);
+            Assert.AreEqual(TimeSpan.FromMinutes(75), service.Resources.OfType<TXTRecord>().First().TTL);
+            Assert.AreEqual(TimeSpan.FromSeconds(120), service.Resources.OfType<AddressRecord>().First().TTL);
+        }
     }
 }
