@@ -23,7 +23,7 @@ namespace Makaretu.Dns
     ///   raised when a <see cref="Message"/> is received.
     ///   </para>
     /// </remarks>
-    public class MulticastService : IDisposable
+    public class MulticastService : IResolver, IDisposable
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
@@ -272,6 +272,36 @@ namespace Makaretu.Dns
             }
         }
 
+        /// <inheritdoc />
+        public Task<Message> ResolveAsync(Message request, CancellationToken cancel = default(CancellationToken))
+        {
+            var tsc = new TaskCompletionSource<Message>();
+            void checkResponse(object s, MessageEventArgs e)
+            {
+                var response = e.Message;
+                if (request.Questions.All(q => response.Answers.Any(a => a.Name == q.Name)))
+                {
+                    AnswerReceived -= checkResponse;
+                    tsc.SetResult(response);
+                }
+            }
+
+            cancel.Register(() =>
+            {
+                AnswerReceived -= checkResponse;
+                tsc.SetCanceled();
+            });
+
+            AnswerReceived += checkResponse;
+            SendQuery(request);
+
+            return tsc.Task;
+        }
+
+        private void MulticastService_AnswerReceived(object sender, MessageEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         ///   Ask for answers about a name.
@@ -513,6 +543,7 @@ namespace Makaretu.Dns
         {
             Dispose(true);
         }
+
         #endregion
 
     }

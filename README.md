@@ -53,9 +53,11 @@ sd.ServiceDiscovered += (s, serviceName => { // Do something };
 
 ## Usage Multicast
 
-### Queries
+### Event Based Queries
 
-Get all the Apple TVs. The query is sent when a network interface is discovered.
+Get all the Apple TVs. The query is sent when a network interface is discovered. 
+The `AnsweredReceived` callback contains any answer that is seen, not just the answer
+to the specific query.
 
 ```csharp
 using Makaretu.Dns;
@@ -64,6 +66,26 @@ var mdns = new MulticastService();
 mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery("appletv.local");
 mdns.AnswerReceived += (s, e) => { // do something with e.Message };
 mdns.Start();
+```
+
+### Async Queries
+
+Get the first answer to Apple TVs. Wait 2 seconds for an answer.
+
+```csharp
+using Makaretu.Dns;
+
+var service = "appletv.local";
+var query = new Message();
+query.Questions.Add(new Question { Name = service, Type = DnsType.ANY });
+var cancellation = new CancellationTokenSource(2000);
+
+using (var mdns = new MulticastService())
+{
+    mdns.Start();
+    var response = await mdns.ResolveAsync(query, cancellation.Token);
+    // Do something
+}
 ```
 
 ### Broadcasting

@@ -317,5 +317,58 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public async Task Resolve()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var query = new Message();
+            query.Questions.Add(new Question { Name = service, Type = DnsType.ANY });
+            var cancellation = new CancellationTokenSource(2000);
+
+            using (var mdns = new MulticastService())
+            {
+                mdns.QueryReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
+                    {
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("127.1.1.1")
+                        });
+                        mdns.SendAnswer(res);
+                    }
+                };
+                mdns.Start();
+                var response = await mdns.ResolveAsync(query, cancellation.Token);
+                Assert.IsNotNull(response, "no response");
+                Assert.IsTrue(response.IsResponse);
+                Assert.AreEqual(MessageStatus.NoError, response.Status);
+                Assert.IsTrue(response.AA);
+                var a = (ARecord)response.Answers[0];
+                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
+            }
+        }
+
+        [TestMethod]
+        public void Resolve_NoAnswer()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var query = new Message();
+            query.Questions.Add(new Question { Name = service, Type = DnsType.ANY });
+            var cancellation = new CancellationTokenSource(500);
+
+            using (var mdns = new MulticastService())
+            {
+                mdns.Start();
+                ExceptionAssert.Throws<TaskCanceledException>(() =>
+                {
+                    var _ = mdns.ResolveAsync(query, cancellation.Token).Result;
+                });
+            }
+        }
+
     }
 }
