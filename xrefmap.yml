@@ -255,6 +255,25 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceDiscovery.Dispose
   nameWithType: ServiceDiscovery.Dispose
+- uid: Makaretu.Dns.ServiceDiscovery.QueryAllServices
+  name: QueryAllServices()
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryAllServices
+  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryAllServices
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryAllServices()
+  nameWithType: ServiceDiscovery.QueryAllServices()
+- uid: Makaretu.Dns.ServiceDiscovery.QueryAllServices*
+  name: QueryAllServices
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryAllServices_
+  commentId: Overload:Makaretu.Dns.ServiceDiscovery.QueryAllServices
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryAllServices
+  nameWithType: ServiceDiscovery.QueryAllServices
+- uid: Makaretu.Dns.ServiceDiscovery.ServiceDiscovered
+  name: ServiceDiscovered
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceDiscovered
+  commentId: E:Makaretu.Dns.ServiceDiscovery.ServiceDiscovered
+  fullName: Makaretu.Dns.ServiceDiscovery.ServiceDiscovered
+  nameWithType: ServiceDiscovery.ServiceDiscovered
 - uid: Makaretu.Dns.ServiceDiscovery.ServiceName
   name: ServiceName
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceName
@@ -328,6 +347,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceProfile.FullyQualifiedName
   nameWithType: ServiceProfile.FullyQualifiedName
+- uid: Makaretu.Dns.ServiceProfile.HostName
+  name: HostName
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_HostName
+  commentId: P:Makaretu.Dns.ServiceProfile.HostName
+  fullName: Makaretu.Dns.ServiceProfile.HostName
+  nameWithType: ServiceProfile.HostName
+- uid: Makaretu.Dns.ServiceProfile.HostName*
+  name: HostName
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_HostName_
+  commentId: Overload:Makaretu.Dns.ServiceProfile.HostName
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceProfile.HostName
+  nameWithType: ServiceProfile.HostName
 - uid: Makaretu.Dns.ServiceProfile.InstanceName
   name: InstanceName
   href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_InstanceName
