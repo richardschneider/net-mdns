@@ -48,7 +48,7 @@ Find all services running on the local link.
 using Makaretu.Dns;
 
 var sd = new ServiceDiscovery();
-sd.ServiceDiscovered += (s, serviceName => { // Do something };
+sd.ServiceDiscovered += (s, serviceName) => { // Do something };
 ```
 
 ## Usage Multicast
