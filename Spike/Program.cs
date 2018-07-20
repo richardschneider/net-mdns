@@ -55,7 +55,9 @@ namespace Spike
             var sd = new ServiceDiscovery(mdns);
             sd.Advertise(new ServiceProfile("x1", "_xservice._tcp", 5011));
             sd.Advertise(new ServiceProfile("x2", "_xservice._tcp", 666));
-            sd.Advertise(new ServiceProfile("z1", "_zservice._tcp", 5012));
+            var z1 = new ServiceProfile("z1", "_zservice._tcp", 5012);
+            z1.AddProperty("foo", "bar");
+            sd.Advertise(z1);
 
             mdns.Start();
             Console.ReadKey();

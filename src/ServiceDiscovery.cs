@@ -139,6 +139,13 @@ namespace Makaretu.Dns
             var response = NameServer.ResolveAsync(request).Result;
             if (response.Status == MessageStatus.NoError)
             {
+                // Many bonjour browsers don't like DNS-SD response
+                // with additional records.
+                if (response.Answers.Any(a => a.Name == ServiceName))
+                {
+                    response.AdditionalRecords.Clear();
+                }
+
                 Mdns.SendAnswer(response);
                 //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
             }
