@@ -20,15 +20,7 @@ namespace Makaretu.Dns
         ///   The service name used to enumerate other services.
         /// </value>
         public const string ServiceName = "_services._dns-sd._udp.local";
-
-        MulticastService mdns;
         readonly bool ownsMdns;
-
-        NameServer localDomain = new NameServer {
-            Catalog = new Catalog(),
-            AnswerAllQuestions = true
-        };
-
         List<ServiceProfile> profiles = new List<ServiceProfile>();
 
         /// <summary>
@@ -40,7 +32,7 @@ namespace Makaretu.Dns
             ownsMdns = true;
 
             // Auto start.
-            mdns.Start();
+            Mdns.Start();
         }
 
         /// <summary>
@@ -52,10 +44,26 @@ namespace Makaretu.Dns
         /// </param>
         public ServiceDiscovery(MulticastService mdns)
         {
-            this.mdns = mdns;
+            this.Mdns = mdns;
             mdns.QueryReceived += OnQuery;
             mdns.AnswerReceived += OnAnswer;
         }
+
+        /// <summary>
+        ///   Gets the multicasting service.
+        /// </summary>
+        public MulticastService Mdns { get; private set; }
+
+        /// <summary>
+        ///   Gets the name server.
+        /// </summary>
+        /// <value>
+        ///   Is used to answer questions.
+        /// </value>
+        public NameServer NameServer { get; } = new NameServer {
+            Catalog = new Catalog(),
+            AnswerAllQuestions = true
+        };
 
         /// <summary>
         ///   Raised when a DNS-SD response is received.
@@ -80,7 +88,7 @@ namespace Makaretu.Dns
         /// </remarks>
         public void QueryAllServices()
         {
-            mdns.SendQuery(ServiceName, type: DnsType.PTR);
+            Mdns.SendQuery(ServiceName, type: DnsType.PTR);
         }
 
         /// <summary>
@@ -97,7 +105,7 @@ namespace Makaretu.Dns
         {
             profiles.Add(service);
 
-            var catalog = localDomain.Catalog;
+            var catalog = NameServer.Catalog;
             catalog.Add(
                 new PTRRecord { Name = ServiceName, DomainName = service.QualifiedServiceName },
                 authoritative: true);
@@ -128,10 +136,10 @@ namespace Makaretu.Dns
         void OnQuery(object sender, MessageEventArgs e)
         {
             var request = e.Message;
-            var response = localDomain.ResolveAsync(request).Result;
+            var response = NameServer.ResolveAsync(request).Result;
             if (response.Status == MessageStatus.NoError)
             {
-                mdns.SendAnswer(response);
+                Mdns.SendAnswer(response);
                 //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
             }
         }
@@ -143,15 +151,15 @@ namespace Makaretu.Dns
         {
             if (disposing)
             {
-                if (mdns != null)
+                if (Mdns != null)
                 {
-                    mdns.QueryReceived -= OnQuery;
-                    mdns.AnswerReceived -= OnAnswer;
+                    Mdns.QueryReceived -= OnQuery;
+                    Mdns.AnswerReceived -= OnAnswer;
                     if (ownsMdns)
                     {
-                        mdns.Dispose();
+                        Mdns.Dispose();
                     }
-                    mdns = null;
+                    Mdns = null;
                 }
             }
         }
