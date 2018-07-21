@@ -1,4 +1,5 @@
-﻿using Makaretu.Dns.Resolving;
+﻿using Common.Logging;
+using Makaretu.Dns.Resolving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Makaretu.Dns
     /// <seealso href="https://tools.ietf.org/html/rfc6763">RFC 6763 DNS-Based Service Discovery</seealso>
     public class ServiceDiscovery : IDisposable
     {
+        static readonly ILog log = LogManager.GetLogger(typeof(ServiceDiscovery));
+
         /// <summary>
         ///   The service discovery service name.
         /// </summary>
@@ -136,6 +139,9 @@ namespace Makaretu.Dns
         void OnQuery(object sender, MessageEventArgs e)
         {
             var request = e.Message;
+
+            if (log.IsDebugEnabled)
+                log.Debug($"got query for {request.Questions[0].Name} {request.Questions[0].Type}");
             var response = NameServer.ResolveAsync(request).Result;
             if (response.Status == MessageStatus.NoError)
             {
@@ -147,6 +153,8 @@ namespace Makaretu.Dns
                 }
 
                 Mdns.SendAnswer(response);
+                if (log.IsDebugEnabled)
+                    log.Debug($"sent answer {response.Answers[0]}");
                 //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
             }
         }
