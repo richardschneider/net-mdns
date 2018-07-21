@@ -451,11 +451,11 @@ namespace Makaretu.Dns
             // Dispatch the message.
             try
             {
-                if (msg.IsQuery)
+                if (msg.IsQuery && msg.Questions.Count > 0)
                 {
                     QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
                 }
-                else if (msg.IsResponse)
+                else if (msg.IsResponse && msg.Answers.Count > 0)
                 {
                     AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg });
                 }
