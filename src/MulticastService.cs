@@ -28,6 +28,11 @@ namespace Makaretu.Dns
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
+        static readonly IPNetwork[] linkLocalNetworks = new IPNetwork[]
+        {
+            IPNetwork.Parse("169.254.0.0/16"),
+            IPNetwork.Parse("fe80::/10")
+        };
 
         const int MulticastPort = 5353;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
@@ -150,6 +155,23 @@ namespace Makaretu.Dns
             return GetNetworkInterfaces()
                 .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
                 .Select(u => u.Address);
+        }
+
+        /// <summary>
+        ///   Get the link local IP addresses of the local machine.
+        /// </summary>
+        /// <returns>
+        ///   A sequence of IP addresses.
+        /// </returns>
+        /// <remarks>
+        ///   All IPv4 addresses are considered link local.
+        /// </remarks>
+        /// <seealso href="https://en.wikipedia.org/wiki/Link-local_address"/>
+        public static IEnumerable<IPAddress> GetLinkLocalAddresses()
+        {
+            return GetIPAddresses()
+                .Where(a => a.AddressFamily == AddressFamily.InterNetwork ||
+                    (a.AddressFamily == AddressFamily.InterNetworkV6 && a.IsIPv6LinkLocal));
         }
 
         /// <summary>
