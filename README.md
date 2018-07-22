@@ -40,6 +40,8 @@ var sd = new ServiceDiscovery();
 sd.Advertise(service);
 ```
 
+See the [example advertiser](Spike/Program.cs) for a working program.
+
 ### Discovery
 
 Find all services running on the local link.
@@ -50,6 +52,8 @@ using Makaretu.Dns;
 var sd = new ServiceDiscovery();
 sd.ServiceDiscovered += (s, serviceName) => { // Do something };
 ```
+
+See the [example browser](Browser/Program.cs) for a working program.
 
 ## Usage Multicast
 

@@ -13,13 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Documentation", "doc\Documentation.csproj", "{F3A32EA9-0B2F-46A3-B47A-33B4C04BD423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "doc\Documentation.csproj", "{F3A32EA9-0B2F-46A3-B47A-33B4C04BD423}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mdns", "src\Mdns.csproj", "{F3C81C57-C283-4E07-B765-DEABCFB22136}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MdnsTests", "test\MdnsTests.csproj", "{B459FBC7-4A28-4170-AD83-7348A403407F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spike", "Spike\Spike.csproj", "{B7019D35-A153-4143-979C-C493A74FA7EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spike", "Spike\Spike.csproj", "{B7019D35-A153-4143-979C-C493A74FA7EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Browser", "Browser\Browser.csproj", "{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{B7019D35-A153-4143-979C-C493A74FA7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7019D35-A153-4143-979C-C493A74FA7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7019D35-A153-4143-979C-C493A74FA7EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
