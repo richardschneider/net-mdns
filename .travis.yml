@@ -9,7 +9,6 @@ os:
 
 install:
   - sudo apt-get install avahi-daemon
-  - sudo start avahi-daemon
   - sudo lsof -i :5353
   - dotnet restore
 
