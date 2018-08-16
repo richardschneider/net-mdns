@@ -521,9 +521,9 @@ namespace Makaretu.Dns
             {
                 receiver.ExclusiveAddressUse = false;
             }
+            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.Bind(endpoint);
-            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
 
             var cancel = listenerCancellation.Token;
             cancel.Register(() => receiver.Dispose());
