@@ -346,5 +346,25 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void Multiple_Listeners()
+        {
+            var ready1 = new ManualResetEvent(false);
+            var ready2 = new ManualResetEvent(false);
+
+            using (var mdns1 = new MulticastService())
+            using (var mdns2 = new MulticastService())
+            {
+                mdns1.NetworkInterfaceDiscovered += (s, e) => ready1.Set();
+                mdns1.Start();
+
+                mdns2.NetworkInterfaceDiscovered += (s, e) => ready2.Set();
+                mdns2.Start();
+
+                Assert.IsTrue(ready1.WaitOne(TimeSpan.FromSeconds(1)), "ready1 timeout");
+                Assert.IsTrue(ready2.WaitOne(TimeSpan.FromSeconds(1)), "ready2 timeout");
+            }
+        }
+
     }
 }
