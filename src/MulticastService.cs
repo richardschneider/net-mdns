@@ -499,6 +499,7 @@ namespace Makaretu.Dns
         async void Listener()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
             // Stop the previous listener.
             if (listenerCancellation != null)
@@ -508,7 +509,7 @@ namespace Makaretu.Dns
 
             listenerCancellation = new CancellationTokenSource();
             UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
-            if (isWindows)
+            if (!isOsx)
             {
                 receiver.ExclusiveAddressUse = false;
             }
@@ -516,7 +517,7 @@ namespace Makaretu.Dns
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
                 true);
-            if (isWindows)
+            if (!isOsx)
             {
                 receiver.ExclusiveAddressUse = false;
             }
