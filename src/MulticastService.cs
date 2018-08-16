@@ -516,14 +516,10 @@ namespace Makaretu.Dns
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
                 true);
-            receiver.Client.SetSocketOption(
-                SocketOptionLevel.Socket,
-                SocketOptionName.ReuseUnicastPort,
-                true);
-            if (!isOsx)
-            {
-                receiver.ExclusiveAddressUse = false;
-            }
+           // if (!isOsx)
+            //{
+            //    receiver.ExclusiveAddressUse = false;
+            //}
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.Bind(endpoint);
             receiver.JoinMulticastGroup(mdnsEndpoint.Address);
