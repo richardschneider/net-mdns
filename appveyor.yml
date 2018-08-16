@@ -41,7 +41,7 @@ pull_requests:
 
 before_build:
   - nuget restore
-  - ps: gitversion /output buildserver /updateAssemblyInfo >gitversion.log
+  - ps: gitversion /output buildserver
 
 build_script:
   - dotnet build -c %CONFIGURATION% -p:Version=%GitVersion_MajorMinorPatch% -p:AssemblyVersion=%GitVersion_MajorMinorPatch%
