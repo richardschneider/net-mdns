@@ -45,7 +45,7 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard2 
-      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp21
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.1
 workflows:
   version: 2
   build-all:
