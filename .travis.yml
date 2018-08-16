@@ -8,6 +8,7 @@ os:
   - osx
 
 install:
+  - sudo apt install avahi-daemon/yakkety
   - sudo start avahi-daemon
   - sudo lsof -i :5353
   - dotnet restore
