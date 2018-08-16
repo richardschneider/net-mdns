@@ -498,7 +498,6 @@ namespace Makaretu.Dns
         /// </remarks>
         async void Listener()
         {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             var isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
             // Stop the previous listener.
@@ -516,6 +515,10 @@ namespace Makaretu.Dns
             receiver.Client.SetSocketOption(
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
+                true);
+            receiver.Client.SetSocketOption(
+                SocketOptionLevel.Socket,
+                SocketOptionName.ReuseUnicastPort,
                 true);
             if (!isOsx)
             {
