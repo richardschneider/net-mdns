@@ -499,6 +499,7 @@ namespace Makaretu.Dns
         async void Listener()
         {
             var isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
             // Stop the previous listener.
             if (listenerCancellation != null)
@@ -516,10 +517,10 @@ namespace Makaretu.Dns
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
                 true);
-           // if (!isOsx)
-            //{
-            //    receiver.ExclusiveAddressUse = false;
-            //}
+            if (!isOsx)
+            {
+                receiver.ExclusiveAddressUse = false;
+            }
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.Bind(endpoint);
             receiver.JoinMulticastGroup(mdnsEndpoint.Address);
