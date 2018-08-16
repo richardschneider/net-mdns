@@ -8,8 +8,9 @@ os:
   - osx
 
 install:
-  - dotnet restore
+  - sudo start avahi-daemon
   - sudo lsof -i :5353
+  - dotnet restore
 
 script:
   - dotnet build -c Release --no-restore --framework netstandard2 ./src
