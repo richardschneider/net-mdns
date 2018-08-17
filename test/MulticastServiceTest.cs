@@ -458,6 +458,7 @@ namespace Makaretu.Dns
         {
             var addresses = MulticastService.GetIPAddresses().ToArray();
             Assert.AreNotEqual(0, addresses.Length);
+            Assert.IsTrue(addresses.Contains(IPAddress.Loopback) || addresses.Contains(IPAddress.IPv6Loopback));
         }
 
         [TestMethod]
