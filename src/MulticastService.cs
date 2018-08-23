@@ -517,29 +517,31 @@ namespace Makaretu.Dns
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
                 true);
-#if !NETSTANDARD14
-            if (isLinux)
-            {
-                int enable = 1;
-                Native.setsockopt(
-                    receiver.Client.Handle,
-                    SocketOptionLevel.Socket,
-                    Native.SO_REUSEADDR,
-                    ref enable, sizeof(int));
-                Native.setsockopt(
-                    receiver.Client.Handle,
-                    SocketOptionLevel.Socket,
-                    Native.SO_REUSEPORT,
-                    ref enable, sizeof(int));
-            }
-#endif
             if (!isOsx)
             {
                 receiver.ExclusiveAddressUse = false;
             }
-            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
+#if !NETSTANDARD14
+            if (isLinux)
+            {
+                int enable = 1;
+                if (Native.setsockopt(
+                    receiver.Client.Handle,
+                    SocketOptionLevel.Socket,
+                    Native.SO_REUSEADDR,
+                    ref enable, sizeof(int)) < 0)
+                    throw new Exception("Setting SO_REUSEADDR failed.");
+                if (Native.setsockopt(
+                    receiver.Client.Handle,
+                    SocketOptionLevel.Socket,
+                    Native.SO_REUSEPORT,
+                    ref enable, sizeof(int)) < 0)
+                    throw new Exception("Setting SO_REUSEPORT failed.");
+            }
+#endif
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.Bind(endpoint);
+            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
 
             var cancel = listenerCancellation.Token;
             cancel.Register(() => receiver.Dispose());
