@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard14;netstandard2;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2;netstandard14;net461</TargetFrameworks>
     <AssemblyName>Makaretu.Dns.Multicast</AssemblyName>
     <RootNamespace>Makaretu.Dns</RootNamespace>
     <DocumentationFile>Makaretu.Dns.Multicast.xml</DocumentationFile>

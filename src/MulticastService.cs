@@ -517,6 +517,22 @@ namespace Makaretu.Dns
                 SocketOptionLevel.Socket, 
                 SocketOptionName.ReuseAddress,
                 true);
+#if !NETSTANDARD14
+            if (isLinux)
+            {
+                int enable = 1;
+                Native.setsockopt(
+                    receiver.Client.Handle,
+                    SocketOptionLevel.Socket,
+                    Native.SO_REUSEADDR,
+                    ref enable, sizeof(int));
+                Native.setsockopt(
+                    receiver.Client.Handle,
+                    SocketOptionLevel.Socket,
+                    Native.SO_REUSEPORT,
+                    ref enable, sizeof(int));
+            }
+#endif
             if (!isOsx)
             {
                 receiver.ExclusiveAddressUse = false;
@@ -550,7 +566,7 @@ namespace Makaretu.Dns
             }
         }
 
-        #region IDisposable Support
+#region IDisposable Support
 
         /// <inheritdoc />
         protected virtual void Dispose(bool disposing)
@@ -567,7 +583,17 @@ namespace Makaretu.Dns
             Dispose(true);
         }
 
-        #endregion
+#endregion
 
+    }
+
+    internal static partial class Native
+    {
+        // From https://github.com/openbsd/src/blob/master/sys/sys/socket.h
+        public const int SO_REUSEADDR = 0x0004;		/* allow local address reuse */
+        public const int SO_REUSEPORT =	0x0200;		/* allow local address & port reuse */
+
+        [DllImport("System.Native", EntryPoint = "SystemNative_SetSockOpt")]
+        public static extern int setsockopt(IntPtr s, SocketOptionLevel level, int optname, ref int optval, int optlen);
     }
 }
