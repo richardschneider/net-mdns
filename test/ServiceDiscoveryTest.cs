@@ -38,7 +38,7 @@ namespace Makaretu.Dns
 
             var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(ServiceDiscovery.ServiceName, Class.IN, DnsType.PTR);
+                mdns.SendQuery(ServiceDiscovery.ServiceName, DnsClass.IN, DnsType.PTR);
             mdns.AnswerReceived += (s, e) =>
             {
                 var msg = e.Message;
@@ -70,7 +70,7 @@ namespace Makaretu.Dns
 
             var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(service.QualifiedServiceName, Class.IN, DnsType.PTR);
+                mdns.SendQuery(service.QualifiedServiceName, DnsClass.IN, DnsType.PTR);
             mdns.AnswerReceived += (s, e) =>
             {
                 var msg = e.Message;
@@ -102,7 +102,7 @@ namespace Makaretu.Dns
 
             var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(service.HostName, Class.IN, DnsType.A);
+                mdns.SendQuery(service.HostName, DnsClass.IN, DnsType.A);
             mdns.AnswerReceived += (s, e) =>
             {
                 var msg = e.Message;

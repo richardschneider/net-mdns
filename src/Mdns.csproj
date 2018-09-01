@@ -7,7 +7,7 @@
     <DocumentationFile>Makaretu.Dns.Multicast.xml</DocumentationFile>
     <DebugType>full</DebugType>
     
-    <!-- developer build is always 0.2 -->
+    <!-- developer build is always 0.42 -->
     <AssemblyVersion>0.42</AssemblyVersion>
     <Version>0.42</Version>
     
@@ -17,7 +17,7 @@
     <Title>Multicast DNS</Title>
     <Description>A simple Multicast Domain Name Service based on RFC 6762.  Can be used as both a client (sending queries) or a server (responding to queries).</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/richardschneider/net-mdns/releases</PackageReleaseNotes>
     <Copyright>© 2018 Richard Schneider</Copyright>
     <PackageTags>multicast mdns dns zeroconf</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
@@ -32,7 +32,7 @@
   <ItemGroup>
     <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="IPNetwork2" Version="2.1.2" />
-    <PackageReference Include="Makaretu.Dns" Version="0.15.0" />
+    <PackageReference Include="Makaretu.Dns" Version="0.17.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard14'">

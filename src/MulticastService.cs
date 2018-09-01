@@ -332,7 +332,7 @@ namespace Makaretu.Dns
         ///   A domain name that should end with ".local", e.g. "myservice.local".
         /// </param>
         /// <param name="klass">
-        ///   The class, defaults to <see cref="Class.IN"/>.
+        ///   The class, defaults to <see cref="DnsClass.IN"/>.
         /// </param>
         /// <param name="type">
         ///   The question type, defaults to <see cref="DnsType.ANY"/>.
@@ -344,7 +344,7 @@ namespace Makaretu.Dns
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
-        public void SendQuery(string name, Class klass = Class.IN, DnsType type = DnsType.ANY)
+        public void SendQuery(string name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
         {
             var msg = new Message
             {
