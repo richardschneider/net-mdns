@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ServiceDiscovery
+   | Multicast DNS documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ServiceDiscovery
+   | Multicast DNS documentation ">
+    <meta name="generator" content="docfx 2.39.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Makaretu.Dns.ServiceDiscovery">
+  
+  
+  <h1 id="Makaretu_Dns_ServiceDiscovery" data-uid="Makaretu.Dns.ServiceDiscovery" class="text-break">Class ServiceDiscovery
+  </h1>
+  <div class="markdown level0 summary"><p>DNS based Service Discovery is a way of using standard DNS programming interfaces, servers, 
+and packet formats to browse the network for services.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">ServiceDiscovery</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.tostring#System_Object_ToString">Object.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.equals#System_Object_Equals_System_Object_">Object.Equals(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.equals#System_Object_Equals_System_Object_System_Object_">Object.Equals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.referenceequals#System_Object_ReferenceEquals_System_Object_System_Object_">Object.ReferenceEquals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.gethashcode#System_Object_GetHashCode">Object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.gettype#System_Object_GetType">Object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object.memberwiseclone#System_Object_MemberwiseClone">Object.MemberwiseClone()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Makaretu.Dns.html">Makaretu.Dns</a></h6>
+  <h6><strong>Assembly</strong>: Makaretu.Dns.Multicast.dll</h6>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ServiceDiscovery : IDisposable</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery__ctor.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L32">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery__ctor_" data-uid="Makaretu.Dns.ServiceDiscovery.#ctor*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery__ctor" data-uid="Makaretu.Dns.ServiceDiscovery.#ctor">ServiceDiscovery()</h4>
+  <div class="markdown level1 summary"><p>Creates a new instance of the <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html">ServiceDiscovery</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceDiscovery()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery__ctor_Makaretu_Dns_MulticastService_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.%23ctor(Makaretu.Dns.MulticastService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L48">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery__ctor_" data-uid="Makaretu.Dns.ServiceDiscovery.#ctor*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery__ctor_Makaretu_Dns_MulticastService_" data-uid="Makaretu.Dns.ServiceDiscovery.#ctor(Makaretu.Dns.MulticastService)">ServiceDiscovery(MulticastService)</h4>
+  <div class="markdown level1 summary"><p>Creates a new instance of the <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html">ServiceDiscovery</a> class with
+the specified <a class="xref" href="Makaretu.Dns.MulticastService.html">MulticastService</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceDiscovery(MulticastService mdns)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Makaretu.Dns.MulticastService.html">MulticastService</a></td>
+        <td><span class="parametername">mdns</span></td>
+        <td><p>The underlaying <a class="xref" href="Makaretu.Dns.MulticastService.html">MulticastService</a> to use.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_ServiceName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.ServiceName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L25">View Source</a>
+  </span>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_ServiceName" data-uid="Makaretu.Dns.ServiceDiscovery.ServiceName">ServiceName</h4>
+  <div class="markdown level1 summary"><p>The service discovery service name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string ServiceName = &quot;_services._dns-sd._udp.local&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><p>The service name used to enumerate other services.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Mdns.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Mdns%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L58">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_Mdns_" data-uid="Makaretu.Dns.ServiceDiscovery.Mdns*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_Mdns" data-uid="Makaretu.Dns.ServiceDiscovery.Mdns">Mdns</h4>
+  <div class="markdown level1 summary"><p>Gets the multicasting service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MulticastService Mdns { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Makaretu.Dns.MulticastService.html">MulticastService</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_NameServer.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.NameServer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L66">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_NameServer_" data-uid="Makaretu.Dns.ServiceDiscovery.NameServer*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_NameServer" data-uid="Makaretu.Dns.ServiceDiscovery.NameServer">NameServer</h4>
+  <div class="markdown level1 summary"><p>Gets the name server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NameServer NameServer { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">NameServer</span></td>
+        <td><p>Is used to answer questions.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Advertise_Makaretu_Dns_ServiceProfile_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Advertise(Makaretu.Dns.ServiceProfile)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L107">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_Advertise_" data-uid="Makaretu.Dns.ServiceDiscovery.Advertise*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_Advertise_Makaretu_Dns_ServiceProfile_" data-uid="Makaretu.Dns.ServiceDiscovery.Advertise(Makaretu.Dns.ServiceProfile)">Advertise(ServiceProfile)</h4>
+  <div class="markdown level1 summary"><p>Advertise a service profile.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Advertise(ServiceProfile service)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Makaretu.Dns.ServiceProfile.html">ServiceProfile</a></td>
+        <td><span class="parametername">service</span></td>
+        <td><p>The service profile.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_Advertise_Makaretu_Dns_ServiceProfile__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Any queries for the service or service instance will be answered with
+information from the profile.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Dispose.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L183">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_Dispose_" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_Dispose" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Dispose_System_Boolean_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Dispose(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L165">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_Dispose_" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_Dispose_System_Boolean_" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose(System.Boolean)">Dispose(Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void Dispose(bool disposing)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><span class="parametername">disposing</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_QueryAllServices.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.QueryAllServices%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L92">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_QueryAllServices_" data-uid="Makaretu.Dns.ServiceDiscovery.QueryAllServices*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_QueryAllServices" data-uid="Makaretu.Dns.ServiceDiscovery.QueryAllServices">QueryAllServices()</h4>
+  <div class="markdown level1 summary"><p>Asks other MDNS services to send their service names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void QueryAllServices()</code></pre>
+  </div>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_QueryAllServices_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>When an answer is received, <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceDiscovered">ServiceDiscovered</a> is raised.</p>
+</div>
+  <h3 id="events">Events
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_ServiceDiscovered.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.ServiceDiscovered%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L84">View Source</a>
+  </span>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_ServiceDiscovered" data-uid="Makaretu.Dns.ServiceDiscovery.ServiceDiscovered">ServiceDiscovered</h4>
+  <div class="markdown level1 summary"><p>Raised when a DNS-SD response is received.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;string&gt; ServiceDiscovered</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>&gt;</td>
+        <td><p>Contains the service name.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_ServiceDiscovered_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p><strong>ServiceDiscovery</strong> passively monitors the network for any answers
+to a DNS-SD query. When an anwser is received this event is raised.
+<p>
+Use <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryAllServices">QueryAllServices()</a> to initiate a DNS-SD question.
+</p></p>
+</div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">System.IDisposable</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="https://tools.ietf.org/html/rfc6763">RFC 6763 DNS-Based Service Discovery</a></span></div>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L15" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Generated by DocFX
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
