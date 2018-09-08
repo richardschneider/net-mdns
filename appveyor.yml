@@ -31,7 +31,7 @@ environment:
 
 # tools we need for bulding/testing/deploying
 install:
-   - choco install gitversion.portable -pre -y
+   - choco install gitversion.portable -y
    - choco install docfx -y
    - npm install gh-pages -g
 
