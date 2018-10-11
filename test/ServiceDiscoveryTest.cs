@@ -163,7 +163,11 @@ namespace Makaretu.Dns
             var mdns = new MulticastService();
             var sd = new ServiceDiscovery(mdns);
 
-            mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
+            mdns.NetworkInterfaceDiscovered += (s, e) =>
+            {
+                mdns.SendQuery(service.QualifiedServiceName, DnsClass.IN, DnsType.PTR);
+            };
+
             sd.ServiceInstanceDiscovered += (s, serviceName) =>
             {
                 if (serviceName == service.FullyQualifiedName)
