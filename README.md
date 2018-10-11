@@ -53,6 +53,15 @@ var sd = new ServiceDiscovery();
 sd.ServiceDiscovered += (s, serviceName) => { // Do something };
 ```
 
+Find all service instances running on the local link.
+
+```csharp
+using Makaretu.Dns;
+
+var sd = new ServiceDiscovery();
+sd.ServiceInstanceDiscovered += (s, serviceInstanceName) => { // Do something };
+```
+
 See the [example browser](Browser/Program.cs) for a working program.
 
 ## Usage Multicast

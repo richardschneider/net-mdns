@@ -155,6 +155,34 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void Discover_AllServiceInstances()
+        {
+            var service = new ServiceProfile("x", "_sdtest-2._udp", 1024);
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns);
+
+            mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
+            sd.ServiceInstanceDiscovered += (s, serviceName) =>
+            {
+                if (serviceName == service.FullyQualifiedName)
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service);
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "DNS-SD query timeout");
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
 
     }
 }
