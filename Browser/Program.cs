@@ -33,12 +33,12 @@ namespace Browser
                 mdns.SendQuery(serviceName, type: DnsType.PTR);
             };
 
-            sd.ServiceInstanceDiscovered += (s, serviceInstanceName) =>
+            sd.ServiceInstanceDiscovered += (s, e) =>
             {
-                Console.WriteLine($"service instance '{serviceInstanceName}'");
+                Console.WriteLine($"service instance '{e.ServiceInstanceName}'");
 
                 // Ask for the service instance details.
-                mdns.SendQuery(serviceInstanceName, type: DnsType.SRV);
+                mdns.SendQuery(e.ServiceInstanceName, type: DnsType.SRV);
             };
 
             mdns.AnswerReceived += (s, e) =>
