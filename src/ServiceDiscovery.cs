@@ -103,11 +103,26 @@ namespace Makaretu.Dns
         ///    Asks other MDNS services to send their service names.
         /// </summary>
         /// <remarks>
-        ///   When an answer is received, <see cref="ServiceDiscovered"/> is raised.
+        ///   When an answer is received the <see cref="ServiceDiscovered"/> event is raised.
         /// </remarks>
         public void QueryAllServices()
         {
             Mdns.SendQuery(ServiceName, type: DnsType.PTR);
+        }
+
+        /// <summary>
+        ///   Asks instances of the specified service to send details.
+        /// </summary>
+        /// <param name="service">
+        ///   The service name to query. Typically of the form "_<i>service</i>._tcp".
+        /// </param>
+        /// <remarks>
+        ///   When an answer is received the <see cref="ServiceInstanceDiscovered"/> event is raised.
+        /// </remarks>
+        /// <seealso cref="ServiceProfile.ServiceName"/>
+        public void QueryServiceInstances(string service)
+        {
+            Mdns.SendQuery(service + ".local", type: DnsType.PTR);
         }
 
         /// <summary>

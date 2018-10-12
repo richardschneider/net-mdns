@@ -165,7 +165,7 @@ namespace Makaretu.Dns
 
             mdns.NetworkInterfaceDiscovered += (s, e) =>
             {
-                mdns.SendQuery(service.QualifiedServiceName, DnsClass.IN, DnsType.PTR);
+                sd.QueryServiceInstances(service.ServiceName);
             };
 
             sd.ServiceInstanceDiscovered += (s, e) =>
