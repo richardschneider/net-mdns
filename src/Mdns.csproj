@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard14;netstandard2;net461</TargetFrameworks>
     <AssemblyName>Makaretu.Dns.Multicast</AssemblyName>
     <RootNamespace>Makaretu.Dns</RootNamespace>
-    <DocumentationFile>Makaretu.Dns.Multicast.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <DebugType>full</DebugType>
     
     <!-- developer build is always 0.42 -->
