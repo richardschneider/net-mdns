@@ -320,6 +320,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceDiscovery.QueryAllServices
   nameWithType: ServiceDiscovery.QueryAllServices
+- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
+  name: QueryServiceInstances(String)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
+  nameWithType: ServiceDiscovery.QueryServiceInstances(String)
+- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances*
+  name: QueryServiceInstances
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_
+  commentId: Overload:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances
+  nameWithType: ServiceDiscovery.QueryServiceInstances
 - uid: Makaretu.Dns.ServiceDiscovery.ServiceDiscovered
   name: ServiceDiscovered
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceDiscovered
