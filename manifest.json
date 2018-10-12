@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MessageEventArgs.html",
-          "hash": "/Kj22AcbXe8YT3Tyt3215Q=="
+          "hash": "9vLguSqsaT0tqmFUbLnsMA=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MulticastService.html",
-          "hash": "Z1AYbx+NbJSCybZLnwk0Lg=="
+          "hash": "we2D4tz1zie6Q+l4mqirZw=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.NetworkInterfaceEventArgs.html",
-          "hash": "k+AhUQLhfZaB0y5bmIG/5w=="
+          "hash": "3WuyX3WlrTRAn4vjk846MQ=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,19 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceDiscovery.html",
-          "hash": "YbmZ3LCYiqrtHHMpP6wnYA=="
+          "hash": "TouuGg7X5j2FVJNx52v2lA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html",
+          "hash": "0PHBAzAL4I6yIkheUl1e5w=="
         }
       },
       "is_incremental": false,
@@ -57,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceProfile.html",
-          "hash": "K7R+XoRY9kr8GjYxOZBITA=="
+          "hash": "80nHGMs3voslv4jkqTHRLQ=="
         }
       },
       "is_incremental": false,
@@ -69,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.html",
-          "hash": "x/beLTP8hmdytEyEg67BRQ=="
+          "hash": "wbJPi1r0TKyrzXDBUFo6Kw=="
         }
       },
       "is_incremental": false,
@@ -81,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "SC+9cJodSzI0ZQXFP7fG0Q=="
+          "hash": "flALI6BDPSFK1o9EMaUaJA=="
         }
       },
       "is_incremental": false,
@@ -96,7 +108,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "QCgUy4CJx5lzew2zG3zyng=="
+          "hash": "//zvdzrkHwHqF+ANcdzj0Q=="
         }
       },
       "is_incremental": false,
@@ -153,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "XRW4aasiKE9nwd0ITu/7Qw=="
+          "hash": "DjBu9TAE+9pGC4vLOoUqjQ=="
         }
       },
       "is_incremental": false,
@@ -180,22 +192,22 @@
         "incrementalPhase": "build"
       },
       "processors": {
-        "ResourceDocumentProcessor": {
+        "TocDocumentProcessor": {
           "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build"
         },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
+          "incrementalPhase": "build"
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         }
       }

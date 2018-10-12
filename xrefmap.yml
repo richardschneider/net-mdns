@@ -326,12 +326,37 @@ references:
   commentId: E:Makaretu.Dns.ServiceDiscovery.ServiceDiscovered
   fullName: Makaretu.Dns.ServiceDiscovery.ServiceDiscovered
   nameWithType: ServiceDiscovery.ServiceDiscovered
+- uid: Makaretu.Dns.ServiceDiscovery.ServiceInstanceDiscovered
+  name: ServiceInstanceDiscovered
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceInstanceDiscovered
+  commentId: E:Makaretu.Dns.ServiceDiscovery.ServiceInstanceDiscovered
+  fullName: Makaretu.Dns.ServiceDiscovery.ServiceInstanceDiscovered
+  nameWithType: ServiceDiscovery.ServiceInstanceDiscovered
 - uid: Makaretu.Dns.ServiceDiscovery.ServiceName
   name: ServiceName
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceName
   commentId: F:Makaretu.Dns.ServiceDiscovery.ServiceName
   fullName: Makaretu.Dns.ServiceDiscovery.ServiceName
   nameWithType: ServiceDiscovery.ServiceName
+- uid: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs
+  name: ServiceInstanceDiscoveryEventArgs
+  href: api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html
+  commentId: T:Makaretu.Dns.ServiceInstanceDiscoveryEventArgs
+  fullName: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs
+  nameWithType: ServiceInstanceDiscoveryEventArgs
+- uid: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+  name: ServiceInstanceName
+  href: api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html#Makaretu_Dns_ServiceInstanceDiscoveryEventArgs_ServiceInstanceName
+  commentId: P:Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+  fullName: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+  nameWithType: ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+- uid: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName*
+  name: ServiceInstanceName
+  href: api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html#Makaretu_Dns_ServiceInstanceDiscoveryEventArgs_ServiceInstanceName_
+  commentId: Overload:Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+  nameWithType: ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
 - uid: Makaretu.Dns.ServiceProfile
   name: ServiceProfile
   href: api/Makaretu.Dns.ServiceProfile.html
