@@ -84,6 +84,19 @@ namespace Makaretu.Dns
         public event EventHandler<string> ServiceDiscovered;
 
         /// <summary>
+        ///   Raised when a servive instance is discovered.
+        /// </summary>
+        /// <value>
+        ///   Contains the service instance name.
+        /// </value>
+        /// <remarks>
+        ///   <b>ServiceDiscovery</b> passively monitors the network for any answers.
+        ///   When an answer containing a PTR to a service instance is received 
+        ///   this event is raised.
+        /// </remarks>
+        public event EventHandler<ServiceInstanceDiscoveryEventArgs> ServiceInstanceDiscovered;
+
+        /// <summary>
         ///    Asks other MDNS services to send their service names.
         /// </summary>
         /// <remarks>
@@ -127,12 +140,22 @@ namespace Makaretu.Dns
             var msg = e.Message;
 
             // Any DNS-SD answers?
-            var sd = msg.Answers
-                .OfType<PTRRecord>()
-                .Where(r => r.Name == ServiceName);
+            var sd = msg.Answers.OfType<PTRRecord>();
             foreach (var ptr in sd)
             {
-                ServiceDiscovered?.Invoke(this, ptr.DomainName);
+                if (ptr.Name == ServiceName)
+                {
+                    ServiceDiscovered?.Invoke(this, ptr.DomainName);
+                }
+                else
+                {
+                    var args = new ServiceInstanceDiscoveryEventArgs
+                    {
+                        ServiceInstanceName = ptr.DomainName,
+                        Message = msg
+                    };
+                    ServiceInstanceDiscovered?.Invoke(this, args);
+                }
             }
         }
 

@@ -33,18 +33,16 @@ namespace Browser
                 mdns.SendQuery(serviceName, type: DnsType.PTR);
             };
 
+            sd.ServiceInstanceDiscovered += (s, e) =>
+            {
+                Console.WriteLine($"service instance '{e.ServiceInstanceName}'");
+
+                // Ask for the service instance details.
+                mdns.SendQuery(e.ServiceInstanceName, type: DnsType.SRV);
+            };
+
             mdns.AnswerReceived += (s, e) =>
             {
-                // Is this an answer to a instances query?
-                var pointers = e.Message.Answers.OfType<PTRRecord>().Where(p => p.Name != ServiceDiscovery.ServiceName);
-                foreach (var pointer in pointers)
-                {
-                    Console.WriteLine($"service instance '{pointer.DomainName}'");
-
-                    // Ask for the service instance details.
-                    mdns.SendQuery(pointer.DomainName, type: DnsType.SRV);
-                }
-
                 // Is this an answer to a service instance details?
                 var servers = e.Message.Answers.OfType<SRVRecord>();
                 foreach (var server in servers)
