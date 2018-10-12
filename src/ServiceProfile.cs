@@ -80,10 +80,10 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
-        ///   The domain name of the service.
+        ///   The top level domain (TLD) name of the service.
         /// </summary>
         /// <value>
-        ///   Defaults to "local".
+        ///   Always "local".
         /// </value>
         public string Domain { get; } = "local";
 
@@ -115,7 +115,7 @@ namespace Makaretu.Dns
         ///   The service name and domain.
         /// </summary>
         /// <value>
-        ///   <see cref="ServiceName"/>.<see cref="Domain"/>
+        ///   Typically of the form "_<i>service</i>._tcp.local".
         /// </value>
         public string QualifiedServiceName => $"{ServiceName}.{Domain}";
 
@@ -139,18 +139,23 @@ namespace Makaretu.Dns
         /// <summary>
         ///   DNS resource records that are used to locate the service instance.
         /// </summary>
+        /// <value>
+        ///   More infomation about the service.
+        /// </value>
         /// <remarks>
         ///   All records should have the <see cref="ResourceRecord.Name"/> equal
-        ///   to the <see cref="FullyQualifiedName"/>.
+        ///   to the <see cref="FullyQualifiedName"/> or the <see cref="HostName"/>.
         ///   <para>
-        ///   At a minimum the SRV and TXT records must be present.  Typically A/AAAA
-        ///   records are also present.
+        ///   At a minimum the <see cref="SRVRecord"/> and <see cref="TXTRecord"/>
+        ///   records must be present.
+        ///   Typically <see cref="AddressRecord">address records</see>
+        ///   are also present and are associaed with <see cref="HostName"/>.
         ///   </para>
         /// </remarks>
         public List<ResourceRecord> Resources { get; set; } = new List<ResourceRecord>();
 
         /// <summary>
-        ///   Add a property of the service to the TXT record.
+        ///   Add a property of the service to the <see cref="TXTRecord"/>.
         /// </summary>
         /// <param name="key">
         ///   The name of the property.

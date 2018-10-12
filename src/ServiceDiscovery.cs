@@ -55,6 +55,9 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Gets the multicasting service.
         /// </summary>
+        /// <value>
+        ///   Is used to send and recieve multicast <see cref="Message">DNS messages</see>.
+        /// </value>
         public MulticastService Mdns { get; private set; }
 
         /// <summary>

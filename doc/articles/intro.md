@@ -8,12 +8,12 @@ It conforms to
 The above RFCs are commonly referred to as [Bonjour](https://developer.apple.com/bonjour/) or 
 [Zero Config](http://www.zeroconf.org/).
 
-The [MulticastService](xref:Makaretu.Dns.MulticastService) is used to send [DNS](https://en.wikipedia.org/wiki/Domain_Name_System)
-[queries](xref:Makaretu.Dns.MulticastService.SendQuery) and 
-[answers](xref:Makaretu.Dns.MulticastService.SendAnswer) over the link local network.
+The [MulticastService](xref:Makaretu.Dns.MulticastService) is used to send DNS
+[queries](xref:Makaretu.Dns.MulticastService.SendQuery*) and 
+[answers](xref:Makaretu.Dns.MulticastService.SendAnswer*) over the link local network.
 It also listens for DNS [Messages](xref:Makaretu.Dns.Message) and raises either the 
 [QueryReceived](xref:Makaretu.Dns.MulticastService.QueryReceived) or [AnswerReceived](xref:Makaretu.Dns.MulticastService.AnswerReceived) event.
 
 To broadcast a service, simply create a [ServiceProfile](xref:Makaretu.Dns.ServiceProfile) 
-and then [Advertise](xref:Makaretu.Dns.ServiceDiscovery.Advertise) it.  Any queries for the service or 
+and then [Advertise](xref:Makaretu.Dns.ServiceDiscovery.Advertise*) it.  Any queries for the service or 
 service instance will be answered with information from the profile.
