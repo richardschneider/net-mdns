@@ -200,7 +200,7 @@ with the specified details.</p>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_Domain_" data-uid="Makaretu.Dns.ServiceProfile.Domain*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_Domain" data-uid="Makaretu.Dns.ServiceProfile.Domain">Domain</h4>
-  <div class="markdown level1 summary"><p>The domain name of the service.</p>
+  <div class="markdown level1 summary"><p>The top level domain (TLD) name of the service.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -218,7 +218,7 @@ with the specified details.</p>
     <tbody>
       <tr>
         <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><p>Defaults to &quot;local&quot;.</p>
+        <td><p>Always &quot;local&quot;.</p>
 </td>
       </tr>
     </tbody>
@@ -349,7 +349,7 @@ of the service instance.</p>
     <tbody>
       <tr>
         <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_ServiceName">ServiceName</a>.<a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_Domain">Domain</a>
+        <td><p>Typically of the form &quot;_<em>service</em>._tcp.local&quot;.</p>
 </td>
       </tr>
     </tbody>
@@ -359,7 +359,7 @@ of the service instance.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_Resources.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.Resources%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L150">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L155">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_Resources_" data-uid="Makaretu.Dns.ServiceProfile.Resources*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_Resources" data-uid="Makaretu.Dns.ServiceProfile.Resources">Resources</h4>
@@ -381,16 +381,19 @@ of the service instance.</p>
     <tbody>
       <tr>
         <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<span class="xref">ResourceRecord</span>&gt;</td>
-        <td></td>
+        <td><p>More infomation about the service.</p>
+</td>
       </tr>
     </tbody>
   </table>
   <h5 id="Makaretu_Dns_ServiceProfile_Resources_remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>All records should have the <see cref="!:ResourceRecord.Name"></see> equal
-to the <a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_FullyQualifiedName">FullyQualifiedName</a>.
+to the <a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_FullyQualifiedName">FullyQualifiedName</a> or the <a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_HostName">HostName</a>.
 <p>
-At a minimum the SRV and TXT records must be present.  Typically A/AAAA
-records are also present.
+At a minimum the <see cref="!:SRVRecord"></see> and <see cref="!:TXTRecord"></see>
+records must be present.
+Typically <see cref="!:AddressRecord">address records</see>
+are also present and are associaed with <a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_HostName">HostName</a>.
 </p></p>
 </div>
   <span class="small pull-right mobile-hide">
@@ -440,11 +443,11 @@ protocols that run over TCP) or &quot;_udp&quot; (for all others). </p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_AddProperty_System_String_System_String_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.AddProperty(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L161">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L166">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_AddProperty_" data-uid="Makaretu.Dns.ServiceProfile.AddProperty*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_AddProperty_System_String_System_String_" data-uid="Makaretu.Dns.ServiceProfile.AddProperty(System.String,System.String)">AddProperty(String, String)</h4>
-  <div class="markdown level1 summary"><p>Add a property of the service to the TXT record.</p>
+  <div class="markdown level1 summary"><p>Add a property of the service to the <see cref="!:TXTRecord"></see>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
