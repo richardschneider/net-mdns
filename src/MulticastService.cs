@@ -320,11 +320,6 @@ namespace Makaretu.Dns
             return tsc.Task;
         }
 
-        private void MulticastService_AnswerReceived(object sender, MessageEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         ///   Ask for answers about a name.
         /// </summary>
