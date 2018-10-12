@@ -59,7 +59,7 @@ Find all service instances running on the local link.
 using Makaretu.Dns;
 
 var sd = new ServiceDiscovery();
-sd.ServiceInstanceDiscovered += (s, serviceInstanceName) => { // Do something };
+sd.ServiceInstanceDiscovered += (s, e) => { // Do something };
 ```
 
 See the [example browser](Browser/Program.cs) for a working program.
