@@ -87,7 +87,7 @@ namespace Makaretu.Dns
         public event EventHandler<MessageEventArgs> AnswerReceived;
 
         /// <summary>
-        ///   Raised when one or more network interfaces are discovered. 
+        ///   Raised when one or more network interfaces are discovered.
         /// </summary>
         /// <value>
         ///   Contains the network interface(s).
@@ -107,7 +107,7 @@ namespace Makaretu.Dns
                 throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
 
             mdnsEndpoint = new IPEndPoint(
-                ip6 ? MulticastAddressIp6 : MulticastAddressIp4, 
+                ip6 ? MulticastAddressIp6 : MulticastAddressIp4,
                 MulticastPort);
         }
 
@@ -119,7 +119,7 @@ namespace Makaretu.Dns
         /// </value>
         /// <remarks>
         ///   When the interval is reached a task is started to discover any
-        ///   new network interfaces. 
+        ///   new network interfaces.
         /// </remarks>
         /// <seealso cref="NetworkInterfaceDiscovered"/>
         public TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
@@ -158,6 +158,24 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        /// Finds the first network interface that has a matching unicast address-
+        /// </summary>
+        /// <param name="addressPattern">A part of an IPv4/IPv6 address on the network interface.</param>
+        /// <returns>a matching interface or null</returns>
+        public static NetworkInterface GetNetworkInterfaceFromPattern(string addressPattern)
+        {
+            foreach (NetworkInterface nic in GetNetworkInterfaces())
+            {
+                var unicastAddresses = nic.GetIPProperties().UnicastAddresses;
+                if (unicastAddresses.Any(ua => ua.Address.ToString().Contains(addressPattern)))
+                {
+                    return nic;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         ///   Get the link local IP addresses of the local machine.
         /// </summary>
         /// <returns>
@@ -177,14 +195,27 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Start the service.
         /// </summary>
-        public void Start()
+        /// <param name="desiredInterface">
+        /// Optional parameter to use a specific network interface.
+        /// </param>
+        public void Start(NetworkInterface desiredInterface = null)
         {
             serviceCancellation = new CancellationTokenSource();
             maxPacketSize = maxDatagramSize - packetOverhead;
             knownNics.Clear();
 
-            // Start a task to find the network interfaces.
-            PollNetworkInterfaces();
+            if (desiredInterface == null)
+            {
+                // Start a task to find the network interfaces.
+                PollNetworkInterfaces();
+            }
+            else
+            {
+                // Use only the provided network interface
+                knownNics.Add(desiredInterface);
+                RecreateSender();
+                RecreateReceiver();
+            }
         }
 
         /// <summary>
@@ -271,27 +302,61 @@ namespace Makaretu.Dns
             // If any NIC change, then get new sockets.
             if (newNics.Any() || oldNics.Any())
             {
-                // Recreate the sender
-                if (sender != null)
-                {
-                    sender.Dispose();
-                }
-                sender = new UdpClient(mdnsEndpoint.AddressFamily);
-                sender.JoinMulticastGroup(mdnsEndpoint.Address);
-                sender.MulticastLoopback = true;
-
-                // Start a task to listen for MDNS messages.
-                Listener();
+                RecreateSender();
+                RecreateReceiver();
             }
 
             // Tell others.
             if (newNics.Any())
-            { 
+            {
                 NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
                 {
                     NetworkInterfaces = newNics
                 });
             }
+        }
+
+        private void RecreateSender()
+        {
+            // Recreate the sender
+            if (sender != null)
+            {
+                sender.Dispose();
+            }
+            sender = CreateClient();
+            sender.JoinMulticastGroup(mdnsEndpoint.Address);
+            sender.MulticastLoopback = true;
+        }
+
+        private UdpClient CreateClient()
+        {
+            UdpClient client;
+
+            if (knownNics.Count == 1)
+            {
+                // get the index of the first network interface
+                int index;
+                var ipProps = knownNics[0].GetIPProperties();
+                var v4props = ipProps.GetIPv4Properties();
+                if (v4props != null)
+                {
+                    index = v4props.Index;
+                }
+                else
+                {
+                    index = ipProps.GetIPv6Properties().Index;
+                }
+
+                client = new UdpClient(mdnsEndpoint.AddressFamily);
+                client.Client.SetSocketOption(SocketOptionLevel.IP,
+                    SocketOptionName.MulticastInterface,
+                    IPAddress.HostToNetworkOrder(index));
+            }
+            else
+            {
+                client = new UdpClient(mdnsEndpoint.AddressFamily);
+            }
+            return client;
         }
 
         /// <inheritdoc />
@@ -393,7 +458,7 @@ namespace Makaretu.Dns
         ///   The <see cref="Message.AA"/> flag is set to true,
         ///   the <see cref="Message.Id"/> set to zero and any questions are removed.
         ///   <para>
-        ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see> 
+        ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see>
         ///   if exceeds the maximum packet length.
         ///   </para>
         /// </remarks>
@@ -443,7 +508,7 @@ namespace Makaretu.Dns
         ///   Decodes the <paramref name="datagram"/> and then raises
         ///   either the <see cref="QueryReceived"/> or <see cref="AnswerReceived"/> event.
         ///   <para>
-        ///   Multicast DNS messages received with an OPCODE or RCODE other than zero 
+        ///   Multicast DNS messages received with an OPCODE or RCODE other than zero
         ///   are silently ignored.
         ///   </para>
         /// </remarks>
@@ -491,7 +556,7 @@ namespace Makaretu.Dns
         ///   A background task to receive DNS messages from this and other MDNS services.  It is
         ///   cancelled via <see cref="Stop"/>.  All messages are forwarded to <see cref="OnDnsMessage"/>.
         /// </remarks>
-        async void Listener()
+        async void RecreateReceiver()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
@@ -502,13 +567,14 @@ namespace Makaretu.Dns
             }
 
             listenerCancellation = new CancellationTokenSource();
-            UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
+            UdpClient receiver = CreateClient();
+
             if (isWindows)
             {
                 receiver.ExclusiveAddressUse = false;
             }
             receiver.Client.SetSocketOption(
-                SocketOptionLevel.Socket, 
+                SocketOptionLevel.Socket,
                 SocketOptionName.ReuseAddress,
                 true);
             if (isWindows)
