@@ -175,6 +175,26 @@ namespace Makaretu.Dns
             return null;
         }
 
+        private static void RestrictToNetworkInterface(UdpClient client, NetworkInterface nic)
+        {
+            // get the index of the first network interface
+            int index;
+            var ipProps = nic.GetIPProperties();
+            var v4props = ipProps.GetIPv4Properties();
+            if (v4props != null)
+            {
+                index = v4props.Index;
+            }
+            else
+            {
+                index = ipProps.GetIPv6Properties().Index;
+            }
+
+            client.Client.SetSocketOption(SocketOptionLevel.IP,
+                SocketOptionName.MulticastInterface,
+                IPAddress.HostToNetworkOrder(index));
+        }
+
         /// <summary>
         ///   Get the link local IP addresses of the local machine.
         /// </summary>
@@ -323,40 +343,13 @@ namespace Makaretu.Dns
             {
                 sender.Dispose();
             }
-            sender = CreateClient();
-            sender.JoinMulticastGroup(mdnsEndpoint.Address);
-            sender.MulticastLoopback = true;
-        }
-
-        private UdpClient CreateClient()
-        {
-            UdpClient client;
-
+            sender = new UdpClient(mdnsEndpoint.AddressFamily);
             if (knownNics.Count == 1)
             {
-                // get the index of the first network interface
-                int index;
-                var ipProps = knownNics[0].GetIPProperties();
-                var v4props = ipProps.GetIPv4Properties();
-                if (v4props != null)
-                {
-                    index = v4props.Index;
-                }
-                else
-                {
-                    index = ipProps.GetIPv6Properties().Index;
-                }
-
-                client = new UdpClient(mdnsEndpoint.AddressFamily);
-                client.Client.SetSocketOption(SocketOptionLevel.IP,
-                    SocketOptionName.MulticastInterface,
-                    IPAddress.HostToNetworkOrder(index));
+                RestrictToNetworkInterface(sender, knownNics.First());
             }
-            else
-            {
-                client = new UdpClient(mdnsEndpoint.AddressFamily);
-            }
-            return client;
+            sender.JoinMulticastGroup(mdnsEndpoint.Address);
+            sender.MulticastLoopback = true;
         }
 
         /// <inheritdoc />
@@ -567,7 +560,11 @@ namespace Makaretu.Dns
             }
 
             listenerCancellation = new CancellationTokenSource();
-            UdpClient receiver = CreateClient();
+            UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
+            if (knownNics.Count == 1)
+            {
+                RestrictToNetworkInterface(sender, knownNics.First());
+            }
 
             if (isWindows)
             {
