@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Makaretu.Dns
 {
-    
+
     [TestClass]
     public class MulticastServiceTest
     {
@@ -39,7 +39,7 @@ namespace Makaretu.Dns
 
             var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
-            mdns.QueryReceived += (s, e) => 
+            mdns.QueryReceived += (s, e) =>
             {
                 msg = e.Message;
                 done.Set();
@@ -276,6 +276,19 @@ namespace Makaretu.Dns
         {
             var addresses = MulticastService.GetIPAddresses().ToArray();
             Assert.AreNotEqual(0, addresses.Length);
+        }
+
+
+        [TestMethod]
+        public void NicFromPattern()
+        {
+            var addresses = MulticastService.GetIPAddresses().ToArray();
+            foreach (var address in addresses)
+            {
+                string pattern = address.ToString();
+                var nic = MulticastService.GetNetworkInterfaceFromPattern(pattern);
+                Assert.IsNotNull(nic);
+            }
         }
 
         [TestMethod]
