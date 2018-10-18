@@ -160,14 +160,14 @@ namespace Makaretu.Dns
         /// <summary>
         /// Finds the first network interface that has a matching unicast address-
         /// </summary>
-        /// <param name="addressPattern">A part of an IPv4/IPv6 address on the network interface.</param>
+        /// <param name="addressPattern">Full, or beginning of an IPv4/IPv6 address on the network interface.</param>
         /// <returns>a matching interface or null</returns>
         public static NetworkInterface GetNetworkInterfaceFromPattern(string addressPattern)
         {
             foreach (NetworkInterface nic in GetNetworkInterfaces())
             {
                 var unicastAddresses = nic.GetIPProperties().UnicastAddresses;
-                if (unicastAddresses.Any(ua => ua.Address.ToString().Contains(addressPattern)))
+                if (unicastAddresses.Any(ua => ua.Address.ToString().StartsWith(addressPattern)))
                 {
                     return nic;
                 }
