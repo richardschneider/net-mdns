@@ -30,6 +30,26 @@ namespace Makaretu.Dns
             mdns.Stop();
         }
 
+        /// <summary>
+        /// Tests the create/start/stop of the MulticastService for every available IP address.
+        /// </summary>
+        [TestMethod]
+        public void StartStop_SingleInterface()
+        {
+            var addresses = MulticastService.GetIPAddresses().ToArray();
+            foreach (var address in addresses)
+            {
+                string pattern = address.ToString();
+                if (pattern.Contains('.'))
+                    pattern = pattern.Substring(0, pattern.LastIndexOf('.')) + ".0/24";
+                var nic = MulticastService.GetNetworkInterfaceFromCIDR(pattern);
+                var mdns = new MulticastService(nic);
+                Assert.IsTrue(mdns.IsUsingSingleInterface);
+                mdns.Start();
+                mdns.Stop();
+            }
+        }
+
         [TestMethod]
         public void SendQuery()
         {
@@ -277,7 +297,6 @@ namespace Makaretu.Dns
             var addresses = MulticastService.GetIPAddresses().ToArray();
             Assert.AreNotEqual(0, addresses.Length);
         }
-
 
         [TestMethod]
         public void NicFromPattern()
