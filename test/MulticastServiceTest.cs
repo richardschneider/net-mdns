@@ -286,7 +286,9 @@ namespace Makaretu.Dns
             foreach (var address in addresses)
             {
                 string pattern = address.ToString();
-                var nic = MulticastService.GetNetworkInterfaceFromPattern(pattern);
+                if (pattern.Contains('.'))
+                    pattern = pattern.Substring(0, pattern.LastIndexOf('.')) + ".0/24";
+                var nic = MulticastService.GetNetworkInterfaceFromCIDR(pattern);
                 Assert.IsNotNull(nic);
             }
         }

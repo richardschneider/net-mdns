@@ -160,16 +160,32 @@ namespace Makaretu.Dns
         /// <summary>
         /// Finds the first network interface that has a matching unicast address-
         /// </summary>
-        /// <param name="addressPattern">Full, or beginning of an IPv4/IPv6 address on the network interface.</param>
+        /// <param name="mask">IPv4/IPv6 address or CIDR mask.</param>
         /// <returns>a matching interface or null</returns>
-        public static NetworkInterface GetNetworkInterfaceFromPattern(string addressPattern)
+        public static NetworkInterface GetNetworkInterfaceFromCIDR(string mask)
         {
-            foreach (NetworkInterface nic in GetNetworkInterfaces())
+            if (mask.Contains('/'))
             {
-                var unicastAddresses = nic.GetIPProperties().UnicastAddresses;
-                if (unicastAddresses.Any(ua => ua.Address.ToString().StartsWith(addressPattern)))
+                IPNetwork ipnetwork = IPNetwork.Parse(mask);
+                foreach (NetworkInterface nic in GetNetworkInterfaces())
                 {
-                    return nic;
+                    var unicastAddresses = nic.GetIPProperties().UnicastAddresses;
+                    if (unicastAddresses.Any(ua => ipnetwork.Contains(ua.Address)))
+                    {
+                        return nic;
+                    }
+                }
+            }
+            else
+            {
+                var address = IPAddress.Parse(mask);
+                foreach (NetworkInterface nic in GetNetworkInterfaces())
+                {
+                    var unicastAddresses = nic.GetIPProperties().UnicastAddresses;
+                    if (unicastAddresses.Select(ua => ua.Address).Contains(address))
+                    {
+                        return nic;
+                    }
                 }
             }
             return null;
