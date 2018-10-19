@@ -95,9 +95,18 @@ namespace Makaretu.Dns
         public event EventHandler<NetworkInterfaceEventArgs> NetworkInterfaceDiscovered;
 
         /// <summary>
+        /// Indicates if the service is running on a specific, single interface (True),
+        /// or using interface discovery (False).
+        /// </summary>
+        public bool IsUsingSingleInterface { get; private set; }
+
+        /// <summary>
         ///   Create a new instance of the <see cref="MulticastService"/> class.
         /// </summary>
-        public MulticastService()
+        /// <param name="desiredInterface">
+        /// Optional parameter to use a specific network interface.
+        /// </param>
+        public MulticastService(NetworkInterface desiredInterface = null)
         {
             if (Socket.OSSupportsIPv4)
                 ip6 = false;
@@ -105,6 +114,12 @@ namespace Makaretu.Dns
                 ip6 = true;
             else
                 throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
+
+            if (desiredInterface != null)
+            {
+                IsUsingSingleInterface = true;
+                knownNics.Add(desiredInterface);
+            }
 
             mdnsEndpoint = new IPEndPoint(
                 ip6 ? MulticastAddressIp6 : MulticastAddressIp4,
@@ -231,26 +246,22 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Start the service.
         /// </summary>
-        /// <param name="desiredInterface">
-        /// Optional parameter to use a specific network interface.
-        /// </param>
-        public void Start(NetworkInterface desiredInterface = null)
+        public void Start()
         {
             serviceCancellation = new CancellationTokenSource();
             maxPacketSize = maxDatagramSize - packetOverhead;
-            knownNics.Clear();
 
-            if (desiredInterface == null)
+            if (IsUsingSingleInterface)
             {
-                // Start a task to find the network interfaces.
-                PollNetworkInterfaces();
+                // Open receiver/client on the single known NIC
+                RecreateSender();
+                RecreateReceiver();
             }
             else
             {
-                // Use only the provided network interface
-                knownNics.Add(desiredInterface);
-                RecreateSender();
-                RecreateReceiver();
+                knownNics.Clear();
+                // Start a task to find the network interfaces.
+                PollNetworkInterfaces();
             }
         }
 
@@ -360,7 +371,7 @@ namespace Makaretu.Dns
                 sender.Dispose();
             }
             sender = new UdpClient(mdnsEndpoint.AddressFamily);
-            if (knownNics.Count == 1)
+            if (IsUsingSingleInterface)
             {
                 RestrictToNetworkInterface(sender, knownNics.First());
             }
@@ -577,7 +588,7 @@ namespace Makaretu.Dns
 
             listenerCancellation = new CancellationTokenSource();
             UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
-            if (knownNics.Count == 1)
+            if (IsUsingSingleInterface)
             {
                 RestrictToNetworkInterface(sender, knownNics.First());
             }
