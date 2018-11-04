@@ -327,7 +327,7 @@ namespace Makaretu.Dns
             cancel.Register(() =>
             {
                 AnswerReceived -= checkResponse;
-                tsc.SetCanceled();
+                tsc.TrySetCanceled();
             });
 
             AnswerReceived += checkResponse;
