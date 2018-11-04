@@ -189,5 +189,45 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void Discover_ServiceInstance_WithAnswersContainingAdditionRecords()
+        {
+            var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns)
+            {
+                AnswersContainsAdditionalRecords = true
+            };
+            Message discovered = null;
+            mdns.NetworkInterfaceDiscovered += (s, e) =>
+            {
+                sd.QueryServiceInstances(service.ServiceName);
+            };
+
+            sd.ServiceInstanceDiscovered += (s, e) =>
+            {
+                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                {
+                    Assert.IsNotNull(e.Message);
+                    discovered = e.Message;
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service);
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
+                Assert.AreEqual(0, discovered.AdditionalRecords.Count);
+                Assert.IsTrue(discovered.Answers.Count > 1);
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
+
     }
 }

@@ -61,6 +61,20 @@ namespace Makaretu.Dns
         public MulticastService Mdns { get; private set; }
 
         /// <summary>
+        ///   Add the additional records into the answers.
+        /// </summary>
+        /// <value>
+        ///   Defaults to <b>false</b>.
+        /// </value>
+        /// <remarks>
+        ///   Some malformed systems, such as js-ipfs and go-ipfs, only examine
+        ///   the <see cref="Message.Answers"/> and not the <see cref="Message.AdditionalRecords"/>.
+        ///   Setting this to <b>true</b>, will move the additional records
+        ///   into the answers.
+        /// </remarks>
+        public bool AnswersContainsAdditionalRecords { get; set; }
+
+        /// <summary>
         ///   Gets the name server.
         /// </summary>
         /// <value>
@@ -190,6 +204,12 @@ namespace Makaretu.Dns
                 // with additional records.
                 if (response.Answers.Any(a => a.Name == ServiceName))
                 {
+                    response.AdditionalRecords.Clear();
+                }
+
+                if (AnswersContainsAdditionalRecords)
+                {
+                    response.Answers.AddRange(response.AdditionalRecords);
                     response.AdditionalRecords.Clear();
                 }
 
