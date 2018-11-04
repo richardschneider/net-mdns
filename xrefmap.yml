@@ -262,6 +262,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceDiscovery.Advertise
   nameWithType: ServiceDiscovery.Advertise
+- uid: Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords
+  name: AnswersContainsAdditionalRecords
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_AnswersContainsAdditionalRecords
+  commentId: P:Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords
+  fullName: Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords
+  nameWithType: ServiceDiscovery.AnswersContainsAdditionalRecords
+- uid: Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords*
+  name: AnswersContainsAdditionalRecords
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_AnswersContainsAdditionalRecords_
+  commentId: Overload:Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords
+  nameWithType: ServiceDiscovery.AnswersContainsAdditionalRecords
 - uid: Makaretu.Dns.ServiceDiscovery.Dispose
   name: Dispose()
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Dispose
