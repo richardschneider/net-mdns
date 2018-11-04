@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -8,6 +9,8 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Makaretu.Dns
 {
@@ -46,6 +49,19 @@ namespace Makaretu.Dns
         readonly bool ip6;
         IPEndPoint mdnsEndpoint;
         int maxPacketSize;
+
+        /// <summary>
+        ///   Recently sent messages.
+        /// </summary>
+        /// <value>
+        ///   The key is the MD5 hash of the <see cref="Message"/> and the
+        ///   value is when the message was sent.
+        /// </value>
+        /// <remarks>
+        ///   This is used to avoid floding of responses as per
+        ///   <see href="https://github.com/richardschneider/net-mdns/issues/18"/>
+        /// </remarks>
+        ConcurrentDictionary<string, DateTime> sentMessages = new ConcurrentDictionary<string, DateTime>();
 
         /// <summary>
         ///   Set the default TTLs.
@@ -374,7 +390,7 @@ namespace Makaretu.Dns
         /// </exception>
         public void SendQuery(Message msg)
         {
-            Send(msg);
+            Send(msg, checkDuplicate: false);
         }
 
         /// <summary>
@@ -382,6 +398,10 @@ namespace Makaretu.Dns
         /// </summary>
         /// <param name="answer">
         ///   The answer message.
+        /// </param>
+        /// <param name="checkDuplicate">
+        ///   If <b>true</b>, then if the same <paramref name="answer"/> was
+        ///   recently sent it will not be sent again.
         /// </param>
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
@@ -396,10 +416,14 @@ namespace Makaretu.Dns
         ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see> 
         ///   if exceeds the maximum packet length.
         ///   </para>
+        ///   <para>
+        ///   <paramref name="checkDuplicate"/> should always be <b>true</b> except
+        ///   when <see href="https://tools.ietf.org/html/rfc6762#section-8.1">answering a probe</see>.
+        ///   </para>
         /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
-        public void SendAnswer(Message answer)
+        public void SendAnswer(Message answer, bool checkDuplicate = true)
         {
             // All MDNS answers are authoritative and have a transaction
             // ID of zero.
@@ -411,15 +435,45 @@ namespace Makaretu.Dns
 
             answer.Truncate(maxPacketSize);
 
-            Send(answer);
+            Send(answer, checkDuplicate);
         }
 
-        void Send(Message msg)
+        void Send(Message msg, bool checkDuplicate)
         {
             var packet = msg.ToByteArray();
             if (packet.Length > maxPacketSize)
             {
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
+            }
+
+            // Get the hash of the packet.  MD5 is okay because
+            // the hash is not used for security.
+            string hash;
+            using (var md5 = MD5.Create())
+            {
+                var bytes = md5.ComputeHash(packet);
+                // TODO: there must be a more efficient way.
+                var s = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    s.Append(bytes[i].ToString("x2"));
+                }
+                hash = s.ToString();
+            }
+
+            // Prune the sent messages.  Anything older than a second ago
+            // is removed.
+            var now = DateTime.Now;
+            var dead = now.AddSeconds(-1);
+            foreach (var notrecent in sentMessages.Where(x => x.Value < dead))
+            {
+                sentMessages.TryRemove(notrecent.Key, out DateTime _);
+            }
+
+            // If messsage was recently sent, then do not send again.
+            if (checkDuplicate && sentMessages.ContainsKey(hash))
+            {
+                return;
             }
 
             lock (senderLock)
@@ -428,6 +482,8 @@ namespace Makaretu.Dns
                     throw new InvalidOperationException("MDNS is not started");
                 sender.SendAsync(packet, packet.Length, mdnsEndpoint).Wait();
             }
+
+            sentMessages.AddOrUpdate(hash, DateTime.Now, (key, value) => value);
         }
 
         /// <summary>

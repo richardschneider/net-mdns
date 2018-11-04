@@ -345,6 +345,89 @@ namespace Makaretu.Dns
                 });
             }
         }
+        [TestMethod]
+        public async Task DuplicateResponse()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+
+            using (var mdns = new MulticastService())
+            {
+                var answerCount = 0;
+                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                {
+                    mdns.SendQuery(service);
+                    await Task.Delay(250);
+                    mdns.SendQuery(service);
+                };
+                mdns.QueryReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
+                    {
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("127.1.1.1")
+                        });
+                        mdns.SendAnswer(res);
+                    }
+                };
+                mdns.AnswerReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Answers.Any(answer => answer.Name == service))
+                    {
+                        ++answerCount;
+                    };
+                };
+                mdns.Start();
+                await Task.Delay(1000);
+                Assert.AreEqual(1, answerCount);
+            }
+        }
+
+        [TestMethod]
+        public async Task NoDuplicateResponse()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+
+            using (var mdns = new MulticastService())
+            {
+                var answerCount = 0;
+                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                {
+                    mdns.SendQuery(service);
+                    await Task.Delay(250);
+                    mdns.SendQuery(service);
+                };
+                mdns.QueryReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
+                    {
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("127.1.1.1")
+                        });
+                        mdns.SendAnswer(res, checkDuplicate: false);
+                    }
+                };
+                mdns.AnswerReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Answers.Any(answer => answer.Name == service))
+                    {
+                        ++answerCount;
+                    };
+                };
+                mdns.Start();
+                await Task.Delay(1000);
+                Assert.AreEqual(2, answerCount);
+            }
+        }
 
     }
 }
