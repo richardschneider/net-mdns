@@ -134,11 +134,11 @@ references:
   commentId: E:Makaretu.Dns.MulticastService.QueryReceived
   fullName: Makaretu.Dns.MulticastService.QueryReceived
   nameWithType: MulticastService.QueryReceived
-- uid: Makaretu.Dns.MulticastService.ResolveAsync(Message,System.Threading.CancellationToken)
+- uid: Makaretu.Dns.MulticastService.ResolveAsync(Message,CancellationToken)
   name: ResolveAsync(Message, CancellationToken)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_ResolveAsync_Message_System_Threading_CancellationToken_
-  commentId: M:Makaretu.Dns.MulticastService.ResolveAsync(Message,System.Threading.CancellationToken)
-  fullName: Makaretu.Dns.MulticastService.ResolveAsync(Message, System.Threading.CancellationToken)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_ResolveAsync_Message_CancellationToken_
+  commentId: M:Makaretu.Dns.MulticastService.ResolveAsync(Message,CancellationToken)
+  fullName: Makaretu.Dns.MulticastService.ResolveAsync(Message, CancellationToken)
   nameWithType: MulticastService.ResolveAsync(Message, CancellationToken)
 - uid: Makaretu.Dns.MulticastService.ResolveAsync*
   name: ResolveAsync
@@ -395,13 +395,13 @@ references:
   commentId: M:Makaretu.Dns.ServiceProfile.#ctor
   fullName: Makaretu.Dns.ServiceProfile.ServiceProfile()
   nameWithType: ServiceProfile.ServiceProfile()
-- uid: Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})
+- uid: Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,IEnumerable{IPAddress})
   name: ServiceProfile(String, String, UInt16, IEnumerable<IPAddress>)
-  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile__ctor_System_String_System_String_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__
-  commentId: M:Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile__ctor_System_String_System_String_System_UInt16_IEnumerable_IPAddress__
+  commentId: M:Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,IEnumerable{IPAddress})
   name.vb: ServiceProfile(String, String, UInt16, IEnumerable(Of IPAddress))
-  fullName: Makaretu.Dns.ServiceProfile.ServiceProfile(System.String, System.String, System.UInt16, System.Collections.Generic.IEnumerable<System.Net.IPAddress>)
-  fullName.vb: Makaretu.Dns.ServiceProfile.ServiceProfile(System.String, System.String, System.UInt16, System.Collections.Generic.IEnumerable(Of System.Net.IPAddress))
+  fullName: Makaretu.Dns.ServiceProfile.ServiceProfile(System.String, System.String, System.UInt16, IEnumerable<IPAddress>)
+  fullName.vb: Makaretu.Dns.ServiceProfile.ServiceProfile(System.String, System.String, System.UInt16, IEnumerable(Of IPAddress))
   nameWithType: ServiceProfile.ServiceProfile(String, String, UInt16, IEnumerable<IPAddress>)
   nameWithType.vb: ServiceProfile.ServiceProfile(String, String, UInt16, IEnumerable(Of IPAddress))
 - uid: Makaretu.Dns.ServiceProfile.#ctor*

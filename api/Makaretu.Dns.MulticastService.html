@@ -83,7 +83,7 @@
   </div>
   <div classs="implements">
     <h5>Implements</h5>
-    <div><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    <div><span class="xref">IDisposable</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Makaretu.Dns.html">Makaretu.Dns</a></h6>
   <h6><strong>Assembly</strong>: Makaretu.Dns.Multicast.dll</h6>
@@ -146,7 +146,7 @@ raised when a <see cref="!:Message"></see> is received.
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></td>
+        <td><span class="xref">TimeSpan</span></td>
         <td><p>Default is 2 minutes.</p>
 </td>
       </tr>
@@ -235,7 +235,7 @@ new network interfaces. </p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.net.ipaddress">IPAddress</a>&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">IPAddress</span>&gt;</td>
         <td><p>A sequence of IP addresses of the local machine.</p>
 </td>
       </tr>
@@ -267,7 +267,7 @@ new network interfaces. </p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.net.ipaddress">IPAddress</a>&gt;</td>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">IPAddress</span>&gt;</td>
         <td><p>A sequence of IP addresses.</p>
 </td>
       </tr>
@@ -306,8 +306,8 @@ new network interfaces. </p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.net.networkinformation.networkinterface">NetworkInterface</a>&gt;</td>
-        <td><p>A sequence of <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.net.networkinformation.networkinterface">NetworkInterface</a>.</p>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">NetworkInterface</span>&gt;</td>
+        <td><p>A sequence of <see cref="!:NetworkInterface"></see>.</p>
 </td>
       </tr>
     </tbody>
@@ -318,18 +318,18 @@ new network interfaces. </p>
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_ResolveAsync_Message_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.ResolveAsync(Message%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_ResolveAsync_Message_CancellationToken_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.ResolveAsync(Message%2CCancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L314">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_ResolveAsync_" data-uid="Makaretu.Dns.MulticastService.ResolveAsync*"></a>
-  <h4 id="Makaretu_Dns_MulticastService_ResolveAsync_Message_System_Threading_CancellationToken_" data-uid="Makaretu.Dns.MulticastService.ResolveAsync(Message,System.Threading.CancellationToken)">ResolveAsync(Message, CancellationToken)</h4>
+  <h4 id="Makaretu_Dns_MulticastService_ResolveAsync_Message_CancellationToken_" data-uid="Makaretu.Dns.MulticastService.ResolveAsync(Message,CancellationToken)">ResolveAsync(Message, CancellationToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Message&gt; ResolveAsync(Message request, CancellationToken cancel = default(CancellationToken))</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Message&gt; ResolveAsync(Message request, CancellationToken cancel = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -347,7 +347,7 @@ new network interfaces. </p>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="xref">CancellationToken</span></td>
         <td><span class="parametername">cancel</span></td>
         <td></td>
       </tr>
@@ -363,7 +363,7 @@ new network interfaces. </p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<span class="xref">Message</span>&gt;</td>
+        <td><span class="xref">Task</span>&lt;<span class="xref">Message</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -421,27 +421,6 @@ if exceeds the maximum packet length.
 when <a href="https://tools.ietf.org/html/rfc6762#section-8.1">answering a probe</a>.
 </p></p>
 </div>
-  <h5 class="exceptions">Exceptions</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
-        <td><p>When the service has not started.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
-        <td><p>When the serialised <code data-dev-comment-type="paramref" class="paramref">answer</code> is too large.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_Message_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(Message)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -480,27 +459,6 @@ when <a href="https://tools.ietf.org/html/rfc6762#section-8.1">answering a probe
   <div class="markdown level1 remarks"><p>Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
 event.</p>
 </div>
-  <h5 class="exceptions">Exceptions</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
-        <td><p>When the service has not started.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
-        <td><p>When the serialised <code data-dev-comment-type="paramref" class="paramref">msg</code> is too large.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_System_String_DnsClass_DnsType_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(System.String%2CDnsClass%2CDnsType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -551,22 +509,6 @@ event.</p>
   <div class="markdown level1 remarks"><p>Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
 event.</p>
 </div>
-  <h5 class="exceptions">Exceptions</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
-        <td><p>When the service has not started.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_Start.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.Start%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -629,7 +571,7 @@ event.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="Makaretu.Dns.MessageEventArgs.html">MessageEventArgs</a>&gt;</td>
+        <td><span class="xref">EventHandler</span>&lt;<a class="xref" href="Makaretu.Dns.MessageEventArgs.html">MessageEventArgs</a>&gt;</td>
         <td><p>Contains the answer <see cref="!:Message"></see>.</p>
 </td>
       </tr>
@@ -660,7 +602,7 @@ event.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="Makaretu.Dns.NetworkInterfaceEventArgs.html">NetworkInterfaceEventArgs</a>&gt;</td>
+        <td><span class="xref">EventHandler</span>&lt;<a class="xref" href="Makaretu.Dns.NetworkInterfaceEventArgs.html">NetworkInterfaceEventArgs</a>&gt;</td>
         <td><p>Contains the network interface(s).</p>
 </td>
       </tr>
@@ -691,7 +633,7 @@ event.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.eventhandler-1">EventHandler</a>&lt;<a class="xref" href="Makaretu.Dns.MessageEventArgs.html">MessageEventArgs</a>&gt;</td>
+        <td><span class="xref">EventHandler</span>&lt;<a class="xref" href="Makaretu.Dns.MessageEventArgs.html">MessageEventArgs</a>&gt;</td>
         <td><p>Contains the query <see cref="!:Message"></see>.</p>
 </td>
       </tr>
@@ -703,7 +645,7 @@ event.</p>
   </div>
   <h3 id="implements">Implements</h3>
   <div>
-      <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.idisposable">System.IDisposable</a>
+      <span class="xref">IDisposable</span>
   </div>
 </article>
           </div>
