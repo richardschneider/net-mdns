@@ -1,17 +1,11 @@
-﻿using Makaretu.Dns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Makaretu.Dns
 {
-    
     [TestClass]
     public class ServiceDiscoveryTest
     {
@@ -33,32 +27,28 @@ namespace Makaretu.Dns
         [TestMethod]
         public void Advertises_Service()
         {
-            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new [] { IPAddress.Loopback });
+            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(ServiceDiscovery.ServiceName, DnsClass.IN, DnsType.PTR);
-            mdns.AnswerReceived += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns))
             {
-                var msg = e.Message;
-                if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.QualifiedServiceName))
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(ServiceDiscovery.ServiceName, DnsClass.IN, DnsType.PTR);
+
+                mdns.AnswerReceived += (s, e) =>
                 {
-                    done.Set();
-                }
-            };
-            try
-            {
-                using (var sd = new ServiceDiscovery(mdns))
-                {
-                    sd.Advertise(service);
-                    mdns.Start();                 
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
-                }
-            }
-            finally
-            {
-                mdns.Stop();
+                    var msg = e.Message;
+                    if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.QualifiedServiceName))
+                    {
+                        done.Set();
+                    }
+                };
+
+                sd.Advertise(service);
+
+                mdns.Start();
+
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
             }
         }
 
@@ -68,29 +58,25 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(service.QualifiedServiceName, DnsClass.IN, DnsType.PTR);
-            mdns.AnswerReceived += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns))
             {
-                var msg = e.Message;
-                if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.FullyQualifiedName))
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service.QualifiedServiceName, DnsClass.IN, DnsType.PTR);
+
+                mdns.AnswerReceived += (s, e) =>
                 {
-                    done.Set();
-                }
-            };
-            try
-            {
-                using (var sd = new ServiceDiscovery(mdns))
-                {
-                    sd.Advertise(service);
-                    mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
-                }
-            }
-            finally
-            {
-                mdns.Stop();
+                    var msg = e.Message;
+                    if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.FullyQualifiedName))
+                    {
+                        done.Set();
+                    }
+                };
+
+                sd.Advertise(service);
+
+                mdns.Start();
+
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
             }
         }
 
@@ -100,29 +86,25 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("x2", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(service.HostName, DnsClass.IN, DnsType.A);
-            mdns.AnswerReceived += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns))
             {
-                var msg = e.Message;
-                if (msg.Answers.OfType<ARecord>().Any(p => p.Name == service.HostName))
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service.HostName, DnsClass.IN, DnsType.A);
+
+                mdns.AnswerReceived += (s, e) =>
                 {
-                    done.Set();
-                }
-            };
-            try
-            {
-                using (var sd = new ServiceDiscovery(mdns))
-                {
-                    sd.Advertise(service);
-                    mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
-                }
-            }
-            finally
-            {
-                mdns.Stop();
+                    var msg = e.Message;
+                    if (msg.Answers.OfType<ARecord>().Any(p => p.Name == service.HostName))
+                    {
+                        done.Set();
+                    }
+                };
+
+                sd.Advertise(service);
+
+                mdns.Start();
+
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
             }
         }
 
@@ -131,27 +113,25 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("x", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
-            var sd = new ServiceDiscovery(mdns);
-            
-            mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
-            sd.ServiceDiscovered += (s, serviceName) =>
+
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns))
             {
-                if (serviceName == service.QualifiedServiceName)
+                mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
+
+                sd.ServiceDiscovered += (s, serviceName) =>
                 {
-                    done.Set();
-                }
-            };
-            try
-            {
+                    if (serviceName == service.QualifiedServiceName)
+                    {
+                        done.Set();
+                    }
+                };
+
                 sd.Advertise(service);
+
                 mdns.Start();
+
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "DNS-SD query timeout");
-            }
-            finally
-            {
-                sd.Dispose();
-                mdns.Stop();
             }
         }
 
@@ -160,32 +140,27 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
-            var sd = new ServiceDiscovery(mdns);
 
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns))
             {
-                sd.QueryServiceInstances(service.ServiceName);
-            };
 
-            sd.ServiceInstanceDiscovered += (s, e) =>
-            {
-                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryServiceInstances(service.ServiceName);
+
+                sd.ServiceInstanceDiscovered += (s, e) =>
                 {
-                    Assert.IsNotNull(e.Message);
-                    done.Set();
-                }
-            };
-            try
-            {
+                    if (e.ServiceInstanceName == service.FullyQualifiedName)
+                    {
+                        Assert.IsNotNull(e.Message);
+                        done.Set();
+                    }
+                };
+
                 sd.Advertise(service);
+
                 mdns.Start();
+
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
-            }
-            finally
-            {
-                sd.Dispose();
-                mdns.Stop();
             }
         }
 
@@ -194,40 +169,35 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
-            var sd = new ServiceDiscovery(mdns)
-            {
-                AnswersContainsAdditionalRecords = true
-            };
-            Message discovered = null;
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-            {
-                sd.QueryServiceInstances(service.ServiceName);
-            };
 
-            sd.ServiceInstanceDiscovered += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns) { AnswersContainsAdditionalRecords = true })
             {
-                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                Message discovered = null;
+
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
-                    Assert.IsNotNull(e.Message);
-                    discovered = e.Message;
-                    done.Set();
-                }
-            };
-            try
-            {
+                    sd.QueryServiceInstances(service.ServiceName);
+                };
+
+                sd.ServiceInstanceDiscovered += (s, e) =>
+                {
+                    if (e.ServiceInstanceName == service.FullyQualifiedName)
+                    {
+                        Assert.IsNotNull(e.Message);
+                        discovered = e.Message;
+                        done.Set();
+                    }
+                };
+
                 sd.Advertise(service);
+
                 mdns.Start();
+
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
-                Assert.AreEqual(0, discovered.AdditionalRecords.Count);
                 Assert.IsTrue(discovered.Answers.Count > 1);
-            }
-            finally
-            {
-                sd.Dispose();
-                mdns.Stop();
+                Assert.AreEqual(discovered.Answers.Count - 1, discovered.AdditionalRecords.Count);
             }
         }
-
     }
 }

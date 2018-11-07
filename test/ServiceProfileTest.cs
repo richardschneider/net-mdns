@@ -1,17 +1,10 @@
-﻿using Makaretu.Dns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Makaretu.Dns
 {
-    
     [TestClass]
     public class ServiveProfileTest
     {
@@ -25,7 +18,7 @@ namespace Makaretu.Dns
         [TestMethod]
         public void QualifiedNames()
         {
-            var service = new ServiceProfile("x", "_sdtest._udp", 1024, new [] { IPAddress.Loopback });
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024, new[] { IPAddress.Loopback });
 
             Assert.AreEqual("_sdtest._udp.local", service.QualifiedServiceName);
             Assert.AreEqual("x._sdtest._udp.local", service.FullyQualifiedName);
@@ -67,7 +60,7 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("x", "_sdtest._udp", 1024);
             var txt = service.Resources.OfType<TXTRecord>().First();
-            txt.Strings.AddRange(new [] { "a=1", "b=2" });
+            txt.Strings.AddRange(new[] { "a=1", "b=2" });
             CollectionAssert.Contains(txt.Strings, "txtvers=1");
             CollectionAssert.Contains(txt.Strings, "a=1");
             CollectionAssert.Contains(txt.Strings, "b=2");
