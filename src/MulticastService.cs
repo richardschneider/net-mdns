@@ -1,16 +1,14 @@
-﻿using Common.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Text;
+using Common.Logging;
 
 namespace Makaretu.Dns
 {
@@ -31,7 +29,7 @@ namespace Makaretu.Dns
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
-        static readonly IPNetwork[] linkLocalNetworks = new IPNetwork[]
+        static readonly IPNetwork[] linkLocalNetworks = new[]
         {
             IPNetwork.Parse("169.254.0.0/16"),
             IPNetwork.Parse("fe80::/10")
@@ -43,12 +41,19 @@ namespace Makaretu.Dns
         const int maxDatagramSize = Message.MaxLength;
 
         CancellationTokenSource serviceCancellation;
-        CancellationTokenSource listenerCancellation;
 
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
         readonly bool ip6;
-        IPEndPoint mdnsEndpoint;
+        readonly IPEndPoint mdnsEndpoint;
         int maxPacketSize;
+
+        /// <summary>
+        /// Gets or sets a System.Boolean value that specifies whether outgoing multicast packets are delivered to the sending application.
+        /// </summary>
+        /// <value>
+        /// true if the System.Net.Sockets.UdpClient receives outgoing multicast packets; otherwise, false.
+        /// </value>
+        public bool MulticastLoopback { get; set; } = false;
 
         /// <summary>
         ///   Recently sent messages.
@@ -61,7 +66,9 @@ namespace Makaretu.Dns
         ///   This is used to avoid floding of responses as per
         ///   <see href="https://github.com/richardschneider/net-mdns/issues/18"/>
         /// </remarks>
-        ConcurrentDictionary<string, DateTime> sentMessages = new ConcurrentDictionary<string, DateTime>();
+        ConcurrentDictionary<long, DateTime> sentMessages = new ConcurrentDictionary<long, DateTime>();
+
+        ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
 
         /// <summary>
         ///   Set the default TTLs.
@@ -74,15 +81,6 @@ namespace Makaretu.Dns
             ResourceRecord.DefaultTTL = TimeSpan.FromMinutes(75);
             ResourceRecord.DefaultHostTTL = TimeSpan.FromSeconds(120);
         }
-
-        /// <summary>
-        ///   The multicast sender.
-        /// </summary>
-        /// <remarks>
-        ///   Always use socketLock to gain access.
-        /// </remarks>
-        UdpClient sender;
-        readonly Object senderLock = new object();
 
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
@@ -123,22 +121,9 @@ namespace Makaretu.Dns
                 throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
 
             mdnsEndpoint = new IPEndPoint(
-                ip6 ? MulticastAddressIp6 : MulticastAddressIp4, 
+                ip6 ? MulticastAddressIp6 : MulticastAddressIp4,
                 MulticastPort);
         }
-
-        /// <summary>
-        ///   The interval for discovering network interfaces.
-        /// </summary>
-        /// <value>
-        ///   Default is 2 minutes.
-        /// </value>
-        /// <remarks>
-        ///   When the interval is reached a task is started to discover any
-        ///   new network interfaces. 
-        /// </remarks>
-        /// <seealso cref="NetworkInterfaceDiscovered"/>
-        public TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
 
         /// <summary>
         ///   Get the network interfaces that are useable.
@@ -161,16 +146,31 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
-        ///   Get the IP addresses of the local machine.
+        ///   Get the IP addresses of the local machine or specified NetworkInterface
         /// </summary>
+        /// <param name="networkInterface">
+        ///   The NetworkInterface.
+        /// </param>
         /// <returns>
         ///   A sequence of IP addresses of the local machine.
         /// </returns>
-        public static IEnumerable<IPAddress> GetIPAddresses()
+        public static IEnumerable<IPAddress> GetIPAddresses(NetworkInterface networkInterface = null)
         {
-            return GetNetworkInterfaces()
+            List<NetworkInterface> nics = new List<NetworkInterface>();
+
+            if (networkInterface != null)
+            {
+                nics.Add(networkInterface);
+            }
+            else
+            {
+                nics.AddRange(GetNetworkInterfaces());
+            }
+
+            return nics
                 .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
-                .Select(u => u.Address);
+                .Select(u => u.Address)
+                .Where(x => x.AddressFamily == AddressFamily.InterNetwork);
         }
 
         /// <summary>
@@ -197,10 +197,10 @@ namespace Makaretu.Dns
         {
             serviceCancellation = new CancellationTokenSource();
             maxPacketSize = maxDatagramSize - packetOverhead;
+
             knownNics.Clear();
 
-            // Start a task to find the network interfaces.
-            PollNetworkInterfaces();
+            FindNetworkInterfaces();
         }
 
         /// <summary>
@@ -222,98 +222,87 @@ namespace Makaretu.Dns
                 serviceCancellation = null;
                 sc?.Cancel();
             }
-            using (var lc = listenerCancellation)
-            {
-                listenerCancellation = null;
-                lc?.Cancel();
-            }
-
-            if (sender != null)
-            {
-                sender.Dispose();
-                sender = null;
-            }
         }
 
-        async void PollNetworkInterfaces()
-        {
-            var cancel = serviceCancellation.Token;
-            try
-            {
-                while (!cancel.IsCancellationRequested)
-                {
-                    FindNetworkInterfaces();
-                    await Task.Delay(NetworkInterfaceDiscoveryInterval, cancel);
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                //  eat it
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-                // eat it.
-            }
-        }
+        void OnNetworkAddressChanged(object sender, EventArgs e) => FindNetworkInterfaces();
 
         void FindNetworkInterfaces()
         {
             var currentNics = GetNetworkInterfaces().ToList();
+
             var newNics = new List<NetworkInterface>();
             var oldNics = new List<NetworkInterface>();
 
-            lock (senderLock)
+            foreach (var nic in knownNics.Where(k => !currentNics.Any(n => k.Id == n.Id)))
             {
-                foreach (var nic in knownNics.Where(k => !currentNics.Any(n => k.Id == n.Id)))
+                oldNics.Add(nic);
+
+                foreach (var address in GetIPAddresses(nic))
                 {
-                    oldNics.Add(nic);
-                    if (log.IsDebugEnabled)
+                    if (senders.TryRemove(address, out var sender))
                     {
-                        log.Debug($"Removed nic '{nic.Name}'.");
+                        sender.Dispose();
                     }
                 }
-                foreach (var nic in currentNics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
+
+                if (log.IsDebugEnabled)
                 {
-                    newNics.Add(nic);
-                    if (log.IsDebugEnabled)
-                    {
-                        log.Debug($"Found nic '{nic.Name}'.");
-                    }
+                    log.Debug($"Removed nic '{nic.Name}'.");
                 }
             }
+
+            foreach (var nic in currentNics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
+            {
+                newNics.Add(nic);
+
+                foreach (var address in GetIPAddresses(nic))
+                {
+                    try
+                    {
+                        var client = CreateUdpClient(address);
+                        if (senders.TryAdd(address, client))
+                        {
+                            Task.Factory.StartNew(async () =>
+                                await ListenerAsync(address, client).ConfigureAwait(false));
+                        }
+                        else
+                        {
+                            client.Dispose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Warn($"Error opening socket for: {address}", ex);
+                        Console.Write($"Error opening socket for: {address}. {ex}");
+                    }
+                }
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"Found nic '{nic.Name}'.");
+                }
+            }
+
             knownNics = currentNics;
-
-            // If any NIC change, then get new sockets.
-            if (newNics.Any() || oldNics.Any())
-            {
-                // Recreate the sender
-                if (sender != null)
-                {
-                    sender.Dispose();
-                }
-                sender = new UdpClient(mdnsEndpoint.AddressFamily);
-                sender.JoinMulticastGroup(mdnsEndpoint.Address);
-                sender.MulticastLoopback = true;
-
-                // Start a task to listen for MDNS messages.
-                Listener();
-            }
 
             // Tell others.
             if (newNics.Any())
-            { 
+            {
                 NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
                 {
                     NetworkInterfaces = newNics
                 });
             }
+
+            NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+            NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
         }
 
         /// <inheritdoc />
         public Task<Message> ResolveAsync(Message request, CancellationToken cancel = default(CancellationToken))
         {
             var tsc = new TaskCompletionSource<Message>();
+
             void checkResponse(object s, MessageEventArgs e)
             {
                 var response = e.Message;
@@ -399,6 +388,9 @@ namespace Makaretu.Dns
         /// <param name="answer">
         ///   The answer message.
         /// </param>
+        /// <param name="localAddress">
+        ///   Local IP Address of NIC that sould be used for unswering.
+        /// </param>
         /// <param name="checkDuplicate">
         ///   If <b>true</b>, then if the same <paramref name="answer"/> was
         ///   recently sent it will not be sent again.
@@ -416,14 +408,10 @@ namespace Makaretu.Dns
         ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see> 
         ///   if exceeds the maximum packet length.
         ///   </para>
-        ///   <para>
-        ///   <paramref name="checkDuplicate"/> should always be <b>true</b> except
-        ///   when <see href="https://tools.ietf.org/html/rfc6762#section-8.1">answering a probe</see>.
-        ///   </para>
         /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
-        public void SendAnswer(Message answer, bool checkDuplicate = true)
+        public void SendAnswer(Message answer, IPAddress localAddress = null, bool checkDuplicate = true)
         {
             // All MDNS answers are authoritative and have a transaction
             // ID of zero.
@@ -435,10 +423,10 @@ namespace Makaretu.Dns
 
             answer.Truncate(maxPacketSize);
 
-            Send(answer, checkDuplicate);
+            Send(answer, localAddress, checkDuplicate);
         }
 
-        void Send(Message msg, bool checkDuplicate)
+        void Send(Message msg, IPAddress localAddress = null, bool checkDuplicate = true)
         {
             var packet = msg.ToByteArray();
             if (packet.Length > maxPacketSize)
@@ -446,76 +434,57 @@ namespace Makaretu.Dns
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
             }
 
-            // Get the hash of the packet.  MD5 is okay because
-            // the hash is not used for security.
-            string hash;
-            using (var md5 = MD5.Create())
+            if (checkDuplicate)
             {
-                var bytes = md5.ComputeHash(packet);
-                // TODO: there must be a more efficient way.
-                var s = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
+                // Get the hash of the packet.  MD5 is okay because
+                // the hash is not used for security.
+                var hash = GetHashCode(packet);
+
+                // Prune the sent messages.  Anything older than a second ago
+                // is removed.
+                var dead = DateTime.Now.AddSeconds(-1);
+
+                foreach (var notrecent in sentMessages.Where(x => x.Value < dead))
                 {
-                    s.Append(bytes[i].ToString("x2"));
+                    sentMessages.TryRemove(notrecent.Key, out _);
                 }
-                hash = s.ToString();
+
+                // If messsage was recently sent, then do not send again.
+                if (sentMessages.ContainsKey(hash))
+                {
+                    return;
+                }
+
+                sentMessages.AddOrUpdate(hash, DateTime.Now, (key, value) => value);
             }
 
-            // Prune the sent messages.  Anything older than a second ago
-            // is removed.
-            var now = DateTime.Now;
-            var dead = now.AddSeconds(-1);
-            foreach (var notrecent in sentMessages.Where(x => x.Value < dead))
+            // Answer on Question in the same thread
+            if (localAddress != null && senders.TryGetValue(localAddress, out var sender))
             {
-                sentMessages.TryRemove(notrecent.Key, out DateTime _);
+                sender.Send(packet, packet.Length, mdnsEndpoint);
             }
-
-            // If messsage was recently sent, then do not send again.
-            if (checkDuplicate && sentMessages.ContainsKey(hash))
+            else
             {
-                return;
+                senders.Values.ToList().ForEach(x =>
+                    Task.Factory.StartNew(async () =>
+                        await x.SendAsync(packet, packet.Length, mdnsEndpoint).ConfigureAwait(false)));
             }
-
-            lock (senderLock)
-            {
-                if (sender == null)
-                    throw new InvalidOperationException("MDNS is not started");
-                sender.SendAsync(packet, packet.Length, mdnsEndpoint).Wait();
-            }
-
-            sentMessages.AddOrUpdate(hash, DateTime.Now, (key, value) => value);
         }
 
-        /// <summary>
-        ///   Called by the listener when a DNS message is received.
-        /// </summary>
-        /// <param name="datagram">
-        ///   The received message.
-        /// </param>
-        /// <param name="length">
-        ///   The length of the messages.
-        /// </param>
-        /// <remarks>
-        ///   Decodes the <paramref name="datagram"/> and then raises
-        ///   either the <see cref="QueryReceived"/> or <see cref="AnswerReceived"/> event.
-        ///   <para>
-        ///   Multicast DNS messages received with an OPCODE or RCODE other than zero 
-        ///   are silently ignored.
-        ///   </para>
-        /// </remarks>
-        void OnDnsMessage(byte[] datagram, int length)
+        void OnDnsMessage(IPAddress localAddress, UdpReceiveResult message)
         {
             var msg = new Message();
 
             try
             {
-                msg.Read(datagram, 0, length);
+                msg.Read(message.Buffer, 0, message.Buffer.Length);
             }
             catch (Exception e)
             {
                 log.Warn("Received malformed message", e);
                 return; // eat the exception
             }
+
             if (msg.Opcode != MessageOperation.Query || msg.Status != MessageStatus.NoError)
             {
                 return;
@@ -526,11 +495,11 @@ namespace Makaretu.Dns
             {
                 if (msg.IsQuery && msg.Questions.Count > 0)
                 {
-                    QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+                    QueryReceived?.Invoke(this, new MessageEventArgs { Message = msg, LocalAddress = localAddress, RemoteEndPoint = message.RemoteEndPoint });
                 }
                 else if (msg.IsResponse && msg.Answers.Count > 0)
                 {
-                    AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg });
+                    AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg, LocalAddress = localAddress, RemoteEndPoint = message.RemoteEndPoint });
                 }
             }
             catch (Exception e)
@@ -540,63 +509,51 @@ namespace Makaretu.Dns
             }
         }
 
-        /// <summary>
-        ///   Listens for DNS messages.
-        /// </summary>
-        /// <remarks>
-        ///   A background task to receive DNS messages from this and other MDNS services.  It is
-        ///   cancelled via <see cref="Stop"/>.  All messages are forwarded to <see cref="OnDnsMessage"/>.
-        /// </remarks>
-        async void Listener()
+        UdpClient CreateUdpClient(IPAddress address)
         {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var client = new UdpClient(AddressFamily.InterNetwork);
+            client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            client.MulticastLoopback = MulticastLoopback;
+            client.Client.Bind(new IPEndPoint(address, MulticastPort));
+            client.JoinMulticastGroup(mdnsEndpoint.Address, address);
 
-            // Stop the previous listener.
-            if (listenerCancellation != null)
-            {
-                listenerCancellation.Cancel();
-            }
+            return client;
+        }
 
-            listenerCancellation = new CancellationTokenSource();
-            UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
-            if (isWindows)
-            {
-                receiver.ExclusiveAddressUse = false;
-            }
-            receiver.Client.SetSocketOption(
-                SocketOptionLevel.Socket, 
-                SocketOptionName.ReuseAddress,
-                true);
-            if (isWindows)
-            {
-                receiver.ExclusiveAddressUse = false;
-            }
-            var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
-            receiver.Client.Bind(endpoint);
-            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
+        async Task ListenerAsync(IPAddress localAddress, UdpClient receiver)
+        {
+            var cancel = serviceCancellation.Token;
 
-            var cancel = listenerCancellation.Token;
             cancel.Register(() => receiver.Dispose());
+
             try
             {
                 while (!cancel.IsCancellationRequested)
                 {
-                    var result = await receiver.ReceiveAsync();
-                    OnDnsMessage(result.Buffer, result.Buffer.Length);
+                    var result = await receiver.ReceiveAsync().ConfigureAwait(false);
+
+                    new Task(() => OnDnsMessage(localAddress, result)).Start();
                 }
             }
             catch (Exception e)
             {
                 if (!cancel.IsCancellationRequested)
+                {
                     log.Error("Listener failed", e);
+                }
                 // eat the exception
             }
 
+            senders.TryRemove(localAddress, out _);
+
             receiver.Dispose();
-            if (listenerCancellation != null)
+        }
+
+        long GetHashCode(byte[] source)
+        {
+            using (var md5 = MD5.Create())
             {
-                listenerCancellation.Dispose();
-                listenerCancellation = null;
+                return BitConverter.ToInt64(md5.ComputeHash(source), 0);
             }
         }
 
@@ -618,6 +575,5 @@ namespace Makaretu.Dns
         }
 
         #endregion
-
     }
 }

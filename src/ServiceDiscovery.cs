@@ -1,9 +1,8 @@
-﻿using Common.Logging;
-using Makaretu.Dns.Resolving;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using Common.Logging;
+using Makaretu.Dns.Resolving;
 
 namespace Makaretu.Dns
 {
@@ -80,7 +79,8 @@ namespace Makaretu.Dns
         /// <value>
         ///   Is used to answer questions.
         /// </value>
-        public NameServer NameServer { get; } = new NameServer {
+        public NameServer NameServer { get; } = new NameServer
+        {
             Catalog = new Catalog(),
             AnswerAllQuestions = true
         };
@@ -196,31 +196,39 @@ namespace Makaretu.Dns
             var request = e.Message;
 
             if (log.IsDebugEnabled)
-                log.Debug($"got query for {request.Questions[0].Name} {request.Questions[0].Type}");
-            var response = NameServer.ResolveAsync(request).Result;
-            if (response.Status == MessageStatus.NoError)
             {
-                // Many bonjour browsers don't like DNS-SD response
-                // with additional records.
-                if (response.Answers.Any(a => a.Name == ServiceName))
-                {
-                    response.AdditionalRecords.Clear();
-                }
-
-                if (AnswersContainsAdditionalRecords)
-                {
-                    response.Answers.AddRange(response.AdditionalRecords);
-                    response.AdditionalRecords.Clear();
-                }
-
-                Mdns.SendAnswer(response);
-                if (log.IsDebugEnabled)
-                    log.Debug($"sent answer {response.Answers[0]}");
-                //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
+                log.Debug($"got query from: {e.RemoteEndPoint.Address},  for {request.Questions[0].Name} {request.Questions[0].Type}");
             }
+
+            var response = NameServer.ResolveAsync(request).Result;
+
+            if (response.Status != MessageStatus.NoError)
+            {
+                return;
+            }
+
+            if (AnswersContainsAdditionalRecords)
+            {
+                response.Answers.AddRange(response.AdditionalRecords);
+            }
+
+            // Many bonjour browsers don't like DNS-SD response
+            // with additional records.
+            if (response.Answers.Any(a => a.Name == ServiceName))
+            {
+                response.AdditionalRecords.Clear();
+            }
+
+            Mdns.SendAnswer(response, e.LocalAddress);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"sent answer {response.Answers[0]}");
+            }
+            //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
         }
 
-#region IDisposable Support
+        #region IDisposable Support
 
         /// <inheritdoc />
         protected virtual void Dispose(bool disposing)
@@ -245,7 +253,7 @@ namespace Makaretu.Dns
         {
             Dispose(true);
         }
-#endregion
-    }
 
+        #endregion
+    }
 }

@@ -1,6 +1,4 @@
-﻿using Makaretu.Dns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,24 +6,24 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Makaretu.Dns
 {
-    
     [TestClass]
     public class MulticastServiceTest
     {
         [TestMethod]
         public void Can_Create()
         {
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             Assert.IsNotNull(mdns);
         }
 
         [TestMethod]
         public void StartStop()
         {
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.Start();
             mdns.Stop();
         }
@@ -37,9 +35,9 @@ namespace Makaretu.Dns
             var done = new ManualResetEvent(false);
             Message msg = null;
 
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
-            mdns.QueryReceived += (s, e) => 
+            mdns.QueryReceived += (s, e) =>
             {
                 msg = e.Message;
                 done.Set();
@@ -66,7 +64,7 @@ namespace Makaretu.Dns
             var done = new ManualResetEvent(false);
             Message response = null;
 
-            using (var mdns = new MulticastService())
+            using (var mdns = new MulticastService { MulticastLoopback = true })
             {
                 mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
                 mdns.QueryReceived += (s, e) =>
@@ -80,7 +78,7 @@ namespace Makaretu.Dns
                             Name = service,
                             Address = IPAddress.Parse("127.1.1.1")
                         });
-                        mdns.SendAnswer(res);
+                        mdns.SendAnswer(res, e.LocalAddress);
                     }
                 };
                 mdns.AnswerReceived += (s, e) =>
@@ -109,7 +107,7 @@ namespace Makaretu.Dns
             var service = Guid.NewGuid().ToString() + ".local";
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
             mdns.QueryReceived += (s, e) =>
             {
@@ -123,7 +121,7 @@ namespace Makaretu.Dns
                         Name = service,
                         Address = IPAddress.Parse("127.1.1.1")
                     });
-                    mdns.SendAnswer(res);
+                    mdns.SendAnswer(res, e.LocalAddress);
                 }
             };
             mdns.AnswerReceived += (s, e) =>
@@ -149,7 +147,7 @@ namespace Makaretu.Dns
         public void Nics()
         {
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             IEnumerable<NetworkInterface> nics = null;
             mdns.NetworkInterfaceDiscovered += (s, e) =>
             {
@@ -172,7 +170,7 @@ namespace Makaretu.Dns
         public void SendQuery_TooBig()
         {
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.NetworkInterfaceDiscovered += (s, e) => done.Set();
             mdns.Start();
             try
@@ -181,7 +179,8 @@ namespace Makaretu.Dns
                 var query = new Message();
                 query.Questions.Add(new Question { Name = "foo.bar.org" });
                 query.AdditionalRecords.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
-                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
+                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() =>
+                {
                     mdns.SendQuery(query);
                 });
             }
@@ -195,7 +194,7 @@ namespace Makaretu.Dns
         public void SendAnswer_TooBig()
         {
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.NetworkInterfaceDiscovered += (s, e) => done.Set();
             mdns.Start();
             try
@@ -204,7 +203,8 @@ namespace Makaretu.Dns
                 var answer = new Message();
                 answer.Answers.Add(new ARecord { Name = "foo.bar.org", Address = IPAddress.Loopback });
                 answer.Answers.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
-                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
+                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() =>
+                {
                     mdns.SendAnswer(answer);
                 });
             }
@@ -221,7 +221,7 @@ namespace Makaretu.Dns
             var done = new ManualResetEvent(false);
             Message response = null;
 
-            var a = new MulticastService();
+            var a = new MulticastService { MulticastLoopback = true };
             a.QueryReceived += (s, e) =>
             {
                 var msg = e.Message;
@@ -238,11 +238,11 @@ namespace Makaretu.Dns
                             Address = address
                         });
                     }
-                    a.SendAnswer(res);
+                    a.SendAnswer(res, e.LocalAddress);
                 }
             };
 
-            var b = new MulticastService();
+            var b = new MulticastService { MulticastLoopback = true };
             b.NetworkInterfaceDiscovered += (s, e) => b.SendQuery(service);
             b.AnswerReceived += (s, e) =>
             {
@@ -301,7 +301,7 @@ namespace Makaretu.Dns
             query.Questions.Add(new Question { Name = service, Type = DnsType.ANY });
             var cancellation = new CancellationTokenSource(2000);
 
-            using (var mdns = new MulticastService())
+            using (var mdns = new MulticastService { MulticastLoopback = true })
             {
                 mdns.QueryReceived += (s, e) =>
                 {
@@ -314,7 +314,7 @@ namespace Makaretu.Dns
                             Name = service,
                             Address = IPAddress.Parse("127.1.1.1")
                         });
-                        mdns.SendAnswer(res);
+                        mdns.SendAnswer(res, e.LocalAddress);
                     }
                 };
                 mdns.Start();
@@ -336,7 +336,7 @@ namespace Makaretu.Dns
             query.Questions.Add(new Question { Name = service, Type = DnsType.ANY });
             var cancellation = new CancellationTokenSource(500);
 
-            using (var mdns = new MulticastService())
+            using (var mdns = new MulticastService { MulticastLoopback = true })
             {
                 mdns.Start();
                 ExceptionAssert.Throws<TaskCanceledException>(() =>
@@ -345,20 +345,27 @@ namespace Makaretu.Dns
                 });
             }
         }
+
         [TestMethod]
-        public async Task DuplicateResponse()
+        public void DuplicateResponse()
         {
+            var loker = new object();
             var service = Guid.NewGuid().ToString() + ".local";
 
-            using (var mdns = new MulticastService())
+            using (var mdns = new MulticastService { MulticastLoopback = true })
             {
+                var nicsMultiplier = 1;
                 var answerCount = 0;
-                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                var mre = new ManualResetEvent(false);
+
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
+                    nicsMultiplier = e.NetworkInterfaces.Count();
                     mdns.SendQuery(service);
-                    await Task.Delay(250);
+                    Thread.Sleep(250);
                     mdns.SendQuery(service);
                 };
+
                 mdns.QueryReceived += (s, e) =>
                 {
                     var msg = e.Message;
@@ -370,37 +377,53 @@ namespace Makaretu.Dns
                             Name = service,
                             Address = IPAddress.Parse("127.1.1.1")
                         });
-                        mdns.SendAnswer(res);
+                        mdns.SendAnswer(res, e.LocalAddress, true);
                     }
                 };
+
                 mdns.AnswerReceived += (s, e) =>
                 {
+                    mre.Reset();
+
                     var msg = e.Message;
                     if (msg.Answers.Any(answer => answer.Name == service))
                     {
-                        ++answerCount;
+                        lock (loker)
+                        {
+                            ++answerCount;
+                        }
                     };
                 };
+
                 mdns.Start();
-                await Task.Delay(1000);
-                Assert.AreEqual(1, answerCount);
+
+                mre.WaitOne(250);
+                mre.Close();
+
+                Assert.IsTrue(2 * nicsMultiplier > answerCount);
             }
         }
 
         [TestMethod]
-        public async Task NoDuplicateResponse()
+        public void NoDuplicateResponse()
         {
+            var loker = new object();
             var service = Guid.NewGuid().ToString() + ".local";
 
-            using (var mdns = new MulticastService())
+            using (var mdns = new MulticastService { MulticastLoopback = true })
             {
+                var nicsMultiplier = 1;
                 var answerCount = 0;
-                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                var mre = new ManualResetEvent(false);
+
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
+                    nicsMultiplier = e.NetworkInterfaces.Count();
                     mdns.SendQuery(service);
-                    await Task.Delay(250);
+                    Thread.Sleep(250);
                     mdns.SendQuery(service);
                 };
+
                 mdns.QueryReceived += (s, e) =>
                 {
                     var msg = e.Message;
@@ -412,22 +435,30 @@ namespace Makaretu.Dns
                             Name = service,
                             Address = IPAddress.Parse("127.1.1.1")
                         });
-                        mdns.SendAnswer(res, checkDuplicate: false);
+                        mdns.SendAnswer(res, e.LocalAddress, false);
                     }
                 };
+
                 mdns.AnswerReceived += (s, e) =>
                 {
+                    mre.Reset();
                     var msg = e.Message;
                     if (msg.Answers.Any(answer => answer.Name == service))
                     {
-                        ++answerCount;
+                        lock (loker)
+                        {
+                            ++answerCount;
+                        }
                     };
                 };
+
                 mdns.Start();
-                await Task.Delay(1000);
-                Assert.AreEqual(2, answerCount);
+
+                mre.WaitOne(250);
+                mre.Close();
+
+                Assert.AreEqual(2 * nicsMultiplier, answerCount);
             }
         }
-
     }
 }

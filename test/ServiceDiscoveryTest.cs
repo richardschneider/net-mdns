@@ -1,17 +1,11 @@
-﻿using Makaretu.Dns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Makaretu.Dns
 {
-    
     [TestClass]
     public class ServiceDiscoveryTest
     {
@@ -23,7 +17,7 @@ namespace Makaretu.Dns
                 Assert.IsNotNull(sd);
             }
 
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             using (var sd = new ServiceDiscovery(mdns))
             {
                 Assert.IsNotNull(sd);
@@ -33,32 +27,27 @@ namespace Makaretu.Dns
         [TestMethod]
         public void Advertises_Service()
         {
-            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new [] { IPAddress.Loopback });
+            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-                mdns.SendQuery(ServiceDiscovery.ServiceName, DnsClass.IN, DnsType.PTR);
-            mdns.AnswerReceived += (s, e) =>
+            using (var mdns = new MulticastService { MulticastLoopback = true })
             {
-                var msg = e.Message;
-                if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.QualifiedServiceName))
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(ServiceDiscovery.ServiceName, DnsClass.IN, DnsType.PTR);
+                mdns.AnswerReceived += (s, e) =>
                 {
-                    done.Set();
-                }
-            };
-            try
-            {
+                    var msg = e.Message;
+                    if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.QualifiedServiceName))
+                    {
+                        done.Set();
+                    }
+                };
+
                 using (var sd = new ServiceDiscovery(mdns))
                 {
                     sd.Advertise(service);
-                    mdns.Start();                 
+                    mdns.Start();
                     Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
                 }
-            }
-            finally
-            {
-                mdns.Stop();
             }
         }
 
@@ -68,7 +57,7 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.NetworkInterfaceDiscovered += (s, e) =>
                 mdns.SendQuery(service.QualifiedServiceName, DnsClass.IN, DnsType.PTR);
             mdns.AnswerReceived += (s, e) =>
@@ -100,7 +89,7 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("x2", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             mdns.NetworkInterfaceDiscovered += (s, e) =>
                 mdns.SendQuery(service.HostName, DnsClass.IN, DnsType.A);
             mdns.AnswerReceived += (s, e) =>
@@ -131,9 +120,9 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("x", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             var sd = new ServiceDiscovery(mdns);
-            
+
             mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
             sd.ServiceDiscovered += (s, serviceName) =>
             {
@@ -160,7 +149,7 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             var sd = new ServiceDiscovery(mdns);
 
             mdns.NetworkInterfaceDiscovered += (s, e) =>
@@ -194,7 +183,7 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
+            var mdns = new MulticastService { MulticastLoopback = true };
             var sd = new ServiceDiscovery(mdns)
             {
                 AnswersContainsAdditionalRecords = true
@@ -219,8 +208,8 @@ namespace Makaretu.Dns
                 sd.Advertise(service);
                 mdns.Start();
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
-                Assert.AreEqual(0, discovered.AdditionalRecords.Count);
                 Assert.IsTrue(discovered.Answers.Count > 1);
+                Assert.AreEqual(discovered.Answers.Count - 1, discovered.AdditionalRecords.Count);
             }
             finally
             {
@@ -228,6 +217,5 @@ namespace Makaretu.Dns
                 mdns.Stop();
             }
         }
-
     }
 }
