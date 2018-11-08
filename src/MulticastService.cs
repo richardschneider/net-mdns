@@ -85,21 +85,29 @@ namespace Makaretu.Dns
         readonly Object senderLock = new object();
 
         /// <summary>
-        ///   Raised when any local MDNS service sends a query.
+        ///   Raised when any link-local MDNS service sends a query.
         /// </summary>
         /// <value>
         ///   Contains the query <see cref="Message"/>.
         /// </value>
+        /// <remarks>
+        ///   Any exception throw by the event handler is simply logged and
+        ///   then forgotten.
+        /// </remarks>
         /// <seealso cref="SendQuery(Message)"/>
         /// <see cref="SendAnswer"/>
         public event EventHandler<MessageEventArgs> QueryReceived;
 
         /// <summary>
-        ///   Raised when any local MDNS service responds to a query.
+        ///   Raised when any link-local MDNS service responds to a query.
         /// </summary>
         /// <value>
         ///   Contains the answer <see cref="Message"/>.
         /// </value>
+        /// <remarks>
+        ///   Any exception throw by the event handler is simply logged and
+        ///   then forgotten.
+        /// </remarks>
         public event EventHandler<MessageEventArgs> AnswerReceived;
 
         /// <summary>
