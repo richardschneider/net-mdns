@@ -1,16 +1,16 @@
-﻿using Common.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Common.Logging;
 
 namespace Makaretu.Dns
 {
@@ -82,7 +82,8 @@ namespace Makaretu.Dns
         ///   Always use socketLock to gain access.
         /// </remarks>
         UdpClient sender;
-        readonly Object senderLock = new object();
+
+        readonly object senderLock = new object();
 
         /// <summary>
         ///   Raised when any local MDNS service sends a query.
@@ -123,22 +124,9 @@ namespace Makaretu.Dns
                 throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
 
             mdnsEndpoint = new IPEndPoint(
-                ip6 ? MulticastAddressIp6 : MulticastAddressIp4, 
+                ip6 ? MulticastAddressIp6 : MulticastAddressIp4,
                 MulticastPort);
         }
-
-        /// <summary>
-        ///   The interval for discovering network interfaces.
-        /// </summary>
-        /// <value>
-        ///   Default is 2 minutes.
-        /// </value>
-        /// <remarks>
-        ///   When the interval is reached a task is started to discover any
-        ///   new network interfaces. 
-        /// </remarks>
-        /// <seealso cref="NetworkInterfaceDiscovered"/>
-        public TimeSpan NetworkInterfaceDiscoveryInterval { get; set; } = TimeSpan.FromMinutes(2);
 
         /// <summary>
         ///   Get the network interfaces that are useable.
@@ -200,7 +188,7 @@ namespace Makaretu.Dns
             knownNics.Clear();
 
             // Start a task to find the network interfaces.
-            PollNetworkInterfaces();
+            FindNetworkInterfaces();
         }
 
         /// <summary>
@@ -235,26 +223,9 @@ namespace Makaretu.Dns
             }
         }
 
-        async void PollNetworkInterfaces()
+        void OnNetworkAddressChanged(object sender, EventArgs e)
         {
-            var cancel = serviceCancellation.Token;
-            try
-            {
-                while (!cancel.IsCancellationRequested)
-                {
-                    FindNetworkInterfaces();
-                    await Task.Delay(NetworkInterfaceDiscoveryInterval, cancel);
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                //  eat it
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-                // eat it.
-            }
+            FindNetworkInterfaces();
         }
 
         void FindNetworkInterfaces()
@@ -282,6 +253,7 @@ namespace Makaretu.Dns
                     }
                 }
             }
+
             knownNics = currentNics;
 
             // If any NIC change, then get new sockets.
@@ -297,17 +269,20 @@ namespace Makaretu.Dns
                 sender.MulticastLoopback = true;
 
                 // Start a task to listen for MDNS messages.
-                Listener();
+                Task.Factory.StartNew(async () => await ListenerAsync());
             }
 
             // Tell others.
             if (newNics.Any())
-            { 
+            {
                 NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
                 {
                     NetworkInterfaces = newNics
                 });
             }
+
+            NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+            NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
         }
 
         /// <inheritdoc />
@@ -547,7 +522,7 @@ namespace Makaretu.Dns
         ///   A background task to receive DNS messages from this and other MDNS services.  It is
         ///   cancelled via <see cref="Stop"/>.  All messages are forwarded to <see cref="OnDnsMessage"/>.
         /// </remarks>
-        async void Listener()
+        async Task ListenerAsync()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
@@ -558,25 +533,25 @@ namespace Makaretu.Dns
             }
 
             listenerCancellation = new CancellationTokenSource();
+
             UdpClient receiver = new UdpClient(mdnsEndpoint.AddressFamily);
             if (isWindows)
             {
                 receiver.ExclusiveAddressUse = false;
             }
-            receiver.Client.SetSocketOption(
-                SocketOptionLevel.Socket, 
-                SocketOptionName.ReuseAddress,
-                true);
+            receiver.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             if (isWindows)
             {
                 receiver.ExclusiveAddressUse = false;
             }
             var endpoint = new IPEndPoint(ip6 ? IPAddress.IPv6Any : IPAddress.Any, MulticastPort);
             receiver.Client.Bind(endpoint);
-            receiver.JoinMulticastGroup(mdnsEndpoint.Address);
+            receiver.JoinMulticastGroup(mdnsEndpoint.Address, endpoint.Address);
 
             var cancel = listenerCancellation.Token;
+
             cancel.Register(() => receiver.Dispose());
+
             try
             {
                 while (!cancel.IsCancellationRequested)
@@ -592,11 +567,10 @@ namespace Makaretu.Dns
                 // eat the exception
             }
 
-            receiver.Dispose();
-            if (listenerCancellation != null)
+            using (var lc = listenerCancellation)
             {
-                listenerCancellation.Dispose();
                 listenerCancellation = null;
+                lc?.Cancel();
             }
         }
 
@@ -618,6 +592,5 @@ namespace Makaretu.Dns
         }
 
         #endregion
-
     }
 }

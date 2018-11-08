@@ -194,39 +194,35 @@ namespace Makaretu.Dns
         {
             var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
-            var sd = new ServiceDiscovery(mdns)
-            {
-                AnswersContainsAdditionalRecords = true
-            };
-            Message discovered = null;
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-            {
-                sd.QueryServiceInstances(service.ServiceName);
-            };
 
-            sd.ServiceInstanceDiscovered += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns) { AnswersContainsAdditionalRecords = true })
             {
-                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                Message discovered = null;
+
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
-                    Assert.IsNotNull(e.Message);
-                    discovered = e.Message;
-                    done.Set();
-                }
-            };
-            try
-            {
+                    sd.QueryServiceInstances(service.ServiceName);
+                };
+
+                sd.ServiceInstanceDiscovered += (s, e) =>
+                {
+                    if (e.ServiceInstanceName == service.FullyQualifiedName)
+                    {
+                        Assert.IsNotNull(e.Message);
+                        discovered = e.Message;
+                        done.Set();
+                    }
+                };
+
                 sd.Advertise(service);
+
                 mdns.Start();
+
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
-                Assert.AreEqual(0, discovered.AdditionalRecords.Count);
-                Assert.IsTrue(discovered.Answers.Count > 1);
-            }
-            finally
-            {
-                sd.Dispose();
-                mdns.Stop();
-            }
+                Assert.IsTrue(discovered.AdditionalRecords.Count > 0);
+                Assert.IsTrue(discovered.Answers.Count > 0);
+            }            
         }
 
     }
