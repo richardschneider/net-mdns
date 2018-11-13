@@ -1,17 +1,12 @@
-﻿using Makaretu.Dns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Makaretu.Dns
 {
-    
+
     [TestClass]
     public class ServiceDiscoveryTest
     {
@@ -33,7 +28,7 @@ namespace Makaretu.Dns
         [TestMethod]
         public void Advertises_Service()
         {
-            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new [] { IPAddress.Loopback });
+            var service = new ServiceProfile("x", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
 
             var mdns = new MulticastService();
@@ -52,7 +47,7 @@ namespace Makaretu.Dns
                 using (var sd = new ServiceDiscovery(mdns))
                 {
                     sd.Advertise(service);
-                    mdns.Start();                 
+                    mdns.Start();
                     Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
                 }
             }
@@ -133,7 +128,7 @@ namespace Makaretu.Dns
             var done = new ManualResetEvent(false);
             var mdns = new MulticastService();
             var sd = new ServiceDiscovery(mdns);
-            
+
             mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
             sd.ServiceDiscovered += (s, serviceName) =>
             {
@@ -192,42 +187,46 @@ namespace Makaretu.Dns
         [TestMethod]
         public void Discover_ServiceInstance_WithAnswersContainingAdditionRecords()
         {
-            var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
+            var service = new ServiceProfile("y", "_sdtest-2._udp", 1024, new[] { IPAddress.Parse("127.1.1.1") });
             var done = new ManualResetEvent(false);
-            var mdns = new MulticastService();
-            var sd = new ServiceDiscovery(mdns)
-            {
-                AnswersContainsAdditionalRecords = true
-            };
-            Message discovered = null;
-            mdns.NetworkInterfaceDiscovered += (s, e) =>
-            {
-                sd.QueryServiceInstances(service.ServiceName);
-            };
 
-            sd.ServiceInstanceDiscovered += (s, e) =>
+            using (var mdns = new MulticastService())
+            using (var sd = new ServiceDiscovery(mdns) { AnswersContainsAdditionalRecords = true })
             {
-                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                Message discovered = null;
+
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
-                    Assert.IsNotNull(e.Message);
-                    discovered = e.Message;
-                    done.Set();
-                }
-            };
-            try
-            {
+                    sd.QueryServiceInstances(service.ServiceName);
+                };
+
+                sd.ServiceInstanceDiscovered += (s, e) =>
+                {
+                    if (e.ServiceInstanceName == service.FullyQualifiedName)
+                    {
+                        Assert.IsNotNull(e.Message);
+                        discovered = e.Message;
+                        done.Set();
+                    }
+                };
+
                 sd.Advertise(service);
+
                 mdns.Start();
+
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
-                Assert.AreEqual(0, discovered.AdditionalRecords.Count);
-                Assert.IsTrue(discovered.Answers.Count > 1);
-            }
-            finally
-            {
-                sd.Dispose();
-                mdns.Stop();
+
+                var additionalRecordsCount =
+                    1 + // SRVRecord
+                    1 + // TXTRecord
+                    1; // AddressRecord
+
+                var answersCount = additionalRecordsCount +
+                    1; // PTRRecord
+
+                Assert.AreEqual(additionalRecordsCount, discovered.AdditionalRecords.Count);
+                Assert.AreEqual(additionalRecordsCount + 1, discovered.Answers.Count);
             }
         }
-
     }
 }
