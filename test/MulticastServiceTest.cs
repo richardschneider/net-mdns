@@ -1,6 +1,4 @@
-﻿using Makaretu.Dns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,10 +6,11 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Makaretu.Dns
 {
-    
+
     [TestClass]
     public class MulticastServiceTest
     {
@@ -39,7 +38,7 @@ namespace Makaretu.Dns
 
             var mdns = new MulticastService();
             mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
-            mdns.QueryReceived += (s, e) => 
+            mdns.QueryReceived += (s, e) =>
             {
                 msg = e.Message;
                 done.Set();
@@ -181,7 +180,8 @@ namespace Makaretu.Dns
                 var query = new Message();
                 query.Questions.Add(new Question { Name = "foo.bar.org" });
                 query.AdditionalRecords.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
-                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
+                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() =>
+                {
                     mdns.SendQuery(query);
                 });
             }
@@ -204,7 +204,8 @@ namespace Makaretu.Dns
                 var answer = new Message();
                 answer.Answers.Add(new ARecord { Name = "foo.bar.org", Address = IPAddress.Loopback });
                 answer.Answers.Add(new NULLRecord { Name = "foo.bar.org", Data = new byte[9000] });
-                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => {
+                ExceptionAssert.Throws<ArgumentOutOfRangeException>(() =>
+                {
                     mdns.SendAnswer(answer);
                 });
             }
@@ -345,11 +346,11 @@ namespace Makaretu.Dns
                 });
             }
         }
+
         [TestMethod]
         public async Task DuplicateResponse()
         {
             var service = Guid.NewGuid().ToString() + ".local";
-
             using (var mdns = new MulticastService())
             {
                 var answerCount = 0;
@@ -429,5 +430,23 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void Multiple_Listeners()
+        {
+            var ready1 = new ManualResetEvent(false);
+            var ready2 = new ManualResetEvent(false);
+            using (var mdns1 = new MulticastService())
+            using (var mdns2 = new MulticastService())
+            {
+                mdns1.NetworkInterfaceDiscovered += (s, e) => ready1.Set();
+                mdns1.Start();
+
+                mdns2.NetworkInterfaceDiscovered += (s, e) => ready2.Set();
+                mdns2.Start();
+
+                Assert.IsTrue(ready1.WaitOne(TimeSpan.FromSeconds(1)), "ready1 timeout");
+                Assert.IsTrue(ready2.WaitOne(TimeSpan.FromSeconds(1)), "ready2 timeout");
+            }
+        }
     }
 }
