@@ -17,6 +17,9 @@ namespace Makaretu.Dns
 
         UdpClient receiver;
         ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
+        List<IPAddress> addresses = new List<IPAddress>();
+
+        public IReadOnlyCollection<IPAddress> Addresses => addresses;
 
         static MulticastUdpListener()
         {
@@ -56,6 +59,8 @@ namespace Makaretu.Dns
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
 
                     senders.TryAdd(address, sender);
+
+                    addresses.Add(address);
                 }
                 catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressNotAvailable)
                 {
@@ -79,7 +84,7 @@ namespace Makaretu.Dns
 
                     var ct1 = task.ContinueWith(x => ListenAsync(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
-                    var ct2 = task.ContinueWith(x => callback(x.Result), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    var ct2 = task.ContinueWith(x => FilterMulticastLoopbackMessages(x.Result, callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
                     await task.ConfigureAwait(false);
                 }
@@ -88,6 +93,14 @@ namespace Makaretu.Dns
                     return;
                 }
             });
+        }
+
+        void FilterMulticastLoopbackMessages(UdpReceiveResult result, Action<UdpReceiveResult> next)
+        {
+            if (addresses.IndexOf(result.RemoteEndPoint.Address) <= 0)
+            {
+                next?.Invoke(result);
+            }
         }
 
         IEnumerable<IPAddress> GetNetworkInterfaceLocalAddresses(NetworkInterface nic)
