@@ -75,11 +75,13 @@ namespace Makaretu.Dns
             {
                 try
                 {
-                    var result = await receiver.ReceiveAsync().ConfigureAwait(false);
+                    var task = receiver.ReceiveAsync();
 
-                    ListenAsync(callback);
+                    var ct1 = task.ContinueWith(x => ListenAsync(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
-                    new Task(() => callback(result)).Start();
+                    var ct2 = task.ContinueWith(x => callback(x.Result), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+
+                    await task.ConfigureAwait(false);
                 }
                 catch (ObjectDisposedException)
                 {
