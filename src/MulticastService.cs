@@ -35,7 +35,7 @@ namespace Makaretu.Dns
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         static readonly IPNetwork[] LinkLocalNetworks = new[] { IPNetwork.Parse("169.254.0.0/16"), IPNetwork.Parse("fe80::/10") };
-        static readonly IPEndPoint MdnsEndpoint = new IPEndPoint(MulticastUdpListener.IP6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
+        static readonly IPEndPoint MdnsEndpoint = new IPEndPoint(MulticastClient.IP6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
 
         CancellationTokenSource serviceCancellation;
 
@@ -54,12 +54,12 @@ namespace Makaretu.Dns
         ///   This is used to avoid floding of responses as per
         ///   <see href="https://github.com/richardschneider/net-mdns/issues/18"/>
         /// </remarks>
-        ConcurrentDictionary<long, DateTime> sentMessages = new ConcurrentDictionary<long, DateTime>();
+        ConcurrentDictionary<string, DateTime> sentMessages = new ConcurrentDictionary<string, DateTime>();
 
         /// <summary>
-        ///   The multicast listener.
+        ///   The multicast client.
         /// </summary>
-        MulticastUdpListener listener;
+        MulticastClient client;
 
         /// <summary>
         ///   Function used for listening filtered network interfaces.
@@ -214,8 +214,8 @@ namespace Makaretu.Dns
             NetworkInterfaceDiscovered = null;
 
             // Stop current UDP listener
-            listener?.Dispose();
-            listener = null;
+            client?.Dispose();
+            client = null;
 
             // Stop any long runnings tasks.
             using (var sc = serviceCancellation)
@@ -256,9 +256,9 @@ namespace Makaretu.Dns
 
             knownNics = currentNics;
 
-            listener?.Dispose();
-            listener = new MulticastUdpListener(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
-            listener.ListenAsync(OnDnsMessage);
+            client?.Dispose();
+            client = new MulticastClient(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
+            client.Receive(OnDnsMessage);
 
             // Tell others.
             if (newNics.Any())
@@ -354,7 +354,7 @@ namespace Makaretu.Dns
         /// </exception>
         public void SendQuery(Message msg)
         {
-            Send(msg, checkDuplicate: false);
+            Send(msg, false);
         }
 
         /// <summary>
@@ -402,7 +402,7 @@ namespace Makaretu.Dns
             Send(answer, checkDuplicate);
         }
 
-        void Send(Message msg, bool checkDuplicate = true)
+        void Send(Message msg, bool checkDuplicate)
         {
             var packet = msg.ToByteArray();
             if (packet.Length > maxPacketSize)
@@ -429,10 +429,14 @@ namespace Makaretu.Dns
                     return;
                 }
 
+                client.SendAsync(packet).GetAwaiter().GetResult();
+
                 sentMessages.AddOrUpdate(hash, DateTime.Now, (key, value) => value);
             }
-
-            listener.SendAsync(packet);
+            else
+            {
+                client.SendAsync(packet).GetAwaiter().GetResult();
+            }
         }
 
         /// <summary>
@@ -457,9 +461,9 @@ namespace Makaretu.Dns
             {
                 msg.Read(result.Buffer, 0, result.Buffer.Length);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                log.Warn("Received malformed message", ex);
+                log.Warn("Received malformed message", e);
                 return; // eat the exception
             }
 
@@ -480,9 +484,9 @@ namespace Makaretu.Dns
                     AnswerReceived?.Invoke(this, new MessageEventArgs { Message = msg, RemoteEndPoint = result.RemoteEndPoint });
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                log.Error("Receive handler failed", ex);
+                log.Error("Receive handler failed", e);
                 // eat the exception
             }
         }
@@ -492,12 +496,12 @@ namespace Makaretu.Dns
         /// </summary>
         /// <param name="source">UDP packet for hashing.</param>
         /// <returns></returns>
-        long GetHashCode(byte[] source)
+        string GetHashCode(byte[] source)
         {
             // MD5 is okay because the hash is not used for security.
             using (var md5 = MD5.Create())
             {
-                return BitConverter.ToInt64(md5.ComputeHash(source), 0);
+                return string.Join(string.Empty, md5.ComputeHash(source).Select(x => x.ToString("x2")));
             }
         }
 

@@ -9,19 +9,16 @@ using System.Threading.Tasks;
 
 namespace Makaretu.Dns
 {
-    class MulticastUdpListener : IDisposable
+    class MulticastClient : IDisposable
     {
         public static readonly bool IP6;
 
-        private readonly IPEndPoint multicastEndpoint;
+        readonly IPEndPoint multicastEndpoint;
+        readonly IPAddress multicastLoopbackAddress;
+        readonly UdpClient receiver;
+        readonly ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
 
-        UdpClient receiver;
-        ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
-        List<IPAddress> addresses = new List<IPAddress>();
-
-        public IReadOnlyCollection<IPAddress> Addresses => addresses;
-
-        static MulticastUdpListener()
+        static MulticastClient()
         {
             if (Socket.OSSupportsIPv4)
                 IP6 = false;
@@ -31,7 +28,7 @@ namespace Makaretu.Dns
                 throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
         }
 
-        public MulticastUdpListener(IPEndPoint multicastEndpoint, IEnumerable<NetworkInterface> nics)
+        public MulticastClient(IPEndPoint multicastEndpoint, IEnumerable<NetworkInterface> nics)
         {
             this.multicastEndpoint = multicastEndpoint;
 
@@ -60,7 +57,11 @@ namespace Makaretu.Dns
 
                     senders.TryAdd(address, sender);
 
-                    addresses.Add(address);
+                    // Assigning multicastLoopbackAddress to first avalable address that we use for sending messages
+                    if (multicastLoopbackAddress == null)
+                    {
+                        multicastLoopbackAddress = address;
+                    }
                 }
                 catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressNotAvailable)
                 {
@@ -69,12 +70,12 @@ namespace Makaretu.Dns
             }
         }
 
-        public void SendAsync(byte[] message)
+        public async Task SendAsync(byte[] message)
         {
-            senders.ToList().ForEach(x => x.Value.SendAsync(message, message.Length, multicastEndpoint));
+            await Task.WhenAll(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint))).ConfigureAwait(false);
         }
 
-        public void ListenAsync(Action<UdpReceiveResult> callback)
+        public void Receive(Action<UdpReceiveResult> callback)
         {
             Task.Run(async () =>
             {
@@ -82,7 +83,7 @@ namespace Makaretu.Dns
                 {
                     var task = receiver.ReceiveAsync();
 
-                    var ct1 = task.ContinueWith(x => ListenAsync(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    var ct1 = task.ContinueWith(x => Receive(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
                     var ct2 = task.ContinueWith(x => FilterMulticastLoopbackMessages(x.Result, callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
@@ -95,12 +96,21 @@ namespace Makaretu.Dns
             });
         }
 
+        /// <summary>
+        /// For multi NICs we accepting MulticastLoopback message only from one of available addresses, used for sending messages
+        /// </summary>
+        /// <param name="result">Received message <see cref="UdpReceiveResult"/></param>
+        /// <param name="next">Action to execute</param>
         void FilterMulticastLoopbackMessages(UdpReceiveResult result, Action<UdpReceiveResult> next)
         {
-            if (addresses.IndexOf(result.RemoteEndPoint.Address) <= 0)
+            var remoteIP = result.RemoteEndPoint.Address;
+
+            if (senders.ContainsKey(remoteIP) && remoteIP != multicastLoopbackAddress)
             {
-                next?.Invoke(result);
+                return;
             }
+
+            next?.Invoke(result);
         }
 
         IEnumerable<IPAddress> GetNetworkInterfaceLocalAddresses(NetworkInterface nic)
@@ -135,7 +145,7 @@ namespace Makaretu.Dns
             }
         }
 
-        ~MulticastUdpListener()
+        ~MulticastClient()
         {
             Dispose(false);
         }
