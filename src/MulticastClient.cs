@@ -55,10 +55,8 @@ namespace Makaretu.Dns
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address));
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
 
-                    senders.TryAdd(address, sender);
-
                     // Assigning multicastLoopbackAddress to first avalable address that we use for sending messages
-                    if (multicastLoopbackAddress == null)
+                    if (senders.TryAdd(address, sender) && multicastLoopbackAddress == null)
                     {
                         multicastLoopbackAddress = address;
                     }
@@ -72,7 +70,7 @@ namespace Makaretu.Dns
 
         public async Task SendAsync(byte[] message)
         {
-            await Task.WhenAll(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint))).ConfigureAwait(false);
+            await Task.WhenAny(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint)));
         }
 
         public void Receive(Action<UdpReceiveResult> callback)
@@ -105,7 +103,7 @@ namespace Makaretu.Dns
         {
             var remoteIP = result.RemoteEndPoint.Address;
 
-            if (senders.ContainsKey(remoteIP) && remoteIP != multicastLoopbackAddress)
+            if (senders.ContainsKey(remoteIP) && !remoteIP.Equals(multicastLoopbackAddress))
             {
                 return;
             }
