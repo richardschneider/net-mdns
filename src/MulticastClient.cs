@@ -70,7 +70,7 @@ namespace Makaretu.Dns
 
         public async Task SendAsync(byte[] message)
         {
-            await Task.WhenAny(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint)));
+            await Task.WhenAny(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint))).ConfigureAwait(false);
         }
 
         public void Receive(Action<UdpReceiveResult> callback)
@@ -81,9 +81,9 @@ namespace Makaretu.Dns
                 {
                     var task = receiver.ReceiveAsync();
 
-                    var ct1 = task.ContinueWith(x => Receive(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    _ = task.ContinueWith(x => Receive(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
-                    var ct2 = task.ContinueWith(x => FilterMulticastLoopbackMessages(x.Result, callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    _ = task.ContinueWith(x => FilterMulticastLoopbackMessages(x.Result, callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
                     await task.ConfigureAwait(false);
                 }
