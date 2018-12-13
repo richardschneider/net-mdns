@@ -40,7 +40,6 @@ pull_requests:
   do_not_increment_build_number: true
 
 before_build:
-  - nuget restore
   - ps: gitversion /output buildserver >gitversion.log
 
 build_script:
@@ -67,7 +66,6 @@ after_test:
         packages\coveralls.net.0.6.0\tools\csmacnz.coveralls.exe 
         --opencover -i ./coverage.xml --useRelativePaths --serviceName appveyor --jobId %APPVEYOR_BUILD_NUMBER%
 # Build documentation in doc\_site
-    - del src\obj\*.* /s /q
     - docfx doc\docfx.json --logLevel Warning
     - 7z a -tzip docs.zip doc\_site
     - appveyor PushArtifact docs.zip
