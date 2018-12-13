@@ -21,8 +21,8 @@ init:
   - git config --global user.email "noreply@emanon.org"
   - git config --global user.name "Appveyor CI"
 
-cache:
-  - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+# cache:
+#  - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
 environment:
   COVERALLS_REPO_TOKEN:
@@ -40,6 +40,7 @@ pull_requests:
   do_not_increment_build_number: true
 
 before_build:
+  - nuget restore
   - ps: gitversion /output buildserver >gitversion.log
 
 build_script:
