@@ -70,6 +70,9 @@ namespace Makaretu.Dns
         ///   the <see cref="Message.Answers"/> and not the <see cref="Message.AdditionalRecords"/>.
         ///   Setting this to <b>true</b>, will move the additional records
         ///   into the answers.
+        ///   <para>
+        ///   This never done for DNS-SD answers.
+        ///   </para>
         /// </remarks>
         public bool AnswersContainsAdditionalRecords { get; set; }
 
@@ -207,16 +210,16 @@ namespace Makaretu.Dns
                 return;
             }
 
-            if (AnswersContainsAdditionalRecords)
-            {
-                response.Answers.AddRange(response.AdditionalRecords);
-            }
-
             // Many bonjour browsers don't like DNS-SD response
             // with additional records.
             if (response.Answers.Any(a => a.Name == ServiceName))
             {
                 response.AdditionalRecords.Clear();
+            }
+
+            if (AnswersContainsAdditionalRecords)
+            {
+                response.Answers.AddRange(response.AdditionalRecords);
             }
 
             Mdns.SendAnswer(response);
