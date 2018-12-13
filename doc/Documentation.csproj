@@ -4,4 +4,8 @@
     <TargetFrameworks>netstandard2</TargetFrameworks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Makaretu.Dns" Version="1.2.0" />
+  </ItemGroup>
+
 </Project>

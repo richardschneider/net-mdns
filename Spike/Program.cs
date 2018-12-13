@@ -21,10 +21,7 @@ namespace Spike
             };
             LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter(properties);
 
-            var mdns = new MulticastService
-            {
-                NetworkInterfaceDiscoveryInterval = TimeSpan.FromSeconds(1),
-            };
+            var mdns = new MulticastService();
 
             foreach (var a in MulticastService.GetIPAddresses())
             {

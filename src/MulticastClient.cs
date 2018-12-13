@@ -33,10 +33,7 @@ namespace Makaretu.Dns
             this.multicastEndpoint = multicastEndpoint;
 
             receiver = new UdpClient(multicastEndpoint.AddressFamily);
-
             receiver.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            receiver.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, false);
-
             receiver.Client.Bind(new IPEndPoint(IP6 ? IPAddress.IPv6Any : IPAddress.Any, multicastEndpoint.Port));
 
             foreach (var address in nics.SelectMany(GetNetworkInterfaceLocalAddresses))
@@ -46,12 +43,8 @@ namespace Makaretu.Dns
                     receiver.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address, address));
 
                     var sender = new UdpClient(multicastEndpoint.AddressFamily);
-
                     sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                    sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, false);
-
                     sender.Client.Bind(new IPEndPoint(address, multicastEndpoint.Port));
-
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address));
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
 
