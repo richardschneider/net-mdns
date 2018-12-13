@@ -26,18 +26,34 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MessageEventArgs.Message
   nameWithType: MessageEventArgs.Message
+- uid: Makaretu.Dns.MessageEventArgs.RemoteEndPoint
+  name: RemoteEndPoint
+  href: api/Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_RemoteEndPoint
+  commentId: P:Makaretu.Dns.MessageEventArgs.RemoteEndPoint
+  fullName: Makaretu.Dns.MessageEventArgs.RemoteEndPoint
+  nameWithType: MessageEventArgs.RemoteEndPoint
+- uid: Makaretu.Dns.MessageEventArgs.RemoteEndPoint*
+  name: RemoteEndPoint
+  href: api/Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_RemoteEndPoint_
+  commentId: Overload:Makaretu.Dns.MessageEventArgs.RemoteEndPoint
+  isSpec: "True"
+  fullName: Makaretu.Dns.MessageEventArgs.RemoteEndPoint
+  nameWithType: MessageEventArgs.RemoteEndPoint
 - uid: Makaretu.Dns.MulticastService
   name: MulticastService
   href: api/Makaretu.Dns.MulticastService.html
   commentId: T:Makaretu.Dns.MulticastService
   fullName: Makaretu.Dns.MulticastService
   nameWithType: MulticastService
-- uid: Makaretu.Dns.MulticastService.#ctor
-  name: MulticastService()
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService__ctor
-  commentId: M:Makaretu.Dns.MulticastService.#ctor
-  fullName: Makaretu.Dns.MulticastService.MulticastService()
-  nameWithType: MulticastService.MulticastService()
+- uid: Makaretu.Dns.MulticastService.#ctor(Func{IEnumerable{NetworkInterface},IEnumerable{NetworkInterface}})
+  name: MulticastService(Func<IEnumerable<NetworkInterface>, IEnumerable<NetworkInterface>>)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService__ctor_Func_IEnumerable_NetworkInterface__IEnumerable_NetworkInterface___
+  commentId: M:Makaretu.Dns.MulticastService.#ctor(Func{IEnumerable{NetworkInterface},IEnumerable{NetworkInterface}})
+  name.vb: MulticastService(Func(Of IEnumerable(Of NetworkInterface), IEnumerable(Of NetworkInterface)))
+  fullName: Makaretu.Dns.MulticastService.MulticastService(Func<IEnumerable<NetworkInterface>, IEnumerable<NetworkInterface>>)
+  fullName.vb: Makaretu.Dns.MulticastService.MulticastService(Func(Of IEnumerable(Of NetworkInterface), IEnumerable(Of NetworkInterface)))
+  nameWithType: MulticastService.MulticastService(Func<IEnumerable<NetworkInterface>, IEnumerable<NetworkInterface>>)
+  nameWithType.vb: MulticastService.MulticastService(Func(Of IEnumerable(Of NetworkInterface), IEnumerable(Of NetworkInterface)))
 - uid: Makaretu.Dns.MulticastService.#ctor*
   name: MulticastService
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService__ctor_
