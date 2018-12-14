@@ -37,8 +37,6 @@ namespace Makaretu.Dns
         static readonly IPNetwork[] LinkLocalNetworks = new[] { IPNetwork.Parse("169.254.0.0/16"), IPNetwork.Parse("fe80::/10") };
         static readonly IPEndPoint MdnsEndpoint = new IPEndPoint(MulticastClient.IP6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
 
-        CancellationTokenSource serviceCancellation;
-
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
 
         int maxPacketSize;
@@ -192,7 +190,6 @@ namespace Makaretu.Dns
         /// </summary>
         public void Start()
         {
-            serviceCancellation = new CancellationTokenSource();
             maxPacketSize = maxDatagramSize - packetOverhead;
 
             knownNics.Clear();
@@ -216,13 +213,6 @@ namespace Makaretu.Dns
             // Stop current UDP listener
             client?.Dispose();
             client = null;
-
-            // Stop any long runnings tasks.
-            using (var sc = serviceCancellation)
-            {
-                serviceCancellation = null;
-                sc?.Cancel();
-            }
         }
 
         void OnNetworkAddressChanged(object sender, EventArgs e) => FindNetworkInterfaces();
