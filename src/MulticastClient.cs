@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Makaretu.Dns
 {
     class MulticastClient : IDisposable
     {
+        static readonly ILog log = LogManager.GetLogger(typeof(MulticastClient));
         public static readonly bool IP6;
 
         readonly IPEndPoint multicastEndpoint;
@@ -38,13 +40,20 @@ namespace Makaretu.Dns
 
             foreach (var address in nics.SelectMany(GetNetworkInterfaceLocalAddresses))
             {
+                if (senders.Keys.Contains(address))
+                {
+                    continue;
+                }
+
+                var localEndpoint = new IPEndPoint(address, multicastEndpoint.Port);
+                log.Debug($"Will send to {localEndpoint}");
+                var sender = new UdpClient(multicastEndpoint.AddressFamily);
                 try
                 {
                     receiver.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address, address));
 
-                    var sender = new UdpClient(multicastEndpoint.AddressFamily);
                     sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                    sender.Client.Bind(new IPEndPoint(address, multicastEndpoint.Port));
+                    sender.Client.Bind(localEndpoint);
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address));
                     sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
 
@@ -57,6 +66,12 @@ namespace Makaretu.Dns
                 catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressNotAvailable)
                 {
                     // VPN NetworkInterfaces
+                    sender.Dispose();
+                }
+                catch (Exception)
+                {
+                    sender.Dispose();
+                    throw;
                 }
             }
         }

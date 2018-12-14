@@ -229,48 +229,67 @@ namespace Makaretu.Dns
 
         void FindNetworkInterfaces()
         {
-            var currentNics = GetNetworkInterfaces().ToList();
+            log.Debug("Finding network interfaces");
 
-            var newNics = new List<NetworkInterface>();
-            var oldNics = new List<NetworkInterface>();
-
-            foreach (var nic in knownNics.Where(k => !currentNics.Any(n => k.Id == n.Id)))
+            try
             {
-                oldNics.Add(nic);
+                var currentNics = GetNetworkInterfaces().ToList();
 
-                if (log.IsDebugEnabled)
+                var newNics = new List<NetworkInterface>();
+                var oldNics = new List<NetworkInterface>();
+
+                foreach (var nic in knownNics.Where(k => !currentNics.Any(n => k.Id == n.Id)))
                 {
-                    log.Debug($"Removed nic '{nic.Name}'.");
+                    oldNics.Add(nic);
+
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug($"Removed nic '{nic.Name}'.");
+                    }
                 }
-            }
 
-            foreach (var nic in currentNics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
-            {
-                newNics.Add(nic);
-
-                if (log.IsDebugEnabled)
+                foreach (var nic in currentNics.Where(nic => !knownNics.Any(k => k.Id == nic.Id)))
                 {
-                    log.Debug($"Found nic '{nic.Name}'.");
+                    newNics.Add(nic);
+
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug($"Found nic '{nic.Name}'.");
+                    }
                 }
-            }
 
-            knownNics = currentNics;
+                knownNics = currentNics;
 
-            client?.Dispose();
-            client = new MulticastClient(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
-            client.Receive(OnDnsMessage);
-
-            // Tell others.
-            if (newNics.Any())
-            {
-                NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+                // Only create client if something has change.
+                if (newNics.Any() || oldNics.Any())
                 {
-                    NetworkInterfaces = newNics
-                });
-            }
+                    client?.Dispose();
+                    client = new MulticastClient(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
+                    client.Receive(OnDnsMessage);
+                }
 
-            NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
-            NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
+                // Tell others.
+                if (newNics.Any())
+                {
+                    NetworkInterfaceDiscovered?.Invoke(this, new NetworkInterfaceEventArgs
+                    {
+                        NetworkInterfaces = newNics
+                    });
+                }
+
+                // Magic from @eshvatskyi
+                //
+                // I've seen situation when NetworkAddressChanged is not triggered 
+                // (wifi off, but NIC is not disabled, wifi - on, NIC was not changed 
+                // so no event). Rebinding fixes this.
+                //
+                NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+                NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
+            }
+            catch (Exception e)
+            {
+                log.Error("FindNics failed", e);
+            }
         }
 
         /// <inheritdoc />
