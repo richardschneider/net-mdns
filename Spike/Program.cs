@@ -17,7 +17,9 @@ namespace Spike
             {
                 ["level"] = "TRACE",
                 ["showLogName"] = "true",
-                ["showDateTime"] = "true"
+                ["showDateTime"] = "true",
+                ["dateTimeFormat"] = "HH:mm:ss.fff"
+
             };
             LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter(properties);
 

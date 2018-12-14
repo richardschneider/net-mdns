@@ -260,9 +260,13 @@ namespace Makaretu.Dns
 
                 knownNics = currentNics;
 
-                client?.Dispose();
-                client = new MulticastClient(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
-                client.Receive(OnDnsMessage);
+                // Only create client if something has change.
+                if (newNics.Any() || oldNics.Any())
+                {
+                    client?.Dispose();
+                    client = new MulticastClient(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
+                    client.Receive(OnDnsMessage);
+                }
 
                 // Tell others.
                 if (newNics.Any())
@@ -273,6 +277,12 @@ namespace Makaretu.Dns
                     });
                 }
 
+                // Magic from @eshvatskyi
+                //
+                // I've seen situation when NetworkAddressChanged is not triggered 
+                // (wifi off, but NIC is not disabled, wifi - on, NIC was not changed 
+                // so no event). Rebinding fixes this.
+                //
                 NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
                 NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
             }
