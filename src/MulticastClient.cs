@@ -78,7 +78,7 @@ namespace Makaretu.Dns
 
         public async Task SendAsync(byte[] message)
         {
-            await Task.WhenAny(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint))).ConfigureAwait(false);
+            await Task.WhenAll(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint))).ConfigureAwait(false);
         }
 
         public void Receive(Action<UdpReceiveResult> callback)
