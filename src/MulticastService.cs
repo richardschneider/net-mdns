@@ -285,7 +285,7 @@ namespace Makaretu.Dns
                     client?.Dispose();
                     var endpoint = UseIpv4 ? MdnsEndpointIp4 : MdnsEndpointIp6;
                     client = new MulticastClient(endpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
-                    client.Receive(OnDnsMessage);
+                    client.MessageReceived += OnDnsMessage;
                 }
 
                 // Tell others.
@@ -479,8 +479,11 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
-        ///   Called by the listener when a DNS message is received.	
+        ///   Called by the MulticastClient when a DNS message is received.	
         /// </summary>	
+        /// <param name="sender">
+        ///   The <see cref="MulticastClient"/> that got the message.
+        /// </param>
         /// <param name="result">	
         ///   The received message <see cref="UdpReceiveResult"/>.	
         /// </param>	
@@ -492,7 +495,7 @@ namespace Makaretu.Dns
         ///   are silently ignored.	
         ///   </para>	
         /// </remarks>
-        void OnDnsMessage(UdpReceiveResult result)
+        void OnDnsMessage(object sender, UdpReceiveResult result)
         {
             var msg = new Message();
 
