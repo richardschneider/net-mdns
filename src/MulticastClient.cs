@@ -37,6 +37,10 @@ namespace Makaretu.Dns
             receiver = new UdpClient(multicastEndpoint.AddressFamily);
             receiver.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             receiver.Client.Bind(new IPEndPoint(IP6 ? IPAddress.IPv6Any : IPAddress.Any, multicastEndpoint.Port));
+            if (IP6)
+            {
+                receiver.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(multicastEndpoint.Address));
+            }
 
             foreach (var address in nics.SelectMany(GetNetworkInterfaceLocalAddresses))
             {
@@ -50,12 +54,24 @@ namespace Makaretu.Dns
                 var sender = new UdpClient(multicastEndpoint.AddressFamily);
                 try
                 {
-                    receiver.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address, address));
-
-                    sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                    sender.Client.Bind(localEndpoint);
-                    sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address));
-                    sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
+                    switch (address.AddressFamily)
+                    {
+                        case AddressFamily.InterNetwork:
+                            receiver.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address, address));
+                            sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                            sender.Client.Bind(localEndpoint);
+                            sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address));
+                            sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
+                            break;
+                        case AddressFamily.InterNetworkV6:
+                            sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                            sender.Client.Bind(localEndpoint);
+                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(multicastEndpoint.Address));
+                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastLoopback, true);
+                            break;
+                        default:
+                            throw new NotSupportedException($"Address family {address.AddressFamily}.");
+                    }
 
                     // Assigning multicastLoopbackAddress to first avalable address that we use for sending messages
                     if (senders.TryAdd(address, sender) && multicastLoopbackAddress == null)
