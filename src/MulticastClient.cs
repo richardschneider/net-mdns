@@ -13,25 +13,16 @@ namespace Makaretu.Dns
     class MulticastClient : IDisposable
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastClient));
-        public static readonly bool IP6;
 
         readonly IPEndPoint multicastEndpoint;
         readonly IPAddress multicastLoopbackAddress;
         readonly UdpClient receiver;
         readonly ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
-
-        static MulticastClient()
-        {
-            if (Socket.OSSupportsIPv4)
-                IP6 = false;
-            else if (Socket.OSSupportsIPv6)
-                IP6 = true;
-            else
-                throw new InvalidOperationException("No OS support for IPv4 nor IPv6");
-        }
+        readonly bool IP6;
 
         public MulticastClient(IPEndPoint multicastEndpoint, IEnumerable<NetworkInterface> nics)
         {
+            IP6 = multicastEndpoint.AddressFamily == AddressFamily.InterNetworkV6;
             this.multicastEndpoint = multicastEndpoint;
 
             receiver = new UdpClient(multicastEndpoint.AddressFamily);
