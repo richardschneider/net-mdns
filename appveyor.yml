@@ -51,7 +51,7 @@ after_build:
   - cmd: appveyor PushArtifact "src\bin\%CONFIGURATION%\Makaretu.Dns.Multicast.%GitVersion_MajorMinorPatch%.nupkg"
 
 test_script:
-  - dotnet test -c %CONFIGURATION% --no-build --no-restore test
+  - dotnet test -c %CONFIGURATION% --no-build --no-restore test --filter TestCategory!=IPv6
 
 after_test: 
 # Generate coverage report
