@@ -35,10 +35,10 @@ namespace Makaretu.Dns
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         static readonly IPNetwork[] LinkLocalNetworks = new[] { IPNetwork.Parse("169.254.0.0/16"), IPNetwork.Parse("fe80::/10") };
-        static readonly IPEndPoint MdnsEndpoint = new IPEndPoint(MulticastClient.IP6 ? MulticastAddressIp6 : MulticastAddressIp4, MulticastPort);
+        static readonly IPEndPoint MdnsEndpointIp6 = new IPEndPoint(MulticastAddressIp6, MulticastPort);
+        static readonly IPEndPoint MdnsEndpointIp4 = new IPEndPoint(MulticastAddressIp4, MulticastPort);
 
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
-
         int maxPacketSize;
 
         /// <summary>
@@ -119,7 +119,36 @@ namespace Makaretu.Dns
         public MulticastService(Func<IEnumerable<NetworkInterface>, IEnumerable<NetworkInterface>> filter = null)
         {
             networkInterfacesFilter = filter;
+
+            // TODO: Until dual-stack support is availble, IPv4 and IPv6 are mutually exclusive.
+            // default to IPv4.
+            if (Socket.OSSupportsIPv4)
+            {
+                UseIpv4 = true;
+                UseIpv6 = false;
+            }
+            else if (Socket.OSSupportsIPv6)
+            {
+                UseIpv4 = false;
+                UseIpv6 = true;
+            }
         }
+
+        /// <summary>
+        ///   Send and receive on IPv4.
+        /// </summary>
+        /// <value>
+        ///   Defaults to <b>true</b> if the OS supports it.
+        /// </value>
+        public bool UseIpv4 { get; set; }
+
+        /// <summary>
+        ///   Send and receive on IPv6.
+        /// </summary>
+        /// <value>
+        ///   Defaults to <b>true</b> if the OS supports it.
+        /// </value>
+        public bool UseIpv6 { get; set; }
 
         /// <summary>
         ///   The interval for discovering network interfaces.
@@ -254,7 +283,8 @@ namespace Makaretu.Dns
                 if (newNics.Any() || oldNics.Any())
                 {
                     client?.Dispose();
-                    client = new MulticastClient(MdnsEndpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
+                    var endpoint = UseIpv4 ? MdnsEndpointIp4 : MdnsEndpointIp6;
+                    client = new MulticastClient(endpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
                     client.Receive(OnDnsMessage);
                 }
 

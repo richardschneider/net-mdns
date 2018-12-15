@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard1.4 
-      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp1.1
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp1.1 --filter TestCategory!=IPv6
 
   dotnet2:
     working_directory: /temp
@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard2 
-      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2 --filter TestCategory!=IPv6
 
   dotnet21:
     working_directory: /temp
@@ -45,7 +45,7 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard2 
-      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.1
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.1 --filter TestCategory!=IPv6
 
   dotnet22:
     working_directory: /temp
@@ -60,7 +60,7 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard2 
-      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.2
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.2 --filter TestCategory!=IPv6
 
 workflows:
   version: 2

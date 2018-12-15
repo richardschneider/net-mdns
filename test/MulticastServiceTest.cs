@@ -103,6 +103,99 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        public void ReceiveAnswer_IPv4()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var done = new ManualResetEvent(false);
+            Message response = null;
+
+            using (var mdns = new MulticastService())
+            {
+                mdns.UseIpv4 = true;
+                mdns.UseIpv6 = false;
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
+                mdns.QueryReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
+                    {
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("127.1.1.1")
+                        });
+                        mdns.SendAnswer(res);
+                    }
+                };
+                mdns.AnswerReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Answers.Any(answer => answer.Name == service))
+                    {
+                        response = msg;
+                        done.Set();
+                    }
+                };
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "answer timeout");
+                Assert.IsNotNull(response);
+                Assert.IsTrue(response.IsResponse);
+                Assert.AreEqual(MessageStatus.NoError, response.Status);
+                Assert.IsTrue(response.AA);
+                var a = (ARecord)response.Answers[0];
+                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("IPv6")]
+        public void ReceiveAnswer_IPv6()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var done = new ManualResetEvent(false);
+            Message response = null;
+
+            using (var mdns = new MulticastService())
+            {
+                mdns.UseIpv4 = false;
+                mdns.UseIpv6 = true;
+                mdns.NetworkInterfaceDiscovered += (s, e) => mdns.SendQuery(service);
+                mdns.QueryReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
+                    {
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("::2")
+                        });
+                        mdns.SendAnswer(res);
+                    }
+                };
+                mdns.AnswerReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Answers.Any(answer => answer.Name == service))
+                    {
+                        response = msg;
+                        done.Set();
+                    }
+                };
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "answer timeout");
+                Assert.IsNotNull(response);
+                Assert.IsTrue(response.IsResponse);
+                Assert.AreEqual(MessageStatus.NoError, response.Status);
+                Assert.IsTrue(response.AA);
+                var a = (ARecord)response.Answers[0];
+                Assert.AreEqual(IPAddress.Parse("::2"), a.Address);
+            }
+        }
+
+        [TestMethod]
         public void ReceiveErrorAnswer()
         {
             var service = Guid.NewGuid().ToString() + ".local";
