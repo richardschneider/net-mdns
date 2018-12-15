@@ -221,6 +221,32 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.Stop
   nameWithType: MulticastService.Stop
+- uid: Makaretu.Dns.MulticastService.UseIpv4
+  name: UseIpv4
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_UseIpv4
+  commentId: P:Makaretu.Dns.MulticastService.UseIpv4
+  fullName: Makaretu.Dns.MulticastService.UseIpv4
+  nameWithType: MulticastService.UseIpv4
+- uid: Makaretu.Dns.MulticastService.UseIpv4*
+  name: UseIpv4
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_UseIpv4_
+  commentId: Overload:Makaretu.Dns.MulticastService.UseIpv4
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.UseIpv4
+  nameWithType: MulticastService.UseIpv4
+- uid: Makaretu.Dns.MulticastService.UseIpv6
+  name: UseIpv6
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_UseIpv6
+  commentId: P:Makaretu.Dns.MulticastService.UseIpv6
+  fullName: Makaretu.Dns.MulticastService.UseIpv6
+  nameWithType: MulticastService.UseIpv6
+- uid: Makaretu.Dns.MulticastService.UseIpv6*
+  name: UseIpv6
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_UseIpv6_
+  commentId: Overload:Makaretu.Dns.MulticastService.UseIpv6
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.UseIpv6
+  nameWithType: MulticastService.UseIpv6
 - uid: Makaretu.Dns.NetworkInterfaceEventArgs
   name: NetworkInterfaceEventArgs
   href: api/Makaretu.Dns.NetworkInterfaceEventArgs.html
