@@ -167,7 +167,7 @@ namespace Makaretu.Dns
                     if (msg.Questions.Any(q => q.Name == service))
                     {
                         var res = msg.CreateResponse();
-                        res.Answers.Add(new ARecord
+                        res.Answers.Add(new AAAARecord
                         {
                             Name = service,
                             Address = IPAddress.Parse("::2")
@@ -190,7 +190,7 @@ namespace Makaretu.Dns
                 Assert.IsTrue(response.IsResponse);
                 Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
-                var a = (ARecord)response.Answers[0];
+                var a = (AAAARecord)response.Answers[0];
                 Assert.AreEqual(IPAddress.Parse("::2"), a.Address);
             }
         }
