@@ -99,10 +99,10 @@ namespace Makaretu.Dns
                     // VPN NetworkInterfaces
                     sender.Dispose();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    log.Error($"Cannot setup send socket for {addreses}: {e.Message}");
                     sender.Dispose();
-                    throw;
                 }
             }
 
