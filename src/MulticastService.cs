@@ -42,6 +42,11 @@ namespace Makaretu.Dns
         RecentMessages sentMessages = new RecentMessages();
 
         /// <summary>
+        ///   Recently received messages.
+        /// </summary>
+        RecentMessages receivedMessages = new RecentMessages();
+
+        /// <summary>
         ///   The multicast client.
         /// </summary>
         MulticastClient client;
@@ -452,8 +457,13 @@ namespace Makaretu.Dns
         /// </remarks>
         void OnDnsMessage(object sender, UdpReceiveResult result)
         {
-            var msg = new Message();
+            // If recently received, then ignore.
+            if (!receivedMessages.TryAdd(result.Buffer))
+            {
+                return;
+            }
 
+            var msg = new Message();
             try
             {
                 msg.Read(result.Buffer, 0, result.Buffer.Length);

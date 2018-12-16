@@ -492,7 +492,7 @@ namespace Makaretu.Dns
                 mdns.NetworkInterfaceDiscovered += async (s, e) =>
                 {
                     mdns.SendQuery(service);
-                    await Task.Delay(250);
+                    await Task.Delay(2000);
                     mdns.SendQuery(service);
                 };
                 mdns.QueryReceived += (s, e) =>
@@ -518,7 +518,7 @@ namespace Makaretu.Dns
                     };
                 };
                 mdns.Start();
-                await Task.Delay(1000);
+                await Task.Delay(3000);
                 Assert.AreEqual(2, answerCount);
             }
         }
