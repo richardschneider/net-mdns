@@ -136,7 +136,9 @@ namespace Makaretu.Dns
         {
             return nic.GetIPProperties().UnicastAddresses
                 .Select(x => x.Address)
-                .Where(x => x.AddressFamily == (IP6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork));
+                .Where(x => x.AddressFamily == (IP6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork))
+                .Where(x => x.AddressFamily != AddressFamily.InterNetworkV6 || x.IsIPv6LinkLocal)
+                ;
         }
 
         #region IDisposable Support
