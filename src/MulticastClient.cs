@@ -66,7 +66,6 @@ namespace Makaretu.Dns
                 }
 
                 var localEndpoint = new IPEndPoint(address, MulticastPort);
-                log.Debug($"Will send to {localEndpoint}");
                 var sender = new UdpClient(address.AddressFamily);
                 try
                 {
@@ -89,6 +88,7 @@ namespace Makaretu.Dns
                             throw new NotSupportedException($"Address family {address.AddressFamily}.");
                     }
 
+                    log.Debug($"Will send via {localEndpoint}");
                     if (!senders.TryAdd(address, sender)) // Should not fail
                     {
                         sender.Dispose();
@@ -115,7 +115,22 @@ namespace Makaretu.Dns
 
         public async Task SendAsync(byte[] message)
         {
-            await Task.WhenAll(senders.Select(x => x.Value.SendAsync(message, message.Length, x.Key.AddressFamily == AddressFamily.InterNetwork ? MdnsEndpointIp4 : MdnsEndpointIp6))).ConfigureAwait(false);
+            foreach (var sender in senders)
+            {
+                try
+                {
+                    var endpoint = sender.Key.AddressFamily == AddressFamily.InterNetwork ? MdnsEndpointIp4 : MdnsEndpointIp6;
+                    await sender.Value.SendAsync(
+                        message, message.Length, 
+                        endpoint)
+                    .ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    log.Error($"Sender {sender.Key} failure: {e.Message}");
+                    // eat it.
+                }
+            }
         }
 
         void Listen(UdpClient receiver)
