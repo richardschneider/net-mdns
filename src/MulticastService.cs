@@ -26,17 +26,12 @@ namespace Makaretu.Dns
     /// </remarks>
     public class MulticastService : IResolver, IDisposable
     {
-        const int MulticastPort = 5353;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
         const int packetOverhead = 48;
         const int maxDatagramSize = Message.MaxLength;
 
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
-        static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
-        static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         static readonly IPNetwork[] LinkLocalNetworks = new[] { IPNetwork.Parse("169.254.0.0/16"), IPNetwork.Parse("fe80::/10") };
-        static readonly IPEndPoint MdnsEndpointIp6 = new IPEndPoint(MulticastAddressIp6, MulticastPort);
-        static readonly IPEndPoint MdnsEndpointIp4 = new IPEndPoint(MulticastAddressIp4, MulticastPort);
 
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
         int maxPacketSize;
@@ -120,18 +115,8 @@ namespace Makaretu.Dns
         {
             networkInterfacesFilter = filter;
 
-            // TODO: Until dual-stack support is availble, IPv4 and IPv6 are mutually exclusive.
-            // default to IPv4.
-            if (Socket.OSSupportsIPv4)
-            {
-                UseIpv4 = true;
-                UseIpv6 = false;
-            }
-            else if (Socket.OSSupportsIPv6)
-            {
-                UseIpv4 = false;
-                UseIpv6 = true;
-            }
+            UseIpv4 = Socket.OSSupportsIPv4;
+            UseIpv6 = Socket.OSSupportsIPv6;
         }
 
         /// <summary>
@@ -283,8 +268,7 @@ namespace Makaretu.Dns
                 if (newNics.Any() || oldNics.Any())
                 {
                     client?.Dispose();
-                    var endpoint = UseIpv4 ? MdnsEndpointIp4 : MdnsEndpointIp6;
-                    client = new MulticastClient(endpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
+                    client = new MulticastClient(UseIpv4, UseIpv6, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
                     client.MessageReceived += OnDnsMessage;
                 }
 
