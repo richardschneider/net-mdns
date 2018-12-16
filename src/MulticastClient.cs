@@ -49,7 +49,6 @@ namespace Makaretu.Dns
                 receiver6 = new UdpClient(AddressFamily.InterNetworkV6);
                 receiver6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 receiver6.Client.Bind(new IPEndPoint(IPAddress.IPv6Any, MulticastPort));
-                receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
                 receivers.Add(receiver6);
             }
 
@@ -79,6 +78,7 @@ namespace Makaretu.Dns
                             sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
                             break;
                         case AddressFamily.InterNetworkV6:
+                            receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
                             sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                             sender.Client.Bind(localEndpoint);
                             sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
