@@ -39,15 +39,7 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Recently sent messages.
         /// </summary>
-        /// <value>
-        ///   The key is the MD5 hash of the <see cref="Message"/> and the
-        ///   value is when the message was sent.
-        /// </value>
-        /// <remarks>
-        ///   This is used to avoid floding of responses as per
-        ///   <see href="https://github.com/richardschneider/net-mdns/issues/18"/>
-        /// </remarks>
-        ConcurrentDictionary<string, DateTime> sentMessages = new ConcurrentDictionary<string, DateTime>();
+        RecentMessages sentMessages = new RecentMessages();
 
         /// <summary>
         ///   The multicast client.
@@ -433,33 +425,12 @@ namespace Makaretu.Dns
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
             }
 
-            if (checkDuplicate)
+            if (checkDuplicate && !sentMessages.TryAdd(packet))
             {
-                // Get the hash of the packet.
-                var hash = GetHashCode(packet);
-
-                // Prune the sent messages.  Anything older than a second ago is removed.
-                var dead = DateTime.Now.AddSeconds(-1);
-
-                foreach (var notrecent in sentMessages.Where(x => x.Value < dead))
-                {
-                    sentMessages.TryRemove(notrecent.Key, out _);
-                }
-
-                // If messsage was recently sent, then do not send again.
-                if (sentMessages.ContainsKey(hash))
-                {
-                    return;
-                }
-
-                client.SendAsync(packet).GetAwaiter().GetResult();
-
-                sentMessages.AddOrUpdate(hash, DateTime.Now, (key, value) => value);
+                return;
             }
-            else
-            {
-                client.SendAsync(packet).GetAwaiter().GetResult();
-            }
+
+            client.SendAsync(packet).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -514,20 +485,6 @@ namespace Makaretu.Dns
             {
                 log.Error("Receive handler failed", e);
                 // eat the exception
-            }
-        }
-
-        /// <summary>
-        /// Get the hash of the packet.
-        /// </summary>
-        /// <param name="source">UDP packet for hashing.</param>
-        /// <returns></returns>
-        string GetHashCode(byte[] source)
-        {
-            // MD5 is okay because the hash is not used for security.
-            using (var md5 = MD5.Create())
-            {
-                return string.Join(string.Empty, md5.ComputeHash(source).Select(x => x.ToString("x2")));
             }
         }
 
