@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace Makaretu.Dns
 {
+    /// <summary>
+    ///   Performs the magic to send and receive datagrams over multicast
+    ///   sockets.
+    /// </summary>
     class MulticastClient : IDisposable
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastClient));
@@ -20,7 +24,6 @@ namespace Makaretu.Dns
         static readonly IPEndPoint MdnsEndpointIp6 = new IPEndPoint(MulticastAddressIp6, MulticastPort);
         static readonly IPEndPoint MdnsEndpointIp4 = new IPEndPoint(MulticastAddressIp4, MulticastPort);
 
-        readonly IPAddress multicastLoopbackAddress;
         readonly List<UdpClient> receivers;
         readonly ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
 
@@ -86,10 +89,9 @@ namespace Makaretu.Dns
                             throw new NotSupportedException($"Address family {address.AddressFamily}.");
                     }
 
-                    // Assigning multicastLoopbackAddress to first avalable address that we use for sending messages
-                    if (senders.TryAdd(address, sender) && multicastLoopbackAddress == null)
+                    if (!senders.TryAdd(address, sender)) // Should not fail
                     {
-                        multicastLoopbackAddress = address;
+                        sender.Dispose();
                     }
                 }
                 catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressNotAvailable)
@@ -126,7 +128,7 @@ namespace Makaretu.Dns
 
                     _ = task.ContinueWith(x => Listen(receiver), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
-                    _ = task.ContinueWith(x => FilterMulticastLoopbackMessages(x.Result), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    _ = task.ContinueWith(x => MessageReceived?.Invoke(this, x.Result), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
                     await task.ConfigureAwait(false);
                 }
@@ -135,25 +137,6 @@ namespace Makaretu.Dns
                     return;
                 }
             });
-        }
-
-        /// <summary>
-        /// For multi NICs we accepting MulticastLoopback message only from one of available addresses, used for sending messages
-        /// </summary>
-        /// <param name="result">Received message <see cref="UdpReceiveResult"/></param>
-        void FilterMulticastLoopbackMessages(UdpReceiveResult result)
-        {
-            log.Debug($"got datagram on {result.RemoteEndPoint}");
-
-            var remoteIP = result.RemoteEndPoint.Address;
-
-            if (senders.ContainsKey(remoteIP) && !remoteIP.Equals(multicastLoopbackAddress))
-            {
-                log.Debug("ignored");
-                return;
-            }
-
-            MessageReceived?.Invoke(this, result);
         }
 
         IEnumerable<IPAddress> GetNetworkInterfaceLocalAddresses(NetworkInterface nic)
