@@ -53,12 +53,25 @@ namespace Makaretu.Dns
             }
 
             // Get the IP addresses that we should send to.
-            var addreses = nics
-                .SelectMany(GetNetworkInterfaceLocalAddresses)
-                .Where(a => (useIPv4 && a.AddressFamily == AddressFamily.InterNetwork)
-                    || (useIpv6 && a.AddressFamily == AddressFamily.InterNetworkV6));
-            foreach (var address in addreses)
+            var nas = nics
+                .SelectMany(nic => {
+                    return GetNetworkInterfaceLocalAddresses(nic)
+                        .Select(a => new { nic, address = a });
+                 })
+                .Where(x => (useIPv4 && x.address.AddressFamily == AddressFamily.InterNetwork)
+                    || (useIpv6 && x.address.AddressFamily == AddressFamily.InterNetworkV6));
+            foreach (var na in nas)
             {
+                var nic = na.nic;
+                var address = na.address;
+                long ifindex = 0;
+                if (address.AddressFamily == AddressFamily.InterNetwork)
+                    ifindex = nic.GetIPProperties().GetIPv4Properties().Index;
+                else
+                    ifindex = nic.GetIPProperties().GetIPv6Properties().Index;
+
+                log.Debug($"'{nic.Name}' ({ifindex}) {address}");
+
                 if (senders.Keys.Contains(address))
                 {
                     continue;
@@ -78,9 +91,9 @@ namespace Makaretu.Dns
                             sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
                             break;
                         case AddressFamily.InterNetworkV6:
-                            receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6, address.ScopeId));
+                            receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6, ifindex));
                             sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastInterface, (int)IPAddress.HostToNetworkOrder(address.ScopeId));
+                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastInterface, (int)IPAddress.HostToNetworkOrder(ifindex));
                             sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
                             sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastLoopback, true);
                             break;
