@@ -60,7 +60,7 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build ./src/Mdns.csproj -c Release --framework netstandard2 
-      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.2 --filter TestCategory!=IPv6
+      - run: dotnet test ./test/MdnsTests.csproj -c Release --framework netcoreapp2.2
 
 workflows:
   version: 2
