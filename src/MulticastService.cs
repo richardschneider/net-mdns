@@ -26,17 +26,12 @@ namespace Makaretu.Dns
     /// </remarks>
     public class MulticastService : IResolver, IDisposable
     {
-        const int MulticastPort = 5353;
         // IP header (20 bytes for IPv4; 40 bytes for IPv6) and the UDP header(8 bytes).
         const int packetOverhead = 48;
         const int maxDatagramSize = Message.MaxLength;
 
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
-        static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
-        static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         static readonly IPNetwork[] LinkLocalNetworks = new[] { IPNetwork.Parse("169.254.0.0/16"), IPNetwork.Parse("fe80::/10") };
-        static readonly IPEndPoint MdnsEndpointIp6 = new IPEndPoint(MulticastAddressIp6, MulticastPort);
-        static readonly IPEndPoint MdnsEndpointIp4 = new IPEndPoint(MulticastAddressIp4, MulticastPort);
 
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
         int maxPacketSize;
@@ -44,15 +39,12 @@ namespace Makaretu.Dns
         /// <summary>
         ///   Recently sent messages.
         /// </summary>
-        /// <value>
-        ///   The key is the MD5 hash of the <see cref="Message"/> and the
-        ///   value is when the message was sent.
-        /// </value>
-        /// <remarks>
-        ///   This is used to avoid floding of responses as per
-        ///   <see href="https://github.com/richardschneider/net-mdns/issues/18"/>
-        /// </remarks>
-        ConcurrentDictionary<string, DateTime> sentMessages = new ConcurrentDictionary<string, DateTime>();
+        RecentMessages sentMessages = new RecentMessages();
+
+        /// <summary>
+        ///   Recently received messages.
+        /// </summary>
+        RecentMessages receivedMessages = new RecentMessages();
 
         /// <summary>
         ///   The multicast client.
@@ -120,18 +112,8 @@ namespace Makaretu.Dns
         {
             networkInterfacesFilter = filter;
 
-            // TODO: Until dual-stack support is availble, IPv4 and IPv6 are mutually exclusive.
-            // default to IPv4.
-            if (Socket.OSSupportsIPv4)
-            {
-                UseIpv4 = true;
-                UseIpv6 = false;
-            }
-            else if (Socket.OSSupportsIPv6)
-            {
-                UseIpv4 = false;
-                UseIpv6 = true;
-            }
+            UseIpv4 = Socket.OSSupportsIPv4;
+            UseIpv6 = Socket.OSSupportsIPv6;
         }
 
         /// <summary>
@@ -283,9 +265,8 @@ namespace Makaretu.Dns
                 if (newNics.Any() || oldNics.Any())
                 {
                     client?.Dispose();
-                    var endpoint = UseIpv4 ? MdnsEndpointIp4 : MdnsEndpointIp6;
-                    client = new MulticastClient(endpoint, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
-                    client.Receive(OnDnsMessage);
+                    client = new MulticastClient(UseIpv4, UseIpv6, networkInterfacesFilter?.Invoke(knownNics) ?? knownNics);
+                    client.MessageReceived += OnDnsMessage;
                 }
 
                 // Tell others.
@@ -449,38 +430,20 @@ namespace Makaretu.Dns
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
             }
 
-            if (checkDuplicate)
+            if (checkDuplicate && !sentMessages.TryAdd(packet))
             {
-                // Get the hash of the packet.
-                var hash = GetHashCode(packet);
-
-                // Prune the sent messages.  Anything older than a second ago is removed.
-                var dead = DateTime.Now.AddSeconds(-1);
-
-                foreach (var notrecent in sentMessages.Where(x => x.Value < dead))
-                {
-                    sentMessages.TryRemove(notrecent.Key, out _);
-                }
-
-                // If messsage was recently sent, then do not send again.
-                if (sentMessages.ContainsKey(hash))
-                {
-                    return;
-                }
-
-                client.SendAsync(packet).GetAwaiter().GetResult();
-
-                sentMessages.AddOrUpdate(hash, DateTime.Now, (key, value) => value);
+                return;
             }
-            else
-            {
-                client.SendAsync(packet).GetAwaiter().GetResult();
-            }
+
+            client.SendAsync(packet).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        ///   Called by the listener when a DNS message is received.	
+        ///   Called by the MulticastClient when a DNS message is received.	
         /// </summary>	
+        /// <param name="sender">
+        ///   The <see cref="MulticastClient"/> that got the message.
+        /// </param>
         /// <param name="result">	
         ///   The received message <see cref="UdpReceiveResult"/>.	
         /// </param>	
@@ -492,10 +455,15 @@ namespace Makaretu.Dns
         ///   are silently ignored.	
         ///   </para>	
         /// </remarks>
-        void OnDnsMessage(UdpReceiveResult result)
+        void OnDnsMessage(object sender, UdpReceiveResult result)
         {
-            var msg = new Message();
+            // If recently received, then ignore.
+            if (!receivedMessages.TryAdd(result.Buffer))
+            {
+                return;
+            }
 
+            var msg = new Message();
             try
             {
                 msg.Read(result.Buffer, 0, result.Buffer.Length);
@@ -527,20 +495,6 @@ namespace Makaretu.Dns
             {
                 log.Error("Receive handler failed", e);
                 // eat the exception
-            }
-        }
-
-        /// <summary>
-        /// Get the hash of the packet.
-        /// </summary>
-        /// <param name="source">UDP packet for hashing.</param>
-        /// <returns></returns>
-        string GetHashCode(byte[] source)
-        {
-            // MD5 is okay because the hash is not used for security.
-            using (var md5 = MD5.Create())
-            {
-                return string.Join(string.Empty, md5.ComputeHash(source).Select(x => x.ToString("x2")));
             }
         }
 

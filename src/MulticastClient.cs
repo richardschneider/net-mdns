@@ -10,64 +10,88 @@ using System.Threading.Tasks;
 
 namespace Makaretu.Dns
 {
+    /// <summary>
+    ///   Performs the magic to send and receive datagrams over multicast
+    ///   sockets.
+    /// </summary>
     class MulticastClient : IDisposable
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastClient));
 
-        readonly IPEndPoint multicastEndpoint;
-        readonly IPAddress multicastLoopbackAddress;
-        readonly UdpClient receiver;
+        const int MulticastPort = 5353;
+        static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
+        static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
+        static readonly IPEndPoint MdnsEndpointIp6 = new IPEndPoint(MulticastAddressIp6, MulticastPort);
+        static readonly IPEndPoint MdnsEndpointIp4 = new IPEndPoint(MulticastAddressIp4, MulticastPort);
+
+        readonly List<UdpClient> receivers;
         readonly ConcurrentDictionary<IPAddress, UdpClient> senders = new ConcurrentDictionary<IPAddress, UdpClient>();
-        readonly bool IP6;
 
-        public MulticastClient(IPEndPoint multicastEndpoint, IEnumerable<NetworkInterface> nics)
+        public event EventHandler<UdpReceiveResult> MessageReceived;
+
+        public MulticastClient(bool useIPv4, bool useIpv6, IEnumerable<NetworkInterface> nics)
         {
-            IP6 = multicastEndpoint.AddressFamily == AddressFamily.InterNetworkV6;
-            this.multicastEndpoint = multicastEndpoint;
+            // Setup the receivers.
+            receivers = new List<UdpClient>();
 
-            receiver = new UdpClient(multicastEndpoint.AddressFamily);
-            receiver.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            receiver.Client.Bind(new IPEndPoint(IP6 ? IPAddress.IPv6Any : IPAddress.Any, multicastEndpoint.Port));
-            if (IP6)
+            UdpClient receiver4 = null;
+            if (useIPv4)
             {
-                receiver.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(multicastEndpoint.Address));
+                receiver4 = new UdpClient(AddressFamily.InterNetwork);
+                receiver4.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                receiver4.Client.Bind(new IPEndPoint(IPAddress.Any, MulticastPort));
+                receivers.Add(receiver4);
             }
 
-            foreach (var address in nics.SelectMany(GetNetworkInterfaceLocalAddresses))
+            UdpClient receiver6 = null;
+            if (useIpv6)
+            {
+                receiver6 = new UdpClient(AddressFamily.InterNetworkV6);
+                receiver6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                receiver6.Client.Bind(new IPEndPoint(IPAddress.IPv6Any, MulticastPort));
+                receivers.Add(receiver6);
+            }
+
+            // Get the IP addresses that we should send to.
+            var addreses = nics
+                .SelectMany(GetNetworkInterfaceLocalAddresses)
+                .Where(a => (useIPv4 && a.AddressFamily == AddressFamily.InterNetwork)
+                    || (useIpv6 && a.AddressFamily == AddressFamily.InterNetworkV6));
+            foreach (var address in addreses)
             {
                 if (senders.Keys.Contains(address))
                 {
                     continue;
                 }
 
-                var localEndpoint = new IPEndPoint(address, multicastEndpoint.Port);
-                log.Debug($"Will send to {localEndpoint}");
-                var sender = new UdpClient(multicastEndpoint.AddressFamily);
+                var localEndpoint = new IPEndPoint(address, MulticastPort);
+                var sender = new UdpClient(address.AddressFamily);
                 try
                 {
                     switch (address.AddressFamily)
                     {
                         case AddressFamily.InterNetwork:
-                            receiver.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address, address));
+                            receiver4.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(MulticastAddressIp4, address));
                             sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                             sender.Client.Bind(localEndpoint);
-                            sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastEndpoint.Address));
+                            sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(MulticastAddressIp4));
                             sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
                             break;
                         case AddressFamily.InterNetworkV6:
+                            receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6, address.ScopeId));
                             sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                             sender.Client.Bind(localEndpoint);
-                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(multicastEndpoint.Address));
+                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
                             sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastLoopback, true);
                             break;
                         default:
                             throw new NotSupportedException($"Address family {address.AddressFamily}.");
                     }
 
-                    // Assigning multicastLoopbackAddress to first avalable address that we use for sending messages
-                    if (senders.TryAdd(address, sender) && multicastLoopbackAddress == null)
+                    log.Debug($"Will send via {localEndpoint}");
+                    if (!senders.TryAdd(address, sender)) // Should not fail
                     {
-                        multicastLoopbackAddress = address;
+                        sender.Dispose();
                     }
                 }
                 catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressNotAvailable)
@@ -75,20 +99,41 @@ namespace Makaretu.Dns
                     // VPN NetworkInterfaces
                     sender.Dispose();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    log.Error($"Cannot setup send socket for {address}: {e.Message}");
                     sender.Dispose();
-                    throw;
                 }
+            }
+
+            // Start listening for messages.
+            foreach (var r in receivers)
+            {
+                Listen(r);
             }
         }
 
         public async Task SendAsync(byte[] message)
         {
-            await Task.WhenAll(senders.Select(x => x.Value.SendAsync(message, message.Length, multicastEndpoint))).ConfigureAwait(false);
+            foreach (var sender in senders)
+            {
+                try
+                {
+                    var endpoint = sender.Key.AddressFamily == AddressFamily.InterNetwork ? MdnsEndpointIp4 : MdnsEndpointIp6;
+                    await sender.Value.SendAsync(
+                        message, message.Length, 
+                        endpoint)
+                    .ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    log.Error($"Sender {sender.Key} failure: {e.Message}");
+                    // eat it.
+                }
+            }
         }
 
-        public void Receive(Action<UdpReceiveResult> callback)
+        void Listen(UdpClient receiver)
         {
             Task.Run(async () =>
             {
@@ -96,9 +141,9 @@ namespace Makaretu.Dns
                 {
                     var task = receiver.ReceiveAsync();
 
-                    _ = task.ContinueWith(x => Receive(callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    _ = task.ContinueWith(x => Listen(receiver), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
-                    _ = task.ContinueWith(x => FilterMulticastLoopbackMessages(x.Result, callback), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
+                    _ = task.ContinueWith(x => MessageReceived?.Invoke(this, x.Result), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
                     await task.ConfigureAwait(false);
                 }
@@ -109,28 +154,14 @@ namespace Makaretu.Dns
             });
         }
 
-        /// <summary>
-        /// For multi NICs we accepting MulticastLoopback message only from one of available addresses, used for sending messages
-        /// </summary>
-        /// <param name="result">Received message <see cref="UdpReceiveResult"/></param>
-        /// <param name="next">Action to execute</param>
-        void FilterMulticastLoopbackMessages(UdpReceiveResult result, Action<UdpReceiveResult> next)
-        {
-            var remoteIP = result.RemoteEndPoint.Address;
-
-            if (senders.ContainsKey(remoteIP) && !remoteIP.Equals(multicastLoopbackAddress))
-            {
-                return;
-            }
-
-            next?.Invoke(result);
-        }
-
         IEnumerable<IPAddress> GetNetworkInterfaceLocalAddresses(NetworkInterface nic)
         {
-            return nic.GetIPProperties().UnicastAddresses
+            return nic
+                .GetIPProperties()
+                .UnicastAddresses
                 .Select(x => x.Address)
-                .Where(x => x.AddressFamily == (IP6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork));
+                .Where(x => x.AddressFamily != AddressFamily.InterNetworkV6 || x.IsIPv6LinkLocal)
+                ;
         }
 
         #region IDisposable Support
@@ -143,7 +174,10 @@ namespace Makaretu.Dns
             {
                 if (disposing)
                 {
-                    receiver?.Dispose();
+                    foreach (var receiver in receivers)
+                    {
+                        receiver.Dispose();
+                    }
 
                     foreach (var address in senders.Keys)
                     {
