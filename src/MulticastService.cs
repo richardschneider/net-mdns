@@ -155,15 +155,26 @@ namespace Makaretu.Dns
         /// <remarks>
         ///   The following filters are applied
         ///   <list type="bullet">
-        ///   <item><description>is enabled</description></item>
-        ///   <item><description>not a loopback</description></item>
+        ///   <item><description>interface is enabled</description></item>
+        ///   <item><description>interface is not a loopback</description></item>
         ///   </list>
+        ///   <para>
+        ///   If no network interface is operational, then the loopback interface(s)
+        ///   are included (127.0.0.1 and/or ::1).
+        ///   </para>
         /// </remarks>
         public static IEnumerable<NetworkInterface> GetNetworkInterfaces()
         {
-            return NetworkInterface.GetAllNetworkInterfaces()
+            var nics = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback);
+                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .ToArray();
+            if (nics.Length > 0)
+                return nics;
+
+            // Special case: no operational NIC, then use loopbacks.
+            return NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up);
         }
 
         /// <summary>
@@ -172,6 +183,10 @@ namespace Makaretu.Dns
         /// <returns>
         ///   A sequence of IP addresses of the local machine.
         /// </returns>
+        /// <remarks>
+        ///   The loopback addresses (127.0.0.1 and ::1) are NOT included in the
+        ///   returned sequences.
+        /// </remarks>
         public static IEnumerable<IPAddress> GetIPAddresses()
         {
             return GetNetworkInterfaces()
