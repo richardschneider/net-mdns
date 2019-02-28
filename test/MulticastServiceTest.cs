@@ -59,6 +59,35 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        public void SendUnicastQuery()
+        {
+            var ready = new ManualResetEvent(false);
+            var done = new ManualResetEvent(false);
+            Message msg = null;
+
+            var mdns = new MulticastService();
+            mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
+            mdns.QueryReceived += (s, e) =>
+            {
+                msg = e.Message;
+                done.Set();
+            };
+            try
+            {
+                mdns.Start();
+                Assert.IsTrue(ready.WaitOne(TimeSpan.FromSeconds(1)), "ready timeout");
+                mdns.SendUnicastQuery("some-service.local");
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
+                Assert.AreEqual("some-service.local", msg.Questions.First().Name);
+                Assert.AreEqual(DnsClass.IN + 0x8000, msg.Questions.First().Class);
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
         public void ReceiveAnswer()
         {
             var service = Guid.NewGuid().ToString() + ".local";

@@ -151,6 +151,35 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        public void Discover_AllServices_Unicast()
+        {
+            var service = new ServiceProfile("x", "_sdtest-5._udp", 1024);
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns);
+
+            mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryUnicastAllServices();
+            sd.ServiceDiscovered += (s, serviceName) =>
+            {
+                if (serviceName == service.QualifiedServiceName)
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service);
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "DNS-SD query timeout");
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
         public void Discover_ServiceInstance()
         {
             var service = new ServiceProfile("y", "_sdtest-2._udp", 1024);
@@ -161,6 +190,40 @@ namespace Makaretu.Dns
             mdns.NetworkInterfaceDiscovered += (s, e) =>
             {
                 sd.QueryServiceInstances(service.ServiceName);
+            };
+
+            sd.ServiceInstanceDiscovered += (s, e) =>
+            {
+                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                {
+                    Assert.IsNotNull(e.Message);
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service);
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
+        public void Discover_ServiceInstance_Unicast()
+        {
+            var service = new ServiceProfile("y", "_sdtest-5._udp", 1024);
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns);
+
+            mdns.NetworkInterfaceDiscovered += (s, e) =>
+            {
+                sd.QueryUnicastServiceInstances(service.ServiceName);
             };
 
             sd.ServiceInstanceDiscovered += (s, e) =>

@@ -128,6 +128,18 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        ///    Asks other MDNS services to send their service names;
+        ///    accepts unicast and/or broadcast answers.
+        /// </summary>
+        /// <remarks>
+        ///   When an answer is received the <see cref="ServiceDiscovered"/> event is raised.
+        /// </remarks>
+        public void QueryUnicastAllServices()
+        {
+            Mdns.SendUnicastQuery(ServiceName, type: DnsType.PTR);
+        }
+
+        /// <summary>
         ///   Asks instances of the specified service to send details.
         /// </summary>
         /// <param name="service">
@@ -140,6 +152,22 @@ namespace Makaretu.Dns
         public void QueryServiceInstances(string service)
         {
             Mdns.SendQuery(service + ".local", type: DnsType.PTR);
+        }
+
+        /// <summary>
+        ///   Asks instances of the specified service to send details.
+        ///   accepts unicast and/or broadcast answers.
+        /// </summary>
+        /// <param name="service">
+        ///   The service name to query. Typically of the form "_<i>service</i>._tcp".
+        /// </param>
+        /// <remarks>
+        ///   When an answer is received the <see cref="ServiceInstanceDiscovered"/> event is raised.
+        /// </remarks>
+        /// <seealso cref="ServiceProfile.ServiceName"/>
+        public void QueryUnicastServiceInstances(string service)
+        {
+            Mdns.SendUnicastQuery(service + ".local", type: DnsType.PTR);
         }
 
         /// <summary>
@@ -200,7 +228,19 @@ namespace Makaretu.Dns
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"got query from: {e.RemoteEndPoint.Address},  for {request.Questions[0].Name} {request.Questions[0].Type}");
+                log.Debug($"got query from: {e.RemoteEndPoint},  for {request.Questions[0].Name} {request.Questions[0].Type}");
+            }
+
+            // Determine if this query is requesting a unicast response
+            // and normalise the Class.
+            var QU = false; // unicast query response?
+            foreach (var r in request.Questions)
+            {
+                if (((ushort)r.Class & 0x8000) != 0)
+                {
+                    QU = true;
+                    r.Class = (DnsClass)((ushort)r.Class & 0x7fff);
+                }
             }
 
             var response = NameServer.ResolveAsync(request).Result;
@@ -222,7 +262,15 @@ namespace Makaretu.Dns
                 response.Answers.AddRange(response.AdditionalRecords);
             }
 
-            Mdns.SendAnswer(response);
+            if (QU)
+            {
+                // TODO: Send a Unicast response if required.
+                Mdns.SendAnswer(response);
+            }
+            else
+            {
+                Mdns.SendAnswer(response);
+            }
 
             if (log.IsDebugEnabled)
             {
