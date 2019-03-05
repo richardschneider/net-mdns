@@ -372,6 +372,43 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        ///   Ask for answers about a name and accept unicast and/or broadcast response.
+        /// </summary>
+        /// <param name="name">
+        ///   A domain name that should end with ".local", e.g. "myservice.local".
+        /// </param>
+        /// <param name="klass">
+        ///   The class, defaults to <see cref="DnsClass.IN"/>.
+        /// </param>
+        /// <param name="type">
+        ///   The question type, defaults to <see cref="DnsType.ANY"/>.
+        /// </param>
+        /// <remarks>
+        ///   Send a "QU" question (unicast).  The most significat bit of the Class is set.
+        ///   Answers to any query are obtained on the <see cref="AnswerReceived"/>
+        ///   event.
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        ///   When the service has not started.
+        /// </exception>
+        public void SendUnicastQuery(string name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
+        {
+            var msg = new Message
+            {
+                Opcode = MessageOperation.Query,
+                QR = false
+            };
+            msg.Questions.Add(new Question
+            {
+                Name = name,
+                Class = (DnsClass) ((ushort)klass | 0x8000),
+                Type = type
+            });
+
+            SendQuery(msg);
+        }
+
+        /// <summary>
         ///   Ask for answers.
         /// </summary>
         /// <param name="msg">
