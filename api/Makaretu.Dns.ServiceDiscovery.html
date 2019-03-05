@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ServiceDiscovery
    | Multicast DNS documentation ">
-    <meta name="generator" content="docfx 2.40.7.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -316,7 +316,7 @@ This never done for DNS-SD answers.
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Advertise_Makaretu_Dns_ServiceProfile_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Advertise(Makaretu.Dns.ServiceProfile)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L155">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L183">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceDiscovery_Advertise_" data-uid="Makaretu.Dns.ServiceDiscovery.Advertise*"></a>
   <h4 id="Makaretu_Dns_ServiceDiscovery_Advertise_Makaretu_Dns_ServiceProfile_" data-uid="Makaretu.Dns.ServiceDiscovery.Advertise(Makaretu.Dns.ServiceProfile)">Advertise(ServiceProfile)</h4>
@@ -354,7 +354,7 @@ information from the profile.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Dispose.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L255">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L303">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceDiscovery_Dispose_" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose*"></a>
   <h4 id="Makaretu_Dns_ServiceDiscovery_Dispose" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose">Dispose()</h4>
@@ -369,7 +369,7 @@ information from the profile.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_Dispose_System_Boolean_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.Dispose(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L237">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L285">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceDiscovery_Dispose_" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose*"></a>
   <h4 id="Makaretu_Dns_ServiceDiscovery_Dispose_System_Boolean_" data-uid="Makaretu.Dns.ServiceDiscovery.Dispose(System.Boolean)">Dispose(Boolean)</h4>
@@ -420,7 +420,7 @@ information from the profile.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L140">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L152">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_" data-uid="Makaretu.Dns.ServiceDiscovery.QueryServiceInstances*"></a>
   <h4 id="Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String_" data-uid="Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)">QueryServiceInstances(String)</h4>
@@ -453,6 +453,68 @@ information from the profile.</p>
   <div class="markdown level1 remarks"><p>When an answer is received the <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceInstanceDiscovered">ServiceInstanceDiscovered</a> event is raised.</p>
 </div>
   <h5 id="Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String__seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_ServiceName">ServiceName</a></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_QueryUnicastAllServices.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.QueryUnicastAllServices%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L137">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_QueryUnicastAllServices_" data-uid="Makaretu.Dns.ServiceDiscovery.QueryUnicastAllServices*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_QueryUnicastAllServices" data-uid="Makaretu.Dns.ServiceDiscovery.QueryUnicastAllServices">QueryUnicastAllServices()</h4>
+  <div class="markdown level1 summary"><p>Asks other MDNS services to send their service names;
+accepts unicast and/or broadcast answers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void QueryUnicastAllServices()</code></pre>
+  </div>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_QueryUnicastAllServices_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>When an answer is received the <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceDiscovered">ServiceDiscovered</a> event is raised.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_System_String_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceDiscovery.cs/#L168">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_" data-uid="Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances*"></a>
+  <h4 id="Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_System_String_" data-uid="Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(System.String)">QueryUnicastServiceInstances(String)</h4>
+  <div class="markdown level1 summary"><p>Asks instances of the specified service to send details.
+accepts unicast and/or broadcast answers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void QueryUnicastServiceInstances(string service)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">service</span></td>
+        <td><p>The service name to query. Typically of the form &quot;_<em>service</em>._tcp&quot;.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>When an answer is received the <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceInstanceDiscovered">ServiceInstanceDiscovered</a> event is raised.</p>
+</div>
+  <h5 id="Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_System_String__seealso">See Also</h5>
   <div class="seealso">
       <div><a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_ServiceName">ServiceName</a></div>
   </div>

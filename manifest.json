@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MessageEventArgs.html",
-          "hash": "lLDbqCCU7Bh92m5AjEXRTQ=="
+          "hash": "55CJQoDQwl8m/p6b5pfKqA=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MulticastService.html",
-          "hash": "ep1ahtn2ci9ewy5vtFMMTg=="
+          "hash": "fFkRvLZCiUPP6m8T0MAUmA=="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.NetworkInterfaceEventArgs.html",
-          "hash": "pj6zTLJ7AY5RhbStjNM6gA=="
+          "hash": "K0dhLEe/b+4lfs5Kxy+ofQ=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.RecentMessages.html",
-          "hash": "xgZNV4RrOG5FJRJU/L0fOA=="
+          "hash": "QVCVvn4PoRtli7PWCz1QQw=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceDiscovery.html",
-          "hash": "NPNw2J90UANugkBWF7+zow=="
+          "hash": "O/qzsfNmUkl5DMnwOeV6Vw=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html",
-          "hash": "ADI5uIzP7rqOxzN/9ZnpUA=="
+          "hash": "H1Wkyaz44wVMLwKbfN9YJg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceProfile.html",
-          "hash": "CnHmX6cTFpSqPp/yHfG+qw=="
+          "hash": "KMXDJOv7BV1Bgq8Vo++sMg=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.html",
-          "hash": "p/OhXG3dZ1U/H55xUI4hlQ=="
+          "hash": "TMGaAwNJzeuODNAAE6rctg=="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "ZAz3FQXQXWzDgVTSIAvCCA=="
+          "hash": "Mn1FXZezZ0cRRUyOyeOngA=="
         }
       },
       "is_incremental": false,
@@ -174,7 +174,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "meR+4dd9ZHRivcfSGe8jxA=="
+          "hash": "bSV3BvsX6MQ1uqEGv7T9MA=="
         }
       },
       "is_incremental": false,
@@ -198,26 +198,37 @@
       "status": {
         "can_incremental": false,
         "details": "Cannot build incrementally because last build info is missing.",
-        "incrementalPhase": "build"
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build"
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 2,
+          "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 8,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
         }
       }
     },
@@ -225,7 +236,9 @@
       "status": {
         "can_incremental": false,
         "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
-        "incrementalPhase": "postProcessing"
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {}
     }
