@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		.circleci\config.yml = .circleci\config.yml
 		LICENSE = LICENSE
+		mung.cmd = mung.cmd
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -21,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MdnsTests", "test\MdnsTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spike", "Spike\Spike.csproj", "{B7019D35-A153-4143-979C-C493A74FA7EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Browser", "Browser\Browser.csproj", "{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Browser", "Browser\Browser.csproj", "{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

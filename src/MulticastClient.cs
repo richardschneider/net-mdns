@@ -174,10 +174,13 @@ namespace Makaretu.Dns
             {
                 if (disposing)
                 {
+                    MessageReceived = null;
+
                     foreach (var receiver in receivers)
                     {
                         receiver.Dispose();
                     }
+                    receivers.Clear();
 
                     foreach (var address in senders.Keys)
                     {
@@ -186,6 +189,7 @@ namespace Makaretu.Dns
                             sender.Dispose();
                         }
                     }
+                    senders.Clear();
                 }
 
                 disposedValue = true;
