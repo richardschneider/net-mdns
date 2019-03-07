@@ -23,9 +23,13 @@ service or service instance.
 
 ## Getting started
 
-Published releases are available on [NuGet](https://www.nuget.org/packages/Makaretu.Dns.Multicast/).  To install, run the following command in the [Package Manager Console](https://docs.nuget.org/docs/start-here/using-the-package-manager-console).
+Published releases are available on [NuGet](https://www.nuget.org/packages/Makaretu.Dns.Multicast/).  To install, run the following command in the [Package Manager Console](https://docs.nuget.org/docs/start-here/using-the-package-manager-console)
 
-    PM> Install-Package Makaretu.Mdns
+    PM> Install-Package Makaretu.Dns.Multicast
+    
+or using .NET CLI run the following command in the project folder
+
+    > dotnet add package Makaretu.Dns.Multicast
     
 ## Usage Service Discovery
 
