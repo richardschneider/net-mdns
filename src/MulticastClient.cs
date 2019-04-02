@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Makaretu.Dns
@@ -73,6 +74,12 @@ namespace Makaretu.Dns
                         case AddressFamily.InterNetwork:
                             receiver4.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(MulticastAddressIp4, address));
                             sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+#if NETSTANDARD2_0
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                            {
+                                LinuxHelper.ReuseAddresss(sender.Client);
+                            }
+#endif
                             sender.Client.Bind(localEndpoint);
                             sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(MulticastAddressIp4));
                             sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
