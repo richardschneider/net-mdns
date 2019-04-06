@@ -40,6 +40,7 @@ pull_requests:
   do_not_increment_build_number: true
 
 before_build:
+  - nuget restore
   - ps: gitversion /output buildserver >gitversion.log
 
 build_script:
