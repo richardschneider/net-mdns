@@ -8,6 +8,8 @@ os:
   - osx
 
 install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install avahi-daemon       ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo lsof -i :5353                      ; fi
   - dotnet restore
 
 script:

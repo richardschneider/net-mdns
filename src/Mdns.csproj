@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard14;netstandard2;net461</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Makaretu.Dns.Multicast</AssemblyName>
     <RootNamespace>Makaretu.Dns</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
@@ -36,7 +37,11 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard14'">
-    <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
+    <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />   
   </ItemGroup>
 
- </Project>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2'">
+    <PackageReference Include="Tmds.LibC" Version="0.2.0" />
+  </ItemGroup>
+
+</Project>
