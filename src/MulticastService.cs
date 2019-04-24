@@ -487,7 +487,7 @@ namespace Makaretu.Dns
                 return;
             }
 
-            client.SendAsync(packet).GetAwaiter().GetResult();
+            client?.SendAsync(packet).GetAwaiter().GetResult();
         }
 
         /// <summary>
