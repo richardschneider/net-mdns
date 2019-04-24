@@ -228,7 +228,11 @@ namespace Makaretu.Dns
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"got query from: {e.RemoteEndPoint},  for {request.Questions[0].Name} {request.Questions[0].Type}");
+                log.Debug($"Query from {e.RemoteEndPoint}");
+            }
+            if (log.IsTraceEnabled)
+            {
+                log.Trace(request);
             }
 
             // Determine if this query is requesting a unicast response
@@ -274,7 +278,11 @@ namespace Makaretu.Dns
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"sent answer {response.Answers[0]}");
+                log.Debug($"Sending answer");
+            }
+            if (log.IsTraceEnabled)
+            {
+                log.Trace(response);
             }
             //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
         }
