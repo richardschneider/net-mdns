@@ -604,9 +604,6 @@ namespace Makaretu.Dns
         /// <param name="result">	
         ///   The received message <see cref="UdpReceiveResult"/>.	
         /// </param>	
-        /// <param name="remote">
-        ///   The message sender.
-        /// </param>
         /// <remarks>	
         ///   Decodes the <paramref name="result"/> and then raises	
         ///   either the <see cref="QueryReceived"/> or <see cref="AnswerReceived"/> event.	
