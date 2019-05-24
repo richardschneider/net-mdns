@@ -20,7 +20,7 @@ namespace Makaretu.Dns
         ///   An IP Addresses.
         /// </param>
         /// <returns>
-        ///   The subnet mask; ror example "127.0.0.1" returns "255.0.0.0".
+        ///   The subnet mask; for example "127.0.0.1" returns "255.0.0.0".
         ///   Or <b>null</b> When <paramref name="address"/> does not belong to 
         ///   the localhost.
         /// s</returns>

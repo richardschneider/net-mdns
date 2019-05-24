@@ -381,10 +381,11 @@ namespace Makaretu.Dns
             {
                 ;
             }
-                // Only return address records that the querier can reach.
-                response.Answers.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
-                response.AuthorityRecords.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
-                response.AdditionalRecords.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
+
+            // Only return address records that the querier can reach.
+            response.Answers.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
+            response.AuthorityRecords.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
+            response.AdditionalRecords.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
 
             if (QU)
             {

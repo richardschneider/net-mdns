@@ -23,6 +23,7 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        [TestCategory("IPv6")]
         public void SubnetMask_Ipv6Loopback()
         {
             var mask = IPAddress.IPv6Loopback.GetSubnetMask();
