@@ -8,7 +8,7 @@
     <title> | Multicast DNS documentation </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content=" | Multicast DNS documentation ">
-    <meta name="generator" content="docfx 2.42.3.0">
+    <meta name="generator" content="docfx 2.42.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -77,12 +77,13 @@ and the package is published on <a href="https://www.nuget.org/packages/Makaretu
 </ul>
 <p>The above RFCs are commonly referred to as <a href="https://developer.apple.com/bonjour/">Bonjour</a> or 
 <a href="http://www.zeroconf.org/">Zero Config</a>.</p>
-<p>The <a class="xref" href="../api/Makaretu.Dns.MulticastService.html">MulticastService</a> is used to send DNS
+<p>The <a href="ms.html">MulticastService</a> is used to send DNS
 <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_">queries</a> and 
 <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_">answers</a> over the link local network.
 It also listens for DNS <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.Message.html">Messages</a> and raises either the 
 <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_QueryReceived">QueryReceived</a> or <a class="xref" href="../api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a> event.</p>
-<p>To broadcast a service, simply create a <a class="xref" href="../api/Makaretu.Dns.ServiceProfile.html">ServiceProfile</a> 
+<p>The <a href="sd.html">ServiceDiscovery</a> is used to find services and service instances on the network.
+To advertise a service, simply create a <a class="xref" href="../api/Makaretu.Dns.ServiceProfile.html">ServiceProfile</a> 
 and then <a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Advertise_">Advertise</a> it.  Any queries for the service or 
 service instance will be answered with information from the profile.</p>
 </article>
