@@ -198,6 +198,37 @@ namespace Makaretu.Dns
             }
         }
 
+        /// <summary>
+        /// Sends a goodbye message for the provided
+        /// profile and removes its pointer from the name sever.
+        /// </summary>
+        /// <param name="profile">The profile to send a goodbye message for.</param>
+        public void Unadvertise(ServiceProfile profile)
+        {
+            var message = new Message { QR = true };
+            var ptrRecord = new PTRRecord { Name = profile.QualifiedServiceName, DomainName = profile.FullyQualifiedName };
+            ptrRecord.TTL = TimeSpan.Zero;
+
+            message.Answers.Add(ptrRecord);
+            profile.Resources.ForEach((resource) =>
+            {
+                resource.TTL = TimeSpan.Zero;
+                message.AdditionalRecords.Add(resource);
+            });
+
+            Mdns.SendAnswer(message);
+
+            NameServer.Catalog.TryRemove(profile.QualifiedServiceName, out Node _);
+        }
+
+        /// <summary>
+        /// Sends a goodbye message for each anounced service.
+        /// </summary>
+        public void Unadvertise()
+        {
+            profiles.ForEach(profile => Unadvertise(profile));
+        }
+
         void OnAnswer(object sender, MessageEventArgs e)
         {
             var msg = e.Message;
