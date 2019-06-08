@@ -515,6 +515,25 @@ references:
   commentId: F:Makaretu.Dns.ServiceDiscovery.ServiceName
   fullName: Makaretu.Dns.ServiceDiscovery.ServiceName
   nameWithType: ServiceDiscovery.ServiceName
+- uid: Makaretu.Dns.ServiceDiscovery.Unadvertise
+  name: Unadvertise()
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Unadvertise
+  commentId: M:Makaretu.Dns.ServiceDiscovery.Unadvertise
+  fullName: Makaretu.Dns.ServiceDiscovery.Unadvertise()
+  nameWithType: ServiceDiscovery.Unadvertise()
+- uid: Makaretu.Dns.ServiceDiscovery.Unadvertise(Makaretu.Dns.ServiceProfile)
+  name: Unadvertise(ServiceProfile)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Unadvertise_Makaretu_Dns_ServiceProfile_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.Unadvertise(Makaretu.Dns.ServiceProfile)
+  fullName: Makaretu.Dns.ServiceDiscovery.Unadvertise(Makaretu.Dns.ServiceProfile)
+  nameWithType: ServiceDiscovery.Unadvertise(ServiceProfile)
+- uid: Makaretu.Dns.ServiceDiscovery.Unadvertise*
+  name: Unadvertise
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Unadvertise_
+  commentId: Overload:Makaretu.Dns.ServiceDiscovery.Unadvertise
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceDiscovery.Unadvertise
+  nameWithType: ServiceDiscovery.Unadvertise
 - uid: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs
   name: ServiceInstanceDiscoveryEventArgs
   href: api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html
