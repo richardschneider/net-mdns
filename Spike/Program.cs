@@ -51,14 +51,14 @@ namespace Spike
                 }
             };
 
-#if false
             var sd = new ServiceDiscovery(mdns);
+            sd.Advertise(new ServiceProfile("ipfs1", "_ipfs-discovery._udp", 5010));
             sd.Advertise(new ServiceProfile("x1", "_xservice._tcp", 5011));
             sd.Advertise(new ServiceProfile("x2", "_xservice._tcp", 666));
             var z1 = new ServiceProfile("z1", "_zservice._udp", 5012);
             z1.AddProperty("foo", "bar");
             sd.Advertise(z1);
-#endif
+
             mdns.Start();
             Console.ReadKey();
         }

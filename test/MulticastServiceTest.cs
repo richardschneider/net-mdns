@@ -136,6 +136,54 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        public async Task ReceiveLegacyUnicastAnswer()
+        {
+            var service = Guid.NewGuid().ToString() + ".local";
+            var ready = new ManualResetEvent(false);
+
+            var query = new Message();
+            query.Questions.Add(new Question
+            {
+                Name = service,
+                Type = DnsType.A
+            });
+            var packet = query.ToByteArray();
+            var client = new UdpClient();
+            using (var mdns = new MulticastService())
+            {
+                mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
+                mdns.QueryReceived += (s, e) =>
+                {
+                    var msg = e.Message;
+                    if (msg.Questions.Any(q => q.Name == service))
+                    {
+                        var res = msg.CreateResponse();
+                        res.Answers.Add(new ARecord
+                        {
+                            Name = service,
+                            Address = IPAddress.Parse("127.1.1.1")
+                        });
+                        mdns.SendAnswer(res, e);
+                    }
+                };
+                mdns.Start();
+                Assert.IsTrue(ready.WaitOne(TimeSpan.FromSeconds(1)), "ready timeout");
+                await client.SendAsync(packet, packet.Length, "224.0.0.251", 5353);
+                var r = await client.ReceiveAsync();
+                var response = new Message();
+                response.Read(r.Buffer, 0, r.Buffer.Length);
+                Assert.IsTrue(response.IsResponse);
+                Assert.AreEqual(MessageStatus.NoError, response.Status);
+                Assert.IsTrue(response.AA);
+                Assert.AreEqual(1, response.Questions.Count);
+                var a = (ARecord)response.Answers[0];
+                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
+                Assert.AreEqual(service, a.Name);
+                Assert.AreEqual(TimeSpan.FromSeconds(10), a.TTL);
+            }
+        }
+
+        [TestMethod]
         public void ReceiveAnswer_IPv4()
         {
             var service = Guid.NewGuid().ToString() + ".local";
