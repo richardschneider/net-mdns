@@ -7,6 +7,7 @@
     <RootNamespace>Makaretu.Dns</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <DebugType>full</DebugType>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     
     <!-- developer build is always 0.42 -->
     <AssemblyVersion>0.42</AssemblyVersion>
