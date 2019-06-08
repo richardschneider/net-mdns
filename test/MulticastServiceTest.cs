@@ -40,8 +40,12 @@ namespace Makaretu.Dns
             mdns.NetworkInterfaceDiscovered += (s, e) => ready.Set();
             mdns.QueryReceived += (s, e) =>
             {
-                msg = e.Message;
-                done.Set();
+                if ("some-service.local" == e.Message.Questions.First().Name)
+                {
+                    msg = e.Message;
+                    Assert.IsFalse(e.IsLegacyUnicast);
+                    done.Set();
+                }
             };
             try
             {

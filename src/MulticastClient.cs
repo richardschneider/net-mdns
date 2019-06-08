@@ -19,7 +19,14 @@ namespace Makaretu.Dns
     {
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastClient));
 
-        const int MulticastPort = 5353;
+        /// <summary>
+        ///   The port number assigned to Multicast DNS.
+        /// </summary>
+        /// <value>
+        ///   Port number 5353.
+        /// </value>
+        public static readonly int MulticastPort = 5353;
+
         static readonly IPAddress MulticastAddressIp4 = IPAddress.Parse("224.0.0.251");
         static readonly IPAddress MulticastAddressIp6 = IPAddress.Parse("FF02::FB");
         static readonly IPEndPoint MdnsEndpointIp6 = new IPEndPoint(MulticastAddressIp6, MulticastPort);
