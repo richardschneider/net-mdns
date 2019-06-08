@@ -137,8 +137,13 @@ mdns.QueryReceived += (s, e) =>
 mdns.Start();
 ```
 
-# License
-Copyright © 2018 Richard Schneider (makaretu@gmail.com)
+## Related projects
+
+- [net-dns](https://github.com/richardschneider/net-dns) - DNS data model and Name Server with serializer for the wire and master file format
+- [net-udns](https://github.com/richardschneider/net-udns) - client for unicast DNS, DNS over HTTPS (DOH) and DNS over TLS (DOT)
+
+## License
+Copyright © 2018-2019 Richard Schneider (makaretu@gmail.com)
 
 The package is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refer to the [LICENSE](https://github.com/richardschneider/net-mdns/blob/master/LICENSE) file for more information.
 

@@ -50,5 +50,4 @@ using Makaretu.Dns;
 var profile = new ServiceProfile("x", "_myservice._udp", 1024);
 var sd = new ServiceDiscovery();
 sd.Advertise(profile);
-
 ```
