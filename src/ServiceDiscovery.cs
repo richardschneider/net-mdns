@@ -330,11 +330,11 @@ namespace Makaretu.Dns
             if (QU)
             {
                 // TODO: Send a Unicast response if required.
-                Mdns.SendAnswer(response);
+                Mdns.SendAnswer(response, e);
             }
             else
             {
-                Mdns.SendAnswer(response);
+                Mdns.SendAnswer(response, e);
             }
 
             if (log.IsDebugEnabled)

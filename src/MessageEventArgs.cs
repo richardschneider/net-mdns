@@ -24,6 +24,14 @@ namespace Makaretu.Dns
         ///   The endpoint from the message was received.
         /// </value>
         public IPEndPoint RemoteEndPoint { get; set; }
+
+        /// <summary>
+        ///   Determines if the sender is using legacy unicast DNS.
+        /// </summary>
+        /// <value>
+        ///   <b>false</b> if the sender is using port 5353.
+        /// </value>
+        public bool IsLegacyUnicast => RemoteEndPoint.Port != MulticastClient.MulticastPort;
     }
 }
 

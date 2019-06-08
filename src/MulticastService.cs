@@ -30,6 +30,7 @@ namespace Makaretu.Dns
         const int packetOverhead = 48;
         const int maxDatagramSize = Message.MaxLength;
 
+        static readonly TimeSpan maxLegacyUnicastTTL = TimeSpan.FromSeconds(10);
         static readonly ILog log = LogManager.GetLogger(typeof(MulticastService));
         static readonly IPNetwork[] LinkLocalNetworks = new[] { IPNetwork.Parse("169.254.0.0/16"), IPNetwork.Parse("fe80::/10") };
 
@@ -50,6 +51,16 @@ namespace Makaretu.Dns
         ///   The multicast client.
         /// </summary>
         MulticastClient client;
+
+        /// <summary>
+        ///   Use to send unicast IPv4 answers.
+        /// </summary>
+        UdpClient unicastClientIp4 = new UdpClient(AddressFamily.InterNetwork);
+
+        /// <summary>
+        ///   Use to send unicast IPv6 answers.
+        /// </summary>
+        UdpClient unicastClientIp6 = new UdpClient(AddressFamily.InterNetworkV6);
 
         /// <summary>
         ///   Function used for listening filtered network interfaces.
@@ -79,7 +90,6 @@ namespace Makaretu.Dns
         ///   then forgotten.
         /// </remarks>
         /// <seealso cref="SendQuery(Message)"/>
-        /// <see cref="SendAnswer"/>
         public event EventHandler<MessageEventArgs> QueryReceived;
 
         /// <summary>
@@ -446,8 +456,10 @@ namespace Makaretu.Dns
         ///   When the serialised <paramref name="answer"/> is too large.
         /// </exception>
         /// <remarks>
+        ///   <para>
         ///   The <see cref="Message.AA"/> flag is set to true,
         ///   the <see cref="Message.Id"/> set to zero and any questions are removed.
+        ///   </para>
         ///   <para>
         ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see> 
         ///   if exceeds the maximum packet length.
@@ -456,6 +468,10 @@ namespace Makaretu.Dns
         ///   <paramref name="checkDuplicate"/> should always be <b>true</b> except
         ///   when <see href="https://tools.ietf.org/html/rfc6762#section-8.1">answering a probe</see>.
         ///   </para>
+        ///   <note type="caution">
+        ///   If possible the <see cref="SendAnswer(Message, MessageEventArgs, bool)"/>
+        ///   method should be used, so that legacy unicast queries are supported.
+        ///   </note>
         /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
@@ -474,7 +490,77 @@ namespace Makaretu.Dns
             Send(answer, checkDuplicate);
         }
 
-        void Send(Message msg, bool checkDuplicate)
+        /// <summary>
+        ///   Send an answer to a query.
+        /// </summary>
+        /// <param name="answer">
+        ///   The answer message.
+        /// </param>
+        /// <param name="query">
+        ///   The query that is being answered.
+        /// </param>
+        /// <param name="checkDuplicate">
+        ///   If <b>true</b>, then if the same <paramref name="answer"/> was
+        ///   recently sent it will not be sent again.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///   When the service has not started.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///   When the serialised <paramref name="answer"/> is too large.
+        /// </exception>
+        /// <remarks>
+        ///   <para>
+        ///   If the <paramref name="query"/> is a standard multicast query (sent to port 5353), then 
+        ///   <see cref="SendAnswer(Message, bool)"/> is called.
+        ///   </para>
+        ///   <para>
+        ///   Otherwise a legacy unicast reponse is sent to sender's end point.
+        ///   The <see cref="Message.AA"/> flag is set to true,
+        ///   the <see cref="Message.Id"/> is set to query's ID,
+        ///   the <see cref="Message.Questions"/> is set to the query's questions,
+        ///   and all resource record TTLs have a max value of 10 seconds.
+        ///   </para>
+        ///   <para>
+        ///   The <paramref name="answer"/> is <see cref="Message.Truncate">truncated</see> 
+        ///   if exceeds the maximum packet length.
+        ///   </para>
+        ///   <para>
+        ///   <paramref name="checkDuplicate"/> should always be <b>true</b> except
+        ///   when <see href="https://tools.ietf.org/html/rfc6762#section-8.1">answering a probe</see>.
+        ///   </para>
+        /// </remarks>
+        public void SendAnswer(Message answer, MessageEventArgs query, bool checkDuplicate = true)
+        {
+            if (!query.IsLegacyUnicast)
+            {
+                SendAnswer(answer, checkDuplicate);
+                return;
+            }
+
+            answer.AA = true;
+            answer.Id = query.Message.Id;
+            answer.Questions.Clear();
+            answer.Questions.AddRange(query.Message.Questions);
+            answer.Truncate(maxPacketSize);
+
+            foreach (var r in answer.Answers)
+            {
+                r.TTL = (r.TTL > maxLegacyUnicastTTL) ? maxLegacyUnicastTTL : r.TTL;
+            }
+            foreach (var r in answer.AdditionalRecords)
+            {
+                r.TTL = (r.TTL > maxLegacyUnicastTTL) ? maxLegacyUnicastTTL : r.TTL;
+            }
+            foreach (var r in answer.AdditionalRecords)
+            {
+                r.TTL = (r.TTL > maxLegacyUnicastTTL) ? maxLegacyUnicastTTL : r.TTL;
+            }
+
+            Send(answer, checkDuplicate, query.RemoteEndPoint);
+        }
+
+        void Send(Message msg, bool checkDuplicate, IPEndPoint remoteEndPoint = null)
         {
             var packet = msg.ToByteArray();
             if (packet.Length > maxPacketSize)
@@ -487,7 +573,18 @@ namespace Makaretu.Dns
                 return;
             }
 
-            client?.SendAsync(packet).GetAwaiter().GetResult();
+            // Standard multicast reponse?
+            if (remoteEndPoint == null)
+            {
+                client?.SendAsync(packet).GetAwaiter().GetResult();
+            }
+            // Unicast response
+            else
+            {
+                var unicastClient = (remoteEndPoint.Address.AddressFamily == AddressFamily.InterNetwork)
+                    ? unicastClientIp4 : unicastClientIp6;
+                unicastClient.SendAsync(packet, packet.Length, remoteEndPoint).GetAwaiter().GetResult();
+            }
         }
 
         /// <summary>
