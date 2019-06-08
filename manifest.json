@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MessageEventArgs.html",
-          "hash": "+kZFGxztH2s6j6QMoynMgQ=="
+          "hash": "6R8ArVA0DssSPpLHTIG9hg=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.MulticastService.html",
-          "hash": "hPQhND5PgziDf5IFi17f1Q=="
+          "hash": "QYg3P75dlyexsxguxmU7OQ=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html",
-          "hash": "sgHvViDJEqw5xzynWdbz7A=="
+          "hash": "fpIJj5fXB04ymQq9q50PBQ=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Makaretu.Dns.ServiceInstanceShutdownEventArgs.html",
-          "hash": "NNWk8KhqFmpIR92lGDKdXQ=="
+          "hash": "2FigvhrV2m2Z2NWxxHsDRA=="
         }
       },
       "is_incremental": false,

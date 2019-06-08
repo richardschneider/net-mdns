@@ -13,6 +13,19 @@ references:
   commentId: T:Makaretu.Dns.MessageEventArgs
   fullName: Makaretu.Dns.MessageEventArgs
   nameWithType: MessageEventArgs
+- uid: Makaretu.Dns.MessageEventArgs.IsLegacyUnicast
+  name: IsLegacyUnicast
+  href: api/Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_IsLegacyUnicast
+  commentId: P:Makaretu.Dns.MessageEventArgs.IsLegacyUnicast
+  fullName: Makaretu.Dns.MessageEventArgs.IsLegacyUnicast
+  nameWithType: MessageEventArgs.IsLegacyUnicast
+- uid: Makaretu.Dns.MessageEventArgs.IsLegacyUnicast*
+  name: IsLegacyUnicast
+  href: api/Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_IsLegacyUnicast_
+  commentId: Overload:Makaretu.Dns.MessageEventArgs.IsLegacyUnicast
+  isSpec: "True"
+  fullName: Makaretu.Dns.MessageEventArgs.IsLegacyUnicast
+  nameWithType: MessageEventArgs.IsLegacyUnicast
 - uid: Makaretu.Dns.MessageEventArgs.Message
   name: Message
   href: api/Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_Message
@@ -163,6 +176,12 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.ResolveAsync
   nameWithType: MulticastService.ResolveAsync
+- uid: Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message,Makaretu.Dns.MessageEventArgs,System.Boolean)
+  name: SendAnswer(Message, MessageEventArgs, Boolean)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message_Makaretu_Dns_MessageEventArgs_System_Boolean_
+  commentId: M:Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message,Makaretu.Dns.MessageEventArgs,System.Boolean)
+  fullName: Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message, Makaretu.Dns.MessageEventArgs, System.Boolean)
+  nameWithType: MulticastService.SendAnswer(Message, MessageEventArgs, Boolean)
 - uid: Makaretu.Dns.MulticastService.SendAnswer(Makaretu.Dns.Message,System.Boolean)
   name: SendAnswer(Message, Boolean)
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendAnswer_Makaretu_Dns_Message_System_Boolean_
