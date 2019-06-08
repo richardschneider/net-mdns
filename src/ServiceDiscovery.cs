@@ -117,6 +117,19 @@ namespace Makaretu.Dns
         public event EventHandler<ServiceInstanceDiscoveryEventArgs> ServiceInstanceDiscovered;
 
         /// <summary>
+        ///   Raised when a servive instance is shutting down.
+        /// </summary>
+        /// <value>
+        ///   Contains the service instance name.
+        /// </value>
+        /// <remarks>
+        ///   <b>ServiceDiscovery</b> passively monitors the network for any answers.
+        ///   When an answer containing a PTR to a service instance with a
+        ///   TTL of zero is received this event is raised.
+        /// </remarks>
+        public event EventHandler<ServiceInstanceShutdownEventArgs> ServiceInstanceShutdown;
+        
+        /// <summary>
         ///    Asks other MDNS services to send their service names.
         /// </summary>
         /// <remarks>
@@ -232,6 +245,14 @@ namespace Makaretu.Dns
         void OnAnswer(object sender, MessageEventArgs e)
         {
             var msg = e.Message;
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"Answer from {e.RemoteEndPoint}");
+            }
+            if (log.IsTraceEnabled)
+            {
+                log.Trace(msg);
+            }
 
             // Any DNS-SD answers?
             var sd = msg.Answers.OfType<PTRRecord>();
@@ -240,6 +261,15 @@ namespace Makaretu.Dns
                 if (ptr.Name == ServiceName)
                 {
                     ServiceDiscovered?.Invoke(this, ptr.DomainName);
+                }
+                else if (ptr.TTL == TimeSpan.Zero)
+                {
+                    var args = new ServiceInstanceShutdownEventArgs
+                    {
+                        ServiceInstanceName = ptr.DomainName,
+                        Message = msg
+                    };
+                    ServiceInstanceShutdown?.Invoke(this, args);
                 }
                 else
                 {

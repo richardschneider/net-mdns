@@ -291,5 +291,35 @@ namespace Makaretu.Dns
                 Assert.AreEqual(additionalRecordsCount + 1, discovered.Answers.Count);
             }
         }
+
+        [TestMethod]
+        public void Unadvertise()
+        {
+            var service = new ServiceProfile("z", "_sdtest-7._udp", 1024);
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns);
+
+            mdns.NetworkInterfaceDiscovered += (s, e) => sd.QueryAllServices();
+            sd.ServiceInstanceShutdown += (s, e) =>
+            {
+                if (e.ServiceInstanceName == service.FullyQualifiedName)
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service);
+                mdns.Start();
+                sd.Unadvertise(service);
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "goodbye timeout");
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
     }
 }
