@@ -509,6 +509,12 @@ references:
   commentId: E:Makaretu.Dns.ServiceDiscovery.ServiceInstanceDiscovered
   fullName: Makaretu.Dns.ServiceDiscovery.ServiceInstanceDiscovered
   nameWithType: ServiceDiscovery.ServiceInstanceDiscovered
+- uid: Makaretu.Dns.ServiceDiscovery.ServiceInstanceShutdown
+  name: ServiceInstanceShutdown
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceInstanceShutdown
+  commentId: E:Makaretu.Dns.ServiceDiscovery.ServiceInstanceShutdown
+  fullName: Makaretu.Dns.ServiceDiscovery.ServiceInstanceShutdown
+  nameWithType: ServiceDiscovery.ServiceInstanceShutdown
 - uid: Makaretu.Dns.ServiceDiscovery.ServiceName
   name: ServiceName
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceName
@@ -553,6 +559,25 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
   nameWithType: ServiceInstanceDiscoveryEventArgs.ServiceInstanceName
+- uid: Makaretu.Dns.ServiceInstanceShutdownEventArgs
+  name: ServiceInstanceShutdownEventArgs
+  href: api/Makaretu.Dns.ServiceInstanceShutdownEventArgs.html
+  commentId: T:Makaretu.Dns.ServiceInstanceShutdownEventArgs
+  fullName: Makaretu.Dns.ServiceInstanceShutdownEventArgs
+  nameWithType: ServiceInstanceShutdownEventArgs
+- uid: Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName
+  name: ServiceInstanceName
+  href: api/Makaretu.Dns.ServiceInstanceShutdownEventArgs.html#Makaretu_Dns_ServiceInstanceShutdownEventArgs_ServiceInstanceName
+  commentId: P:Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName
+  fullName: Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName
+  nameWithType: ServiceInstanceShutdownEventArgs.ServiceInstanceName
+- uid: Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName*
+  name: ServiceInstanceName
+  href: api/Makaretu.Dns.ServiceInstanceShutdownEventArgs.html#Makaretu_Dns_ServiceInstanceShutdownEventArgs_ServiceInstanceName_
+  commentId: Overload:Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName
+  nameWithType: ServiceInstanceShutdownEventArgs.ServiceInstanceName
 - uid: Makaretu.Dns.ServiceProfile
   name: ServiceProfile
   href: api/Makaretu.Dns.ServiceProfile.html

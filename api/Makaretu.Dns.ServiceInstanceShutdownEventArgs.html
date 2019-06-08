@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class MessageEventArgs
+    <title>Class ServiceInstanceShutdownEventArgs
    | Multicast DNS documentation </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class MessageEventArgs
+    <meta name="title" content="Class ServiceInstanceShutdownEventArgs
    | Multicast DNS documentation ">
     <meta name="generator" content="docfx 2.42.4.0">
     
@@ -68,25 +68,29 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Makaretu.Dns.MessageEventArgs">
+            <article class="content wrap" id="_content" data-uid="Makaretu.Dns.ServiceInstanceShutdownEventArgs">
   
   
-  <h1 id="Makaretu_Dns_MessageEventArgs" data-uid="Makaretu.Dns.MessageEventArgs" class="text-break">Class MessageEventArgs
+  <h1 id="Makaretu_Dns_ServiceInstanceShutdownEventArgs" data-uid="Makaretu.Dns.ServiceInstanceShutdownEventArgs" class="text-break">Class ServiceInstanceShutdownEventArgs
   </h1>
-  <div class="markdown level0 summary"><p>The event data for <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_QueryReceived">QueryReceived</a> or
-<a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>.</p>
+  <div class="markdown level0 summary"><p>The event data for <a class="xref" href="Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceInstanceShutdown">ServiceInstanceShutdown</a>.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
     <div class="level1"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.eventargs">EventArgs</a></div>
-    <div class="level2"><span class="xref">MessageEventArgs</span></div>
-      <div class="level3"><a class="xref" href="Makaretu.Dns.ServiceInstanceDiscoveryEventArgs.html">ServiceInstanceDiscoveryEventArgs</a></div>
-      <div class="level3"><a class="xref" href="Makaretu.Dns.ServiceInstanceShutdownEventArgs.html">ServiceInstanceShutdownEventArgs</a></div>
+    <div class="level2"><a class="xref" href="Makaretu.Dns.MessageEventArgs.html">MessageEventArgs</a></div>
+    <div class="level3"><span class="xref">ServiceInstanceShutdownEventArgs</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_Message">MessageEventArgs.Message</a>
+    </div>
+    <div>
+      <a class="xref" href="Makaretu.Dns.MessageEventArgs.html#Makaretu_Dns_MessageEventArgs_RemoteEndPoint">MessageEventArgs.RemoteEndPoint</a>
+    </div>
     <div>
       <a class="xref" href="https://docs.microsoft.com/dotnet/api/system.eventargs.empty">EventArgs.Empty</a>
     </div>
@@ -114,27 +118,27 @@
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Makaretu.Dns.html">Makaretu.Dns</a></h6>
   <h6><strong>Assembly</strong>: Makaretu.Dns.Multicast.dll</h6>
-  <h5 id="Makaretu_Dns_MessageEventArgs_syntax">Syntax</h5>
+  <h5 id="Makaretu_Dns_ServiceInstanceShutdownEventArgs_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class MessageEventArgs : EventArgs</code></pre>
+    <pre><code class="lang-csharp hljs">public class ServiceInstanceShutdownEventArgs : MessageEventArgs</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MessageEventArgs_Message.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MessageEventArgs.Message%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceInstanceShutdownEventArgs_ServiceInstanceName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MessageEventArgs.cs/#L18">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceInstanceShutdownEventArgs.cs/#L20">View Source</a>
   </span>
-  <a id="Makaretu_Dns_MessageEventArgs_Message_" data-uid="Makaretu.Dns.MessageEventArgs.Message*"></a>
-  <h4 id="Makaretu_Dns_MessageEventArgs_Message" data-uid="Makaretu.Dns.MessageEventArgs.Message">Message</h4>
-  <div class="markdown level1 summary"><p>The DNS message.</p>
+  <a id="Makaretu_Dns_ServiceInstanceShutdownEventArgs_ServiceInstanceName_" data-uid="Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName*"></a>
+  <h4 id="Makaretu_Dns_ServiceInstanceShutdownEventArgs_ServiceInstanceName" data-uid="Makaretu.Dns.ServiceInstanceShutdownEventArgs.ServiceInstanceName">ServiceInstanceName</h4>
+  <div class="markdown level1 summary"><p>The fully qualified name of the service instance.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Message Message { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string ServiceInstanceName { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -146,44 +150,16 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.Message.html">Message</a></td>
-        <td><p>The received message.</p>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><p>Typically of the form &quot;<em>instance</em>._<em>service</em>._tcp.local&quot;.</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MessageEventArgs_RemoteEndPoint.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MessageEventArgs.RemoteEndPoint%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MessageEventArgs.cs/#L26">View Source</a>
-  </span>
-  <a id="Makaretu_Dns_MessageEventArgs_RemoteEndPoint_" data-uid="Makaretu.Dns.MessageEventArgs.RemoteEndPoint*"></a>
-  <h4 id="Makaretu_Dns_MessageEventArgs_RemoteEndPoint" data-uid="Makaretu.Dns.MessageEventArgs.RemoteEndPoint">RemoteEndPoint</h4>
-  <div class="markdown level1 summary"><p>The DNS message sender endpoint.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IPEndPoint RemoteEndPoint { get; set; }</code></pre>
+  <h5 id="Makaretu_Dns_ServiceInstanceShutdownEventArgs_ServiceInstanceName_seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_FullyQualifiedName">FullyQualifiedName</a></div>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.net.ipendpoint">IPEndPoint</a></td>
-        <td><p>The endpoint from the message was received.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
 </article>
           </div>
           
@@ -192,10 +168,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MessageEventArgs.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MessageEventArgs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceInstanceShutdownEventArgs.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceInstanceShutdownEventArgs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MessageEventArgs.cs/#L10" class="contribution-link">View Source</a>
+                    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceInstanceShutdownEventArgs.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
