@@ -23,8 +23,9 @@ using System;
 using System.Collections.Generic;
 #endif
 using System.Text;
+using Common.Logging;
 
-namespace Common.Logging.Simple
+namespace Makaretu.Mdns.Simple
 {
     /// <summary>
     /// Sends log messages to <see cref="Console.Out" />.
@@ -34,7 +35,7 @@ namespace Common.Logging.Simple
 #else
     //[Serializable]
 #endif
-    public class ConsoleOutLogger : Simple.AbstractSimpleLogger
+    public class ConsoleOutLogger : Common.Logging.Simple.AbstractSimpleLogger
     {
 #if !SILVERLIGHT
         private static readonly Dictionary<LogLevel, ConsoleColor> colors = new Dictionary<LogLevel, ConsoleColor>

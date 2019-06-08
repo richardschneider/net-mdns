@@ -1,5 +1,5 @@
 ﻿using Common.Logging;
-using Common.Logging.Simple;
+using Makaretu.Mdns.Simple;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

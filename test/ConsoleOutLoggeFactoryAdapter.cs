@@ -19,9 +19,10 @@
 #endregion
 
 using System;
+using Common.Logging;
 using Common.Logging.Configuration;
 
-namespace Common.Logging.Simple
+namespace Makaretu.Mdns.Simple
 {
     /// <summary>
     /// Factory for creating <see cref="ILog" /> instances that write data to <see cref="Console.Out" />.
@@ -58,7 +59,7 @@ namespace Common.Logging.Simple
     /// <author>Gilles Bayon</author>
     /// <author>Mark Pollack</author>
     /// <author>Erich Eichinger</author>
-    public class ConsoleOutLoggerFactoryAdapter : Simple.AbstractSimpleLoggerFactoryAdapter
+    public class ConsoleOutLoggerFactoryAdapter : Common.Logging.Simple.AbstractSimpleLoggerFactoryAdapter
     {
 #if !SILVERLIGHT
         private readonly bool useColor;
