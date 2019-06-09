@@ -287,8 +287,8 @@ namespace Makaretu.Dns
                 var answersCount = additionalRecordsCount +
                     1; // PTRRecord
 
-                Assert.AreEqual(additionalRecordsCount, discovered.AdditionalRecords.Count);
-                Assert.AreEqual(additionalRecordsCount + 1, discovered.Answers.Count);
+                Assert.AreEqual(0, discovered.AdditionalRecords.Count);
+                Assert.AreEqual(answersCount, discovered.Answers.Count);
             }
         }
 
