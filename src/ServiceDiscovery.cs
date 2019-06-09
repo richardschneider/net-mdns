@@ -325,6 +325,7 @@ namespace Makaretu.Dns
             if (AnswersContainsAdditionalRecords)
             {
                 response.Answers.AddRange(response.AdditionalRecords);
+                response.AdditionalRecords.Clear();
             }
 
             if (QU)
