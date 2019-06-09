@@ -20,6 +20,7 @@ service or service instance.
 - CI on Circle (Debian GNU/Linux), Travis (Ubuntu Xenial and OSX) and AppVeyor (Windows Server 2016)
 - Detects new and/or removed network interfaces
 - Supports multicasting on multiple network interfaces
+- Supports reverse address mapping
 - Handles legacy unicast queries, see #61
 
 ## Getting started

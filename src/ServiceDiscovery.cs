@@ -192,6 +192,10 @@ namespace Makaretu.Dns
         /// <remarks>
         ///   Any queries for the service or service instance will be answered with
         ///   information from the profile.
+        ///   <para>
+        ///   Besides adding the profile's resource records to the <see cref="Catalog"/> PTR records are
+        ///   created to support DNS-SD and reverse address mapping (DNS address lookup).
+        ///   </para>
         /// </remarks>
         public void Advertise(ServiceProfile service)
         {
@@ -209,6 +213,8 @@ namespace Makaretu.Dns
             {
                 catalog.Add(r, authoritative: true);
             }
+
+            catalog.IncludeReverseLookupRecords();
         }
 
         /// <summary>
@@ -255,7 +261,9 @@ namespace Makaretu.Dns
             }
 
             // Any DNS-SD answers?
-            var sd = msg.Answers.OfType<PTRRecord>();
+            var sd = msg.Answers
+                .OfType<PTRRecord>()
+                .Where(ptr => ptr.Name.EndsWith(".local"));
             foreach (var ptr in sd)
             {
                 if (ptr.Name == ServiceName)

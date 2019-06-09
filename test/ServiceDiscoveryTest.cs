@@ -321,5 +321,49 @@ namespace Makaretu.Dns
                 mdns.Stop();
             }
         }
+        [TestMethod]
+        public void ReverseAddressMapping()
+        {
+            var service = new ServiceProfile("x9", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback, IPAddress.IPv6Loopback });
+            var arpaAddress = IPAddress.Loopback.GetArpaName();
+            var done = new ManualResetEvent(false);
+
+            var mdns = new MulticastService();
+            Message response = null;
+            mdns.NetworkInterfaceDiscovered += (s, e) =>
+                mdns.SendQuery(arpaAddress, DnsClass.IN, DnsType.PTR);
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.OfType<PTRRecord>().Any(p => p.Name == arpaAddress))
+                {
+                    response = msg;
+                    done.Set();
+                }
+            };
+            try
+            {
+                using (var sd = new ServiceDiscovery(mdns))
+                {
+                    sd.Advertise(service);
+                    mdns.Start();
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
+                    var answers = response.Answers
+                        .OfType<PTRRecord>()
+                        .Where(ptr => service.HostName == ptr.DomainName);
+                    foreach (var answer in answers)
+                    {
+                        Assert.AreEqual(arpaAddress, answer.Name);
+                        Assert.IsTrue(answer.TTL > TimeSpan.Zero);
+                        Assert.AreEqual(DnsClass.IN, answer.Class);
+                    }
+                }
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
     }
 }
