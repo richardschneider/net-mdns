@@ -95,5 +95,12 @@ namespace Makaretu.Dns
             Assert.AreEqual(TimeSpan.FromMinutes(75), service.Resources.OfType<TXTRecord>().First().TTL);
             Assert.AreEqual(TimeSpan.FromSeconds(120), service.Resources.OfType<AddressRecord>().First().TTL);
         }
+
+        [TestMethod]
+        public void Subtypes()
+        {
+            var service = new ServiceProfile("x", "_sdtest._udp", 1024);
+            Assert.AreEqual(0, service.Subtypes.Count);
+        }
     }
 }

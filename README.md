@@ -21,6 +21,7 @@ service or service instance.
 - Detects new and/or removed network interfaces
 - Supports multicasting on multiple network interfaces
 - Supports reverse address mapping
+- Supports service subtypes (features)
 - Handles legacy unicast queries, see #61
 
 ## Getting started

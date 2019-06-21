@@ -4,5 +4,8 @@
   href: ms.md
 - name: Service Discovery
   href: sd.md
+  items:
+    - name: Subtypes
+      href: subtype.md
 - name: Class Reference
   href: ../api/Makaretu.Dns.yml

@@ -168,6 +168,24 @@ namespace Makaretu.Dns
         }
 
         /// <summary>
+        ///   Asks instances of the specified service with the subtype to send details.
+        /// </summary>
+        /// <param name="service">
+        ///   The service name to query. Typically of the form "_<i>service</i>._tcp".
+        /// </param>
+        /// <param name="subtype">
+        ///   The feature that is needed.
+        /// </param>
+        /// <remarks>
+        ///   When an answer is received the <see cref="ServiceInstanceDiscovered"/> event is raised.
+        /// </remarks>
+        /// <seealso cref="ServiceProfile.ServiceName"/>
+        public void QueryServiceInstances(string service, string subtype)
+        {
+            Mdns.SendQuery($"{subtype}._sub.{service}.local", type: DnsType.PTR);
+        }
+
+        /// <summary>
         ///   Asks instances of the specified service to send details.
         ///   accepts unicast and/or broadcast answers.
         /// </summary>
@@ -208,6 +226,16 @@ namespace Makaretu.Dns
             catalog.Add(
                 new PTRRecord { Name = service.QualifiedServiceName, DomainName = service.FullyQualifiedName },
                 authoritative: true);
+
+            foreach (var subtype in service.Subtypes)
+            {
+                var ptr = new PTRRecord
+                {
+                    Name = $"{subtype}._sub.{service.QualifiedServiceName}",
+                    DomainName = service.FullyQualifiedName
+                };
+                catalog.Add(ptr, authoritative: true);
+            }
 
             foreach (var r in service.Resources)
             {

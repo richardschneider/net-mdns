@@ -155,6 +155,15 @@ namespace Makaretu.Dns
         public List<ResourceRecord> Resources { get; set; } = new List<ResourceRecord>();
 
         /// <summary>
+        ///   A list of service features implemented by the service instance.
+        /// </summary>
+        /// <value>
+        ///   The default is an empty list.
+        /// </value>
+        /// <seealso href="https://tools.ietf.org/html/rfc6763#section-7.1"/>
+        public List<string> Subtypes { get; set; } = new List<string>();
+
+        /// <summary>
         ///   Add a property of the service to the <see cref="TXTRecord"/>.
         /// </summary>
         /// <param name="key">
