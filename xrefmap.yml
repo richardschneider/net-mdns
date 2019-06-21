@@ -483,6 +483,12 @@ references:
   commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
   fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
   nameWithType: ServiceDiscovery.QueryServiceInstances(String)
+- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String,System.String)
+  name: QueryServiceInstances(String, String)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String_System_String_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String,System.String)
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String, System.String)
+  nameWithType: ServiceDiscovery.QueryServiceInstances(String, String)
 - uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances*
   name: QueryServiceInstances
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_
@@ -729,3 +735,16 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceProfile.ServiceName
   nameWithType: ServiceProfile.ServiceName
+- uid: Makaretu.Dns.ServiceProfile.Subtypes
+  name: Subtypes
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_Subtypes
+  commentId: P:Makaretu.Dns.ServiceProfile.Subtypes
+  fullName: Makaretu.Dns.ServiceProfile.Subtypes
+  nameWithType: ServiceProfile.Subtypes
+- uid: Makaretu.Dns.ServiceProfile.Subtypes*
+  name: Subtypes
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_Subtypes_
+  commentId: Overload:Makaretu.Dns.ServiceProfile.Subtypes
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceProfile.Subtypes
+  nameWithType: ServiceProfile.Subtypes

@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Service Discovery | Multicast DNS documentation </title>
+    <title>Subtypes | Multicast DNS documentation </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Service Discovery | Multicast DNS documentation ">
+    <meta name="title" content="Subtypes | Multicast DNS documentation ">
     <meta name="generator" content="docfx 2.43.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,25 +67,13 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="service-discovery">Service Discovery</h1>
+<h1 id="subtypes">Subtypes</h1>
 
-<p><a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html">ServiceDiscovery</a> implements <a href="https://tools.ietf.org/html/rfc6763&quot;">RFC 6763 - DNS-Based Service Discovery</a>. It
-is used to find services and service instances on the link local network(s).</p>
-<h2 id="finding-all-services">Finding all services</h2>
-<p><a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryAllServices">QueryAllServices</a> is used to find the services. 
-The <a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceDiscovered">ServiceDiscovered</a> event is raised 
-each time a service is discovered.</p>
-<pre><code class="lang-csharp">using Makaretu.Dns;
-
-var sd = new ServiceDiscovery();
-sd.ServiceDiscovered += (s, serviceName) =&gt;
-{
-    Console.WriteLine($&quot;service &#39;{serviceName}&#39;&quot;);
-};
-sd.QueryAllServices();
-</code></pre><h2 id="finding-service-instances">Finding service instances</h2>
+<p>Subtypes are used to define features implemented by a service instance. See
+<a href="https://tools.ietf.org/html/rfc6763#section-7.1">RFC 6763 - 7.1 Selective Instance Enumeration (Subtypes)</a> for the details. </p>
+<h2 id="finding-service-instances">Finding service instances</h2>
 <p><a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_">QueryServiceInstances</a> is used to find the
-all the instances of a service. 
+all the instances of a service with a specific feature. 
 The <a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_ServiceInstanceDiscovered">ServiceInstanceDiscovered</a> event is raised 
 each time a service instance is discovered.</p>
 <pre><code class="lang-csharp">using Makaretu.Dns;
@@ -95,14 +83,15 @@ sd.ServiceInstanceDiscovered += (s, e) =&gt;
 {
     Console.WriteLine($&quot;service instance &#39;{e.ServiceInstanceName}&#39;&quot;);
 };
-sd.QueryServiceInstances(&quot;_myservice&quot;);
+sd.QueryServiceInstances(&quot;_myservice&quot;, &quot;apiv2&quot;);
 </code></pre><h2 id="advertising">Advertising</h2>
-<p>Create a <a class="xref" href="../api/Makaretu.Dns.ServiceProfile.html">ServiceProfile</a> 
+<p>Create a <a class="xref" href="../api/Makaretu.Dns.ServiceProfile.html">ServiceProfile</a> with a feature
 and then <a class="xref" href="../api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Advertise_">Advertise</a> it.  Any queries for the service or 
 service instance will be answered with information from the profile.</p>
 <pre><code class="lang-csharp">using Makaretu.Dns;
 
 var profile = new ServiceProfile(&quot;x&quot;, &quot;_myservice._udp&quot;, 1024);
+profile.Subtypes.Add(&quot;apiv2&quot;);
 var sd = new ServiceDiscovery();
 sd.Advertise(profile);
 </code></pre></article>
@@ -113,7 +102,7 @@ sd.Advertise(profile);
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/richardschneider/net-mdns/blob/master/doc/articles/sd.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/richardschneider/net-mdns/blob/master/doc/articles/subtype.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
