@@ -7,5 +7,7 @@
   items:
     - name: Subtypes
       href: subtype.md
+    - name: Advertising
+      href: advertising.md
 - name: Class Reference
   href: ../api/Makaretu.Dns.yml

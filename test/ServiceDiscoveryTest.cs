@@ -435,5 +435,24 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void ResourceRecords()
+        {
+            var profile = new ServiceProfile("me", "_myservice._udp", 1234, new IPAddress[] { IPAddress.Loopback });
+            profile.Subtypes.Add("apiv2");
+            profile.AddProperty("someprop", "somevalue");
+
+            using (var sd = new ServiceDiscovery())
+            {
+                sd.Advertise(profile);
+
+                var resourceRecords = sd.NameServer.Catalog.Values.SelectMany(node => node.Resources);
+                foreach (var r in resourceRecords)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+            }
+        }
+
     }
 }
