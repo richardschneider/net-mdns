@@ -20,7 +20,7 @@ It also listens for DNS [Messages](xref:Makaretu.Dns.Message) and raises either 
 
 The [ServiceDiscovery](sd.md) is used to find services and service instances on the network.
 To advertise a service, simply create a [ServiceProfile](xref:Makaretu.Dns.ServiceProfile) 
-and then [Advertise](xref:Makaretu.Dns.ServiceDiscovery.Advertise*) it.  Any queries for the service or 
+and then [Advertise](advertising.md) it.  Any queries for the service or 
 service instance will be answered with information from the profile.
 
 
