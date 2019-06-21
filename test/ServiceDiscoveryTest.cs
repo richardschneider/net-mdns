@@ -122,6 +122,39 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
+        public void Advertises_ServiceInstance_Subtype()
+        {
+            var service = new ServiceProfile("x2", "_sdtest-1._udp", 1024, new[] { IPAddress.Loopback });
+            service.Subtypes.Add("_example");
+            var done = new ManualResetEvent(false);
+
+            var mdns = new MulticastService();
+            mdns.NetworkInterfaceDiscovered += (s, e) =>
+                mdns.SendQuery("_example._sub._sdtest-1._udp.local", DnsClass.IN, DnsType.PTR);
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.FullyQualifiedName))
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                using (var sd = new ServiceDiscovery(mdns))
+                {
+                    sd.Advertise(service);
+                    mdns.Start();
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "query timeout");
+                }
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
         public void Discover_AllServices()
         {
             var service = new ServiceProfile("x", "_sdtest-2._udp", 1024);
@@ -203,6 +236,43 @@ namespace Makaretu.Dns
             try
             {
                 sd.Advertise(service);
+                mdns.Start();
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
+            }
+            finally
+            {
+                sd.Dispose();
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
+        public void Discover_ServiceInstance_with_Subtype()
+        {
+            var service1 = new ServiceProfile("x", "_sdtest-2._udp", 1024);
+            var service2 = new ServiceProfile("y", "_sdtest-2._udp", 1024);
+            service2.Subtypes.Add("apiv2");
+            var done = new ManualResetEvent(false);
+            var mdns = new MulticastService();
+            var sd = new ServiceDiscovery(mdns);
+
+            mdns.NetworkInterfaceDiscovered += (s, e) =>
+            {
+                sd.QueryServiceInstances("_sdtest-2._udp", "apiv2");
+            };
+
+            sd.ServiceInstanceDiscovered += (s, e) =>
+            {
+                if (e.ServiceInstanceName == service2.FullyQualifiedName)
+                {
+                    Assert.IsNotNull(e.Message);
+                    done.Set();
+                }
+            };
+            try
+            {
+                sd.Advertise(service1);
+                sd.Advertise(service2);
                 mdns.Start();
                 Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
             }
