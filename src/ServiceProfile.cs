@@ -59,7 +59,8 @@ namespace Makaretu.Dns
             var simpleServiceName = ServiceName
                 .Replace("._tcp", "")
                 .Replace("._udp", "")
-                .TrimStart('_');
+                .Trim('_')
+                .Replace("_", "-");
             HostName = $"{InstanceName}.{simpleServiceName}.{Domain}";
             Resources.Add(new SRVRecord
             {
