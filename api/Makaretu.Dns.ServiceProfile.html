@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ServiceProfile
    | Multicast DNS documentation ">
-    <meta name="generator" content="docfx 2.43.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -134,20 +134,20 @@
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile__ctor_System_String_System_String_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.%23ctor(System.String%2CSystem.String%2CSystem.UInt16%2CSystem.Collections.Generic.IEnumerable%7BSystem.Net.IPAddress%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile__ctor_Makaretu_Dns_DomainName_Makaretu_Dns_DomainName_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.%23ctor(Makaretu.Dns.DomainName%2CMakaretu.Dns.DomainName%2CSystem.UInt16%2CSystem.Collections.Generic.IEnumerable%7BSystem.Net.IPAddress%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L53">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile__ctor_" data-uid="Makaretu.Dns.ServiceProfile.#ctor*"></a>
-  <h4 id="Makaretu_Dns_ServiceProfile__ctor_System_String_System_String_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__" data-uid="Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})">ServiceProfile(String, String, UInt16, IEnumerable&lt;IPAddress&gt;)</h4>
+  <h4 id="Makaretu_Dns_ServiceProfile__ctor_Makaretu_Dns_DomainName_Makaretu_Dns_DomainName_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__" data-uid="Makaretu.Dns.ServiceProfile.#ctor(Makaretu.Dns.DomainName,Makaretu.Dns.DomainName,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})">ServiceProfile(DomainName, DomainName, UInt16, IEnumerable&lt;IPAddress&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates a new instance of the <a class="xref" href="Makaretu.Dns.ServiceProfile.html">ServiceProfile</a> class
 with the specified details.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ServiceProfile(string instanceName, string serviceName, ushort port, IEnumerable&lt;IPAddress&gt; addresses = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public ServiceProfile(DomainName instanceName, DomainName serviceName, ushort port, IEnumerable&lt;IPAddress&gt; addresses = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -160,13 +160,13 @@ with the specified details.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><span class="parametername">instanceName</span></td>
         <td><p>A unique identifier for the specific service instance.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><span class="parametername">serviceName</span></td>
         <td><p>The <a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_ServiceName">ServiceName</a> of the service.</p>
 </td>
@@ -186,7 +186,7 @@ with the specified details.</p>
       </tr>
     </tbody>
   </table>
-  <h5 id="Makaretu_Dns_ServiceProfile__ctor_System_String_System_String_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress___remarks">Remarks</h5>
+  <h5 id="Makaretu_Dns_ServiceProfile__ctor_Makaretu_Dns_DomainName_Makaretu_Dns_DomainName_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress___remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>The SRV, TXT and A/AAAA resoruce records are added to the <a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_Resources">Resources</a>.</p>
 </div>
   <h3 id="properties">Properties
@@ -196,7 +196,7 @@ with the specified details.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_Domain.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.Domain%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L88">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L89">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_Domain_" data-uid="Makaretu.Dns.ServiceProfile.Domain*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_Domain" data-uid="Makaretu.Dns.ServiceProfile.Domain">Domain</h4>
@@ -205,7 +205,7 @@ with the specified details.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string Domain { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DomainName Domain { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -217,7 +217,7 @@ with the specified details.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><p>Always &quot;local&quot;.</p>
 </td>
       </tr>
@@ -228,7 +228,7 @@ with the specified details.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_FullyQualifiedName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.FullyQualifiedName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L137">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L138">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_FullyQualifiedName_" data-uid="Makaretu.Dns.ServiceProfile.FullyQualifiedName*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_FullyQualifiedName" data-uid="Makaretu.Dns.ServiceProfile.FullyQualifiedName">FullyQualifiedName</h4>
@@ -237,7 +237,7 @@ with the specified details.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string FullyQualifiedName { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DomainName FullyQualifiedName { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -249,7 +249,7 @@ with the specified details.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_InstanceName">InstanceName</a>.<a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_ServiceName">ServiceName</a>.<a class="xref" href="Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile_Domain">Domain</a>
 </td>
       </tr>
@@ -260,7 +260,7 @@ with the specified details.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_HostName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.HostName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L129">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L130">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_HostName_" data-uid="Makaretu.Dns.ServiceProfile.HostName*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_HostName" data-uid="Makaretu.Dns.ServiceProfile.HostName">HostName</h4>
@@ -269,7 +269,7 @@ with the specified details.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string HostName { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DomainName HostName { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -281,7 +281,7 @@ with the specified details.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -295,7 +295,7 @@ of the service instance.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_InstanceName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.InstanceName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L112">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L113">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_InstanceName_" data-uid="Makaretu.Dns.ServiceProfile.InstanceName*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_InstanceName" data-uid="Makaretu.Dns.ServiceProfile.InstanceName">InstanceName</h4>
@@ -304,7 +304,7 @@ of the service instance.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string InstanceName { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DomainName InstanceName { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -316,7 +316,7 @@ of the service instance.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><p>Some unique value.</p>
 </td>
       </tr>
@@ -327,7 +327,7 @@ of the service instance.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_QualifiedServiceName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.QualifiedServiceName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L120">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L121">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_QualifiedServiceName_" data-uid="Makaretu.Dns.ServiceProfile.QualifiedServiceName*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_QualifiedServiceName" data-uid="Makaretu.Dns.ServiceProfile.QualifiedServiceName">QualifiedServiceName</h4>
@@ -336,7 +336,7 @@ of the service instance.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string QualifiedServiceName { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DomainName QualifiedServiceName { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -348,7 +348,7 @@ of the service instance.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><p>Typically of the form &quot;_<em>service</em>._tcp.local&quot;.</p>
 </td>
       </tr>
@@ -359,7 +359,7 @@ of the service instance.</p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_Resources.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.Resources%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L155">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L157">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_Resources_" data-uid="Makaretu.Dns.ServiceProfile.Resources*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_Resources" data-uid="Makaretu.Dns.ServiceProfile.Resources">Resources</h4>
@@ -401,7 +401,7 @@ are also present and are associaed with <a class="xref" href="Makaretu.Dns.Servi
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_ServiceName.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.ServiceName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L104">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L105">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_ServiceName_" data-uid="Makaretu.Dns.ServiceProfile.ServiceName*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_ServiceName" data-uid="Makaretu.Dns.ServiceProfile.ServiceName">ServiceName</h4>
@@ -410,7 +410,7 @@ are also present and are associaed with <a class="xref" href="Makaretu.Dns.Servi
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string ServiceName { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DomainName ServiceName { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -422,7 +422,7 @@ are also present and are associaed with <a class="xref" href="Makaretu.Dns.Servi
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><p>Typically of the form &quot;_<em>service</em>._tcp&quot;.</p>
 </td>
       </tr>
@@ -441,7 +441,7 @@ protocols that run over TCP) or &quot;_udp&quot; (for all others). </p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_Subtypes.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.Subtypes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L164">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L166">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_Subtypes_" data-uid="Makaretu.Dns.ServiceProfile.Subtypes*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_Subtypes" data-uid="Makaretu.Dns.ServiceProfile.Subtypes">Subtypes</h4>
@@ -479,7 +479,7 @@ protocols that run over TCP) or &quot;_udp&quot; (for all others). </p>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_ServiceProfile_AddProperty_System_String_System_String_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.ServiceProfile.AddProperty(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L175">View Source</a>
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/ServiceProfile.cs/#L177">View Source</a>
   </span>
   <a id="Makaretu_Dns_ServiceProfile_AddProperty_" data-uid="Makaretu.Dns.ServiceProfile.AddProperty*"></a>
   <h4 id="Makaretu_Dns_ServiceProfile_AddProperty_System_String_System_String_" data-uid="Makaretu.Dns.ServiceProfile.AddProperty(System.String,System.String)">AddProperty(String, String)</h4>

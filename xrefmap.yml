@@ -195,18 +195,18 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.SendAnswer
   nameWithType: MulticastService.SendAnswer
+- uid: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.DomainName,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
+  name: SendQuery(DomainName, DnsClass, DnsType)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_
+  commentId: M:Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.DomainName,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
+  fullName: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.DomainName, Makaretu.Dns.DnsClass, Makaretu.Dns.DnsType)
+  nameWithType: MulticastService.SendQuery(DomainName, DnsClass, DnsType)
 - uid: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
   name: SendQuery(Message)
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_Message_
   commentId: M:Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
   fullName: Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)
   nameWithType: MulticastService.SendQuery(Message)
-- uid: Makaretu.Dns.MulticastService.SendQuery(System.String,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
-  name: SendQuery(String, DnsClass, DnsType)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_
-  commentId: M:Makaretu.Dns.MulticastService.SendQuery(System.String,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
-  fullName: Makaretu.Dns.MulticastService.SendQuery(System.String, Makaretu.Dns.DnsClass, Makaretu.Dns.DnsType)
-  nameWithType: MulticastService.SendQuery(String, DnsClass, DnsType)
 - uid: Makaretu.Dns.MulticastService.SendQuery*
   name: SendQuery
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendQuery_
@@ -214,12 +214,12 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.SendQuery
   nameWithType: MulticastService.SendQuery
-- uid: Makaretu.Dns.MulticastService.SendUnicastQuery(System.String,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
-  name: SendUnicastQuery(String, DnsClass, DnsType)
-  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendUnicastQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_
-  commentId: M:Makaretu.Dns.MulticastService.SendUnicastQuery(System.String,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
-  fullName: Makaretu.Dns.MulticastService.SendUnicastQuery(System.String, Makaretu.Dns.DnsClass, Makaretu.Dns.DnsType)
-  nameWithType: MulticastService.SendUnicastQuery(String, DnsClass, DnsType)
+- uid: Makaretu.Dns.MulticastService.SendUnicastQuery(Makaretu.Dns.DomainName,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
+  name: SendUnicastQuery(DomainName, DnsClass, DnsType)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendUnicastQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_
+  commentId: M:Makaretu.Dns.MulticastService.SendUnicastQuery(Makaretu.Dns.DomainName,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)
+  fullName: Makaretu.Dns.MulticastService.SendUnicastQuery(Makaretu.Dns.DomainName, Makaretu.Dns.DnsClass, Makaretu.Dns.DnsType)
+  nameWithType: MulticastService.SendUnicastQuery(DomainName, DnsClass, DnsType)
 - uid: Makaretu.Dns.MulticastService.SendUnicastQuery*
   name: SendUnicastQuery
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_SendUnicastQuery_
@@ -477,18 +477,18 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceDiscovery.QueryAllServices
   nameWithType: ServiceDiscovery.QueryAllServices
-- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
-  name: QueryServiceInstances(String)
-  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String_
-  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
-  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String)
-  nameWithType: ServiceDiscovery.QueryServiceInstances(String)
-- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String,System.String)
-  name: QueryServiceInstances(String, String)
-  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_System_String_System_String_
-  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String,System.String)
-  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(System.String, System.String)
-  nameWithType: ServiceDiscovery.QueryServiceInstances(String, String)
+- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(Makaretu.Dns.DomainName)
+  name: QueryServiceInstances(DomainName)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_Makaretu_Dns_DomainName_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(Makaretu.Dns.DomainName)
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(Makaretu.Dns.DomainName)
+  nameWithType: ServiceDiscovery.QueryServiceInstances(DomainName)
+- uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(Makaretu.Dns.DomainName,System.String)
+  name: QueryServiceInstances(DomainName, String)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_Makaretu_Dns_DomainName_System_String_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(Makaretu.Dns.DomainName,System.String)
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances(Makaretu.Dns.DomainName, System.String)
+  nameWithType: ServiceDiscovery.QueryServiceInstances(DomainName, String)
 - uid: Makaretu.Dns.ServiceDiscovery.QueryServiceInstances*
   name: QueryServiceInstances
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryServiceInstances_
@@ -509,12 +509,12 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceDiscovery.QueryUnicastAllServices
   nameWithType: ServiceDiscovery.QueryUnicastAllServices
-- uid: Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(System.String)
-  name: QueryUnicastServiceInstances(String)
-  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_System_String_
-  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(System.String)
-  fullName: Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(System.String)
-  nameWithType: ServiceDiscovery.QueryUnicastServiceInstances(String)
+- uid: Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(Makaretu.Dns.DomainName)
+  name: QueryUnicastServiceInstances(DomainName)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_Makaretu_Dns_DomainName_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(Makaretu.Dns.DomainName)
+  fullName: Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances(Makaretu.Dns.DomainName)
+  nameWithType: ServiceDiscovery.QueryUnicastServiceInstances(DomainName)
 - uid: Makaretu.Dns.ServiceDiscovery.QueryUnicastServiceInstances*
   name: QueryUnicastServiceInstances
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_QueryUnicastServiceInstances_
@@ -615,15 +615,15 @@ references:
   commentId: M:Makaretu.Dns.ServiceProfile.#ctor
   fullName: Makaretu.Dns.ServiceProfile.ServiceProfile()
   nameWithType: ServiceProfile.ServiceProfile()
-- uid: Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})
-  name: ServiceProfile(String, String, UInt16, IEnumerable<IPAddress>)
-  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile__ctor_System_String_System_String_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__
-  commentId: M:Makaretu.Dns.ServiceProfile.#ctor(System.String,System.String,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})
-  name.vb: ServiceProfile(String, String, UInt16, IEnumerable(Of IPAddress))
-  fullName: Makaretu.Dns.ServiceProfile.ServiceProfile(System.String, System.String, System.UInt16, System.Collections.Generic.IEnumerable<System.Net.IPAddress>)
-  fullName.vb: Makaretu.Dns.ServiceProfile.ServiceProfile(System.String, System.String, System.UInt16, System.Collections.Generic.IEnumerable(Of System.Net.IPAddress))
-  nameWithType: ServiceProfile.ServiceProfile(String, String, UInt16, IEnumerable<IPAddress>)
-  nameWithType.vb: ServiceProfile.ServiceProfile(String, String, UInt16, IEnumerable(Of IPAddress))
+- uid: Makaretu.Dns.ServiceProfile.#ctor(Makaretu.Dns.DomainName,Makaretu.Dns.DomainName,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})
+  name: ServiceProfile(DomainName, DomainName, UInt16, IEnumerable<IPAddress>)
+  href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile__ctor_Makaretu_Dns_DomainName_Makaretu_Dns_DomainName_System_UInt16_System_Collections_Generic_IEnumerable_System_Net_IPAddress__
+  commentId: M:Makaretu.Dns.ServiceProfile.#ctor(Makaretu.Dns.DomainName,Makaretu.Dns.DomainName,System.UInt16,System.Collections.Generic.IEnumerable{System.Net.IPAddress})
+  name.vb: ServiceProfile(DomainName, DomainName, UInt16, IEnumerable(Of IPAddress))
+  fullName: Makaretu.Dns.ServiceProfile.ServiceProfile(Makaretu.Dns.DomainName, Makaretu.Dns.DomainName, System.UInt16, System.Collections.Generic.IEnumerable<System.Net.IPAddress>)
+  fullName.vb: Makaretu.Dns.ServiceProfile.ServiceProfile(Makaretu.Dns.DomainName, Makaretu.Dns.DomainName, System.UInt16, System.Collections.Generic.IEnumerable(Of System.Net.IPAddress))
+  nameWithType: ServiceProfile.ServiceProfile(DomainName, DomainName, UInt16, IEnumerable<IPAddress>)
+  nameWithType.vb: ServiceProfile.ServiceProfile(DomainName, DomainName, UInt16, IEnumerable(Of IPAddress))
 - uid: Makaretu.Dns.ServiceProfile.#ctor*
   name: ServiceProfile
   href: api/Makaretu.Dns.ServiceProfile.html#Makaretu_Dns_ServiceProfile__ctor_

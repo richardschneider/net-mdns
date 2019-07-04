@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class MulticastService
    | Multicast DNS documentation ">
-    <meta name="generator" content="docfx 2.43.1.0">
+    <meta name="generator" content="docfx 2.43.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -659,6 +659,72 @@ method should be used, so that legacy unicast queries are supported.
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.DomainName%2CMakaretu.Dns.DnsClass%2CMakaretu.Dns.DnsType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L367">View Source</a>
+  </span>
+  <a id="Makaretu_Dns_MulticastService_SendQuery_" data-uid="Makaretu.Dns.MulticastService.SendQuery*"></a>
+  <h4 id="Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_" data-uid="Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.DomainName,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)">SendQuery(DomainName, DnsClass, DnsType)</h4>
+  <div class="markdown level1 summary"><p>Ask for answers about a name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SendQuery(DomainName name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>A domain name that should end with &quot;.local&quot;, e.g. &quot;myservice.local&quot;.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsClass.html">DnsClass</a></td>
+        <td><span class="parametername">klass</span></td>
+        <td><p>The class, defaults to <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsClass.html#Makaretu_Dns_DnsClass_IN">IN</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsType.html">DnsType</a></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>The question type, defaults to <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsType.html#Makaretu_Dns_DnsType_ANY">ANY</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
+event.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+        <td><p>When the service has not started.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_Makaretu_Dns_Message_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(Makaretu.Dns.Message)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -718,85 +784,19 @@ event.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendQuery(System.String%2CMakaretu.Dns.DnsClass%2CMakaretu.Dns.DnsType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L367">View Source</a>
-  </span>
-  <a id="Makaretu_Dns_MulticastService_SendQuery_" data-uid="Makaretu.Dns.MulticastService.SendQuery*"></a>
-  <h4 id="Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_" data-uid="Makaretu.Dns.MulticastService.SendQuery(System.String,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)">SendQuery(String, DnsClass, DnsType)</h4>
-  <div class="markdown level1 summary"><p>Ask for answers about a name.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SendQuery(string name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">name</span></td>
-        <td><p>A domain name that should end with &quot;.local&quot;, e.g. &quot;myservice.local&quot;.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsClass.html">DnsClass</a></td>
-        <td><span class="parametername">klass</span></td>
-        <td><p>The class, defaults to <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsClass.html#Makaretu_Dns_DnsClass_IN">IN</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsType.html">DnsType</a></td>
-        <td><span class="parametername">type</span></td>
-        <td><p>The question type, defaults to <a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DnsType.html#Makaretu_Dns_DnsType_ANY">ANY</a>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 id="Makaretu_Dns_MulticastService_SendQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType__remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
-event.</p>
-</div>
-  <h5 class="exceptions">Exceptions</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
-        <td><p>When the service has not started.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendUnicastQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendUnicastQuery(System.String%2CMakaretu.Dns.DnsClass%2CMakaretu.Dns.DnsType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/richardschneider/net-mdns/new/master/apiSpec/new?filename=Makaretu_Dns_MulticastService_SendUnicastQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_.md&amp;value=---%0Auid%3A%20Makaretu.Dns.MulticastService.SendUnicastQuery(Makaretu.Dns.DomainName%2CMakaretu.Dns.DnsClass%2CMakaretu.Dns.DnsType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/richardschneider/net-mdns/blob/master/src/MulticastService.cs/#L404">View Source</a>
   </span>
   <a id="Makaretu_Dns_MulticastService_SendUnicastQuery_" data-uid="Makaretu.Dns.MulticastService.SendUnicastQuery*"></a>
-  <h4 id="Makaretu_Dns_MulticastService_SendUnicastQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_" data-uid="Makaretu.Dns.MulticastService.SendUnicastQuery(System.String,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)">SendUnicastQuery(String, DnsClass, DnsType)</h4>
+  <h4 id="Makaretu_Dns_MulticastService_SendUnicastQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType_" data-uid="Makaretu.Dns.MulticastService.SendUnicastQuery(Makaretu.Dns.DomainName,Makaretu.Dns.DnsClass,Makaretu.Dns.DnsType)">SendUnicastQuery(DomainName, DnsClass, DnsType)</h4>
   <div class="markdown level1 summary"><p>Ask for answers about a name and accept unicast and/or broadcast response.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SendUnicastQuery(string name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)</code></pre>
+    <pre><code class="lang-csharp hljs">public void SendUnicastQuery(DomainName name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -809,7 +809,7 @@ event.</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><a class="xref" href="https://richardschneider.github.io/net-dns/api/Makaretu.Dns.DomainName.html">DomainName</a></td>
         <td><span class="parametername">name</span></td>
         <td><p>A domain name that should end with &quot;.local&quot;, e.g. &quot;myservice.local&quot;.</p>
 </td>
@@ -828,7 +828,7 @@ event.</p>
       </tr>
     </tbody>
   </table>
-  <h5 id="Makaretu_Dns_MulticastService_SendUnicastQuery_System_String_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType__remarks">Remarks</h5>
+  <h5 id="Makaretu_Dns_MulticastService_SendUnicastQuery_Makaretu_Dns_DomainName_Makaretu_Dns_DnsClass_Makaretu_Dns_DnsType__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>Send a &quot;QU&quot; question (unicast).  The most significat bit of the Class is set.
 Answers to any query are obtained on the <a class="xref" href="Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_AnswerReceived">AnswerReceived</a>
 event.</p>
