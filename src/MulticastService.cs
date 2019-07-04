@@ -364,7 +364,7 @@ namespace Makaretu.Dns
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
-        public void SendQuery(string name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
+        public void SendQuery(DomainName name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
         {
             var msg = new Message
             {
@@ -401,7 +401,7 @@ namespace Makaretu.Dns
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
-        public void SendUnicastQuery(string name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
+        public void SendUnicastQuery(DomainName name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
         {
             var msg = new Message
             {

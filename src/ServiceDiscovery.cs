@@ -14,6 +14,8 @@ namespace Makaretu.Dns
     public class ServiceDiscovery : IDisposable
     {
         static readonly ILog log = LogManager.GetLogger(typeof(ServiceDiscovery));
+        static readonly DomainName LocalDomain = new DomainName("local");
+        static readonly DomainName SubName = new DomainName("_sub");
 
         /// <summary>
         ///   The service discovery service name.
@@ -21,7 +23,8 @@ namespace Makaretu.Dns
         /// <value>
         ///   The service name used to enumerate other services.
         /// </value>
-        public const string ServiceName = "_services._dns-sd._udp.local";
+        public static readonly DomainName ServiceName = new DomainName("_services._dns-sd._udp.local");
+
         readonly bool ownsMdns;
         List<ServiceProfile> profiles = new List<ServiceProfile>();
 
@@ -101,7 +104,7 @@ namespace Makaretu.Dns
         ///   Use <see cref="QueryAllServices"/> to initiate a DNS-SD question.
         ///   </para>
         /// </remarks>
-        public event EventHandler<string> ServiceDiscovered;
+        public event EventHandler<DomainName> ServiceDiscovered;
 
         /// <summary>
         ///   Raised when a servive instance is discovered.
@@ -162,9 +165,9 @@ namespace Makaretu.Dns
         ///   When an answer is received the <see cref="ServiceInstanceDiscovered"/> event is raised.
         /// </remarks>
         /// <seealso cref="ServiceProfile.ServiceName"/>
-        public void QueryServiceInstances(string service)
+        public void QueryServiceInstances(DomainName service)
         {
-            Mdns.SendQuery(service + ".local", type: DnsType.PTR);
+            Mdns.SendQuery(DomainName.Join(service, LocalDomain), type: DnsType.PTR);
         }
 
         /// <summary>
@@ -180,9 +183,14 @@ namespace Makaretu.Dns
         ///   When an answer is received the <see cref="ServiceInstanceDiscovered"/> event is raised.
         /// </remarks>
         /// <seealso cref="ServiceProfile.ServiceName"/>
-        public void QueryServiceInstances(string service, string subtype)
+        public void QueryServiceInstances(DomainName service, string subtype)
         {
-            Mdns.SendQuery($"{subtype}._sub.{service}.local", type: DnsType.PTR);
+            var name = DomainName.Join(
+                new DomainName(subtype),
+                SubName,
+                service,
+                LocalDomain);
+            Mdns.SendQuery(name, type: DnsType.PTR);
         }
 
         /// <summary>
@@ -196,9 +204,9 @@ namespace Makaretu.Dns
         ///   When an answer is received the <see cref="ServiceInstanceDiscovered"/> event is raised.
         /// </remarks>
         /// <seealso cref="ServiceProfile.ServiceName"/>
-        public void QueryUnicastServiceInstances(string service)
+        public void QueryUnicastServiceInstances(DomainName service)
         {
-            Mdns.SendUnicastQuery(service + ".local", type: DnsType.PTR);
+            Mdns.SendUnicastQuery(DomainName.Join(service, LocalDomain), type: DnsType.PTR);
         }
 
         /// <summary>
@@ -231,7 +239,10 @@ namespace Makaretu.Dns
             {
                 var ptr = new PTRRecord
                 {
-                    Name = $"{subtype}._sub.{service.QualifiedServiceName}",
+                    Name = DomainName.Join(
+                        new DomainName(subtype),
+                        SubName,
+                        service.QualifiedServiceName),
                     DomainName = service.FullyQualifiedName
                 };
                 catalog.Add(ptr, authoritative: true);
@@ -289,9 +300,10 @@ namespace Makaretu.Dns
             }
 
             // Any DNS-SD answers?
+
             var sd = msg.Answers
                 .OfType<PTRRecord>()
-                .Where(ptr => ptr.Name.EndsWith(".local"));
+                .Where(ptr => ptr.Name.IsSubdomainOf(LocalDomain));
             foreach (var ptr in sd)
             {
                 if (ptr.Name == ServiceName)
@@ -362,6 +374,11 @@ namespace Makaretu.Dns
             {
                 response.Answers.AddRange(response.AdditionalRecords);
                 response.AdditionalRecords.Clear();
+            }
+
+            if (!response.Answers.Any(a => a.Name == ServiceName))
+            {
+                ;
             }
 
             if (QU)

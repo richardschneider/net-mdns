@@ -102,5 +102,15 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("x", "_sdtest._udp", 1024);
             Assert.AreEqual(0, service.Subtypes.Count);
         }
+
+        [TestMethod]
+        public void HostName()
+        {
+            var service = new ServiceProfile("fred", "_foo._tcp", 1024);
+            Assert.AreEqual("fred.foo.local", service.HostName);
+
+            service = new ServiceProfile("fred", "_foo_bar._tcp", 1024);
+            Assert.AreEqual("fred.foo-bar.local", service.HostName);
+        }
     }
 }

@@ -50,17 +50,18 @@ namespace Makaretu.Dns
         /// <remarks>
         ///   The SRV, TXT and A/AAAA resoruce records are added to the <see cref="Resources"/>.
         /// </remarks>
-        public ServiceProfile(string instanceName, string serviceName, ushort port, IEnumerable<IPAddress> addresses = null)
+        public ServiceProfile(DomainName instanceName, DomainName serviceName, ushort port, IEnumerable<IPAddress> addresses = null)
         {
             InstanceName = instanceName;
             ServiceName = serviceName;
             var fqn = FullyQualifiedName;
 
-            var simpleServiceName = ServiceName
+            var simpleServiceName = new DomainName(ServiceName.ToString()
                 .Replace("._tcp", "")
                 .Replace("._udp", "")
-                .TrimStart('_');
-            HostName = $"{InstanceName}.{simpleServiceName}.{Domain}";
+                .Trim('_')
+                .Replace("_", "-"));
+            HostName = DomainName.Join(InstanceName, simpleServiceName, Domain);
             Resources.Add(new SRVRecord
             {
                 Name = fqn,
@@ -85,7 +86,7 @@ namespace Makaretu.Dns
         /// <value>
         ///   Always "local".
         /// </value>
-        public string Domain { get; } = "local";
+        public DomainName Domain { get; } = "local";
 
         /// <summary>
         ///   A unique name for the service.
@@ -101,7 +102,7 @@ namespace Makaretu.Dns
         ///   The second label is either "_tcp" (for application
         ///   protocols that run over TCP) or "_udp" (for all others). 
         /// </remarks>
-        public string ServiceName { get; set; }
+        public DomainName ServiceName { get; set; }
 
         /// <summary>
         ///   A unique identifier for the service instance.
@@ -109,7 +110,7 @@ namespace Makaretu.Dns
         /// <value>
         ///   Some unique value.
         /// </value>
-        public string InstanceName { get; set; }
+        public DomainName InstanceName { get; set; }
 
         /// <summary>
         ///   The service name and domain.
@@ -117,7 +118,7 @@ namespace Makaretu.Dns
         /// <value>
         ///   Typically of the form "_<i>service</i>._tcp.local".
         /// </value>
-        public string QualifiedServiceName => $"{ServiceName}.{Domain}";
+        public DomainName QualifiedServiceName => DomainName.Join(ServiceName, Domain);
 
         /// <summary>
         ///   The fully qualified name of the instance's host.
@@ -126,7 +127,7 @@ namespace Makaretu.Dns
         ///   This can be used to query the address records (A and AAAA)
         ///   of the service instance.
         /// </remarks>
-        public string HostName { get; set; }
+        public DomainName HostName { get; set; }
 
         /// <summary>
         ///   The instance name, service name and domain.
@@ -134,7 +135,8 @@ namespace Makaretu.Dns
         /// <value>
         ///   <see cref="InstanceName"/>.<see cref="ServiceName"/>.<see cref="Domain"/>
         /// </value>
-        public string FullyQualifiedName => $"{InstanceName}.{QualifiedServiceName}";
+        public DomainName FullyQualifiedName => 
+            DomainName.Join(InstanceName, ServiceName, Domain);
 
         /// <summary>
         ///   DNS resource records that are used to locate the service instance.

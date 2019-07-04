@@ -17,7 +17,7 @@ namespace Makaretu.Dns
         ///   Typically of the form "<i>instance</i>._<i>service</i>._tcp.local".
         /// </value>
         /// <seealso cref="ServiceProfile.FullyQualifiedName"/>
-        public string ServiceInstanceName { get; set; }
+        public DomainName ServiceInstanceName { get; set; }
     }
 }
 

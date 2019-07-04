@@ -20,10 +20,9 @@
     <Description>A simple Multicast Domain Name Service based on RFC 6762.  Can be used as both a client (sending queries) or a server (responding to queries).</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>https://github.com/richardschneider/net-mdns/releases</PackageReleaseNotes>
-    <Copyright>© 2018 Richard Schneider</Copyright>
+    <Copyright>© 2018-2019 Richard Schneider</Copyright>
     <PackageTags>multicast mdns dns zeroconf</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
-    <PackageLicenseUrl>https://github.com/richardschneider/net-mdns/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/richardschneider/net-mdns</PackageProjectUrl>
   </PropertyGroup>
 
@@ -34,7 +33,7 @@
   <ItemGroup>
     <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="IPNetwork2" Version="2.1.2" />
-    <PackageReference Include="Makaretu.Dns" Version="1.5.0" />
+    <PackageReference Include="Makaretu.Dns" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard14'">
