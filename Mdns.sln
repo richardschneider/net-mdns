@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spike", "Spike\Spike.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Browser", "Browser\Browser.csproj", "{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "traffic", "traffic\traffic.csproj", "{5E51D502-05E1-4A45-A8D6-6FB3E295D798}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A77BEF8C-440E-46F7-ACFC-5EF06EFCA4BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E51D502-05E1-4A45-A8D6-6FB3E295D798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E51D502-05E1-4A45-A8D6-6FB3E295D798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E51D502-05E1-4A45-A8D6-6FB3E295D798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E51D502-05E1-4A45-A8D6-6FB3E295D798}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

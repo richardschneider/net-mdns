@@ -529,10 +529,10 @@ namespace Makaretu.Dns
             using (var mdns = new MulticastService())
             {
                 var answerCount = 0;
-                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
                     mdns.SendQuery(service);
-                    await Task.Delay(250);
+                    Thread.Sleep(250);
                     mdns.SendQuery(service);
                 };
                 mdns.QueryReceived += (s, e) =>
@@ -572,10 +572,10 @@ namespace Makaretu.Dns
             using (var mdns = new MulticastService())
             {
                 var answerCount = 0;
-                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
                     mdns.SendQuery(service);
-                    await Task.Delay(2000);
+                    Thread.Sleep(2000);
                     mdns.SendQuery(service);
                 };
                 mdns.QueryReceived += (s, e) =>
@@ -601,7 +601,7 @@ namespace Makaretu.Dns
                     };
                 };
                 mdns.Start();
-                await Task.Delay(3000);
+                await Task.Delay(5000);
                 Assert.AreEqual(2, answerCount);
             }
         }
@@ -622,6 +622,23 @@ namespace Makaretu.Dns
 
                 Assert.IsTrue(ready1.WaitOne(TimeSpan.FromSeconds(1)), "ready1 timeout");
                 Assert.IsTrue(ready2.WaitOne(TimeSpan.FromSeconds(1)), "ready2 timeout");
+            }
+        }
+
+        [TestMethod]
+        public void MalformedMessage()
+        {
+            byte[] malformedMessage = null;
+            using (var mdns = new MulticastService())
+            {
+                mdns.MalformedMessage += (s, e) => malformedMessage = e;
+
+                var msg = new byte[] { 0xff };
+                var endPoint = new IPEndPoint(IPAddress.Loopback, 5353);
+                var udp = new UdpReceiveResult(msg, endPoint);
+                mdns.OnDnsMessage(this, udp);
+
+                CollectionAssert.AreEqual(msg, malformedMessage);
             }
         }
     }
