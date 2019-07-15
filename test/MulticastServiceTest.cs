@@ -624,5 +624,22 @@ namespace Makaretu.Dns
                 Assert.IsTrue(ready2.WaitOne(TimeSpan.FromSeconds(1)), "ready2 timeout");
             }
         }
+
+        [TestMethod]
+        public void MalformedMessage()
+        {
+            byte[] malformedMessage = null;
+            using (var mdns = new MulticastService())
+            {
+                mdns.MalformedMessage += (s, e) => malformedMessage = e;
+
+                var msg = new byte[] { 0xff };
+                var endPoint = new IPEndPoint(IPAddress.Loopback, 5353);
+                var udp = new UdpReceiveResult(msg, endPoint);
+                mdns.OnDnsMessage(this, udp);
+
+                CollectionAssert.AreEqual(msg, malformedMessage);
+            }
+        }
     }
 }

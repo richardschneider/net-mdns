@@ -105,6 +105,14 @@ namespace Makaretu.Dns
         public event EventHandler<MessageEventArgs> AnswerReceived;
 
         /// <summary>
+        ///   Raised when a DNS message is received that cannot be decoded.
+        /// </summary>
+        /// <value>
+        ///   The DNS message as a byte array.
+        /// </value>
+        public event EventHandler<byte[]> MalformedMessage;
+
+        /// <summary>
         ///   Raised when one or more network interfaces are discovered. 
         /// </summary>
         /// <value>
@@ -603,8 +611,12 @@ namespace Makaretu.Dns
         ///   Multicast DNS messages received with an OPCODE or RCODE other than zero 	
         ///   are silently ignored.	
         ///   </para>	
+        ///   <para>
+        ///   If the message cannot be decoded, then the <see cref="MalformedMessage"/>
+        ///   event is raised.
+        ///   </para>
         /// </remarks>
-        void OnDnsMessage(object sender, UdpReceiveResult result)
+        public void OnDnsMessage(object sender, UdpReceiveResult result)
         {
             // If recently received, then ignore.
             if (!receivedMessages.TryAdd(result.Buffer))
@@ -620,6 +632,7 @@ namespace Makaretu.Dns
             catch (Exception e)
             {
                 log.Warn("Received malformed message", e);
+                MalformedMessage?.Invoke(this, result.Buffer);
                 return; // eat the exception
             }
 
