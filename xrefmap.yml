@@ -138,6 +138,12 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.GetNetworkInterfaces
   nameWithType: MulticastService.GetNetworkInterfaces
+- uid: Makaretu.Dns.MulticastService.MalformedMessage
+  name: MalformedMessage
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_MalformedMessage
+  commentId: E:Makaretu.Dns.MulticastService.MalformedMessage
+  fullName: Makaretu.Dns.MulticastService.MalformedMessage
+  nameWithType: MulticastService.MalformedMessage
 - uid: Makaretu.Dns.MulticastService.NetworkInterfaceDiscovered
   name: NetworkInterfaceDiscovered
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_NetworkInterfaceDiscovered
@@ -157,6 +163,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.NetworkInterfaceDiscoveryInterval
   nameWithType: MulticastService.NetworkInterfaceDiscoveryInterval
+- uid: Makaretu.Dns.MulticastService.OnDnsMessage(System.Object,System.Net.Sockets.UdpReceiveResult)
+  name: OnDnsMessage(Object, UdpReceiveResult)
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_OnDnsMessage_System_Object_System_Net_Sockets_UdpReceiveResult_
+  commentId: M:Makaretu.Dns.MulticastService.OnDnsMessage(System.Object,System.Net.Sockets.UdpReceiveResult)
+  fullName: Makaretu.Dns.MulticastService.OnDnsMessage(System.Object, System.Net.Sockets.UdpReceiveResult)
+  nameWithType: MulticastService.OnDnsMessage(Object, UdpReceiveResult)
+- uid: Makaretu.Dns.MulticastService.OnDnsMessage*
+  name: OnDnsMessage
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_OnDnsMessage_
+  commentId: Overload:Makaretu.Dns.MulticastService.OnDnsMessage
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.OnDnsMessage
+  nameWithType: MulticastService.OnDnsMessage
 - uid: Makaretu.Dns.MulticastService.QueryReceived
   name: QueryReceived
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_QueryReceived
