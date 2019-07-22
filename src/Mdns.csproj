@@ -33,7 +33,7 @@
   <ItemGroup>
     <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="IPNetwork2" Version="2.1.2" />
-    <PackageReference Include="Makaretu.Dns" Version="2.0.0" />
+    <PackageReference Include="Makaretu.Dns" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard14'">
