@@ -16,9 +16,6 @@ namespace Makaretu.Dns
     /// </remarks>
     public class RecentMessages
     {
-        // MD5 is okay because the hash is not used for security.
-        HashAlgorithm hasher = MD5.Create();
-
         /// <summary>
         ///   Recent messages.
         /// </summary>
@@ -84,7 +81,11 @@ namespace Makaretu.Dns
         /// </returns>
         public string GetId(byte[] message)
         {
-            return Convert.ToBase64String(hasher.ComputeHash(message));
+            // MD5 is okay because the hash is not used for security.
+            using (HashAlgorithm hasher = MD5.Create())
+            {
+                return Convert.ToBase64String(hasher.ComputeHash(message));
+            }
         }
     }
 }
