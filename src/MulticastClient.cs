@@ -161,6 +161,8 @@ namespace Makaretu.Dns
 
         void Listen(UdpClient receiver)
         {
+            // ReceiveAsync does not support cancellation.  So the receiver is disposed
+            // to stop it. See https://github.com/dotnet/corefx/issues/9848
             Task.Run(async () =>
             {
                 try
@@ -172,6 +174,10 @@ namespace Makaretu.Dns
                     _ = task.ContinueWith(x => MessageReceived?.Invoke(this, x.Result), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.RunContinuationsAsynchronously);
 
                     await task.ConfigureAwait(false);
+                }
+                catch (NullReferenceException)
+                {
+                    return;
                 }
                 catch (ObjectDisposedException)
                 {
@@ -204,7 +210,14 @@ namespace Makaretu.Dns
 
                     foreach (var receiver in receivers)
                     {
-                        receiver.Dispose();
+                        try
+                        {
+                            receiver.Dispose();
+                        }
+                        catch
+                        {
+                            // eat it.
+                        }
                     }
                     receivers.Clear();
 
@@ -212,7 +225,14 @@ namespace Makaretu.Dns
                     {
                         if (senders.TryRemove(address, out var sender))
                         {
-                            sender.Dispose();
+                            try
+                            {
+                                sender.Dispose();
+                            }
+                            catch
+                            {
+                                // eat it.
+                            }
                         }
                     }
                     senders.Clear();
