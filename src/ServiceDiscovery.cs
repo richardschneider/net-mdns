@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Common.Logging;
 using Makaretu.Dns.Resolving;
 
@@ -381,6 +382,11 @@ namespace Makaretu.Dns
                 ;
             }
 
+            // Only return address records that the querier can reach.
+            response.Answers.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
+            response.AuthorityRecords.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
+            response.AdditionalRecords.RemoveAll(rr => IsUnreachable(rr, e.RemoteEndPoint));
+
             if (QU)
             {
                 // TODO: Send a Unicast response if required.
@@ -400,6 +406,12 @@ namespace Makaretu.Dns
                 log.Trace(response);
             }
             //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
+        }
+
+        bool IsUnreachable(ResourceRecord rr, IPEndPoint sender)
+        {
+            var arecord = rr as AddressRecord;
+            return !arecord?.Address.IsReachable(sender.Address) ?? false;
         }
 
         #region IDisposable Support

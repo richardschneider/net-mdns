@@ -18,10 +18,10 @@ namespace Makaretu.Dns
         public Message Message { get; set; }
 
         /// <summary>
-        ///   The DNS message sender endpoint.
+        ///   Where the message originated from.
         /// </summary>
         /// <value>
-        ///   The endpoint from the message was received.
+        ///   The IP address and port of the sender.
         /// </value>
         public IPEndPoint RemoteEndPoint { get; set; }
 

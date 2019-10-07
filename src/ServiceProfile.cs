@@ -74,7 +74,7 @@ namespace Makaretu.Dns
                 Strings = { "txtvers=1" }
             });
 
-            foreach (var address in addresses ?? MulticastService.GetLinkLocalAddresses())
+            foreach (var address in addresses ?? MulticastService.GetIPAddresses())
             {
                 Resources.Add(AddressRecord.Create(HostName, address));
             }
