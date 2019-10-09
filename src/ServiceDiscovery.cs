@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Common.Logging;
 using Makaretu.Dns.Resolving;
 
@@ -254,6 +255,40 @@ namespace Makaretu.Dns
             }
 
             catalog.IncludeReverseLookupRecords();
+        }
+
+        /// <summary>
+        ///    Sends an unsolicited MDNS response describing the
+        ///    service profile.
+        /// </summary>
+        /// <param name="profile">
+        ///   The profile to describe.
+        /// </param>
+        /// <remarks>
+        ///   Sends a MDNS response <see cref="Message"/> containing the pointer
+        ///   and resource records of the <paramref name="profile"/>.
+        ///   <para>
+        ///   To provide increased robustness against packet loss,
+        ///   two unsolicited responses are sent one second apart.
+        ///   </para>
+        /// </remarks>
+        public void Announce(ServiceProfile profile)
+        {
+            var message = new Message { QR = true };
+
+            // Add the shared records.
+            var ptrRecord = new PTRRecord { Name = profile.QualifiedServiceName, DomainName = profile.FullyQualifiedName };
+            message.Answers.Add(ptrRecord);
+
+            // Add the resource records.
+            profile.Resources.ForEach((resource) =>
+            {
+                message.Answers.Add(resource);
+            });
+
+            Mdns.SendAnswer(message);
+            Task.Delay(1000).Wait();
+            Mdns.SendAnswer(message);
         }
 
         /// <summary>

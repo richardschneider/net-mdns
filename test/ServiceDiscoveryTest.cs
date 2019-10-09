@@ -454,5 +454,101 @@ namespace Makaretu.Dns
             }
         }
 
+        [TestMethod]
+        public void Announce_ContainsSharedRecords()
+        {
+            var service = new ServiceProfile("z", "_sdtest-4._udp", 1024, new[] { IPAddress.Loopback });
+            var done = new ManualResetEvent(false);
+
+            var mdns = new MulticastService();
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.FullyQualifiedName))
+                {
+                    done.Set();
+                }
+            };
+            try
+            {
+                using (var sd = new ServiceDiscovery(mdns))
+                {
+                    mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
+                    mdns.Start();
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "announce timeout");
+                }
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
+        public void Announce_ContainsResourceRecords()
+        {
+            var service = new ServiceProfile("z", "_sdtest-4._udp", 1024, new[] { IPAddress.Loopback });
+            var done = new ManualResetEvent(false);
+
+            var mdns = new MulticastService();
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                foreach (var r in service.Resources)
+                {
+                    if (!msg.Answers.Contains(r))
+                    {
+                        return;
+                    }
+                }
+                done.Set();
+            };
+            try
+            {
+                using (var sd = new ServiceDiscovery(mdns))
+                {
+                    mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
+                    mdns.Start();
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "announce timeout");
+                }
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
+
+        [TestMethod]
+        public void Announce_SentTwice()
+        {
+            var service = new ServiceProfile("z", "_sdtest-4._udp", 1024, new[] { IPAddress.Loopback });
+            var done = new ManualResetEvent(false);
+            var nanswers = 0;
+            var mdns = new MulticastService();
+            mdns.AnswerReceived += (s, e) =>
+            {
+                var msg = e.Message;
+                if (msg.Answers.OfType<PTRRecord>().Any(p => p.DomainName == service.FullyQualifiedName))
+                {
+                    if (++nanswers == 2)
+                    {
+                        done.Set();
+                    }
+                }
+            };
+            try
+            {
+                using (var sd = new ServiceDiscovery(mdns))
+                {
+                    mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
+                    mdns.Start();
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(2)), "announce timeout");
+                }
+            }
+            finally
+            {
+                mdns.Stop();
+            }
+        }
     }
 }
