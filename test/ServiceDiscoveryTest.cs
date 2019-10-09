@@ -475,7 +475,7 @@ namespace Makaretu.Dns
                 {
                     mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
                     mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "announce timeout");
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(3)), "announce timeout");
                 }
             }
             finally
@@ -509,7 +509,7 @@ namespace Makaretu.Dns
                 {
                     mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
                     mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "announce timeout");
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(3)), "announce timeout");
                 }
             }
             finally
@@ -542,7 +542,7 @@ namespace Makaretu.Dns
                 {
                     mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
                     mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(2)), "announce timeout");
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(3)), "announce timeout");
                 }
             }
             finally
