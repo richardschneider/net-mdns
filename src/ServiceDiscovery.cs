@@ -286,9 +286,9 @@ namespace Makaretu.Dns
                 message.Answers.Add(resource);
             });
 
-            Mdns.SendAnswer(message);
+            Mdns.SendAnswer(message, checkDuplicate: false);
             Task.Delay(1000).Wait();
-            Mdns.SendAnswer(message);
+            Mdns.SendAnswer(message, checkDuplicate: false);
         }
 
         /// <summary>
