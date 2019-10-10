@@ -19,6 +19,7 @@ namespace Makaretu.Dns
         {
             var mdns = new MulticastService();
             Assert.IsNotNull(mdns);
+            Assert.IsTrue(mdns.IgnoreDuplicateMessages);
         }
 
         [TestMethod]

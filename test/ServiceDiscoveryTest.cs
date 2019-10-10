@@ -524,7 +524,10 @@ namespace Makaretu.Dns
             var service = new ServiceProfile("z", "_sdtest-4._udp", 1024, new[] { IPAddress.Loopback });
             var done = new ManualResetEvent(false);
             var nanswers = 0;
-            var mdns = new MulticastService();
+            var mdns = new MulticastService
+            {
+                IgnoreDuplicateMessages = false
+            };
             mdns.AnswerReceived += (s, e) =>
             {
                 var msg = e.Message;

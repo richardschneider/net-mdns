@@ -132,6 +132,7 @@ namespace Makaretu.Dns
 
             UseIpv4 = Socket.OSSupportsIPv4;
             UseIpv6 = Socket.OSSupportsIPv6;
+            IgnoreDuplicateMessages = true;
         }
 
         /// <summary>
@@ -149,6 +150,18 @@ namespace Makaretu.Dns
         ///   Defaults to <b>true</b> if the OS supports it.
         /// </value>
         public bool UseIpv6 { get; set; }
+
+        /// <summary>
+        ///   Determines if received messages are checked for duplicates.
+        /// </summary>
+        /// <value>
+        ///   <b>true</b> to ignore duplicate messages. Defaults to <b>true</b>.
+        /// </value>
+        /// <remarks>
+        ///   When set, a message that has been received within the last minute
+        ///   will be ignored.
+        /// </remarks>
+        public bool IgnoreDuplicateMessages { get; set; }
 
         /// <summary>
         ///   The interval for discovering network interfaces.
