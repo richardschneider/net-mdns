@@ -632,7 +632,7 @@ namespace Makaretu.Dns
         public void OnDnsMessage(object sender, UdpReceiveResult result)
         {
             // If recently received, then ignore.
-            if (!receivedMessages.TryAdd(result.Buffer))
+            if (IgnoreDuplicateMessages && !receivedMessages.TryAdd(result.Buffer))
             {
                 return;
             }
