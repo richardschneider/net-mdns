@@ -545,7 +545,7 @@ namespace Makaretu.Dns
                 {
                     mdns.NetworkInterfaceDiscovered += (s, e) => sd.Announce(service);
                     mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(3)), "announce timeout");
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(4)), "announce timeout");
                 }
             }
             finally
