@@ -138,6 +138,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.MulticastService.GetNetworkInterfaces
   nameWithType: MulticastService.GetNetworkInterfaces
+- uid: Makaretu.Dns.MulticastService.IgnoreDuplicateMessages
+  name: IgnoreDuplicateMessages
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_IgnoreDuplicateMessages
+  commentId: P:Makaretu.Dns.MulticastService.IgnoreDuplicateMessages
+  fullName: Makaretu.Dns.MulticastService.IgnoreDuplicateMessages
+  nameWithType: MulticastService.IgnoreDuplicateMessages
+- uid: Makaretu.Dns.MulticastService.IgnoreDuplicateMessages*
+  name: IgnoreDuplicateMessages
+  href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_IgnoreDuplicateMessages_
+  commentId: Overload:Makaretu.Dns.MulticastService.IgnoreDuplicateMessages
+  isSpec: "True"
+  fullName: Makaretu.Dns.MulticastService.IgnoreDuplicateMessages
+  nameWithType: MulticastService.IgnoreDuplicateMessages
 - uid: Makaretu.Dns.MulticastService.MalformedMessage
   name: MalformedMessage
   href: api/Makaretu.Dns.MulticastService.html#Makaretu_Dns_MulticastService_MalformedMessage
@@ -425,6 +438,19 @@ references:
   isSpec: "True"
   fullName: Makaretu.Dns.ServiceDiscovery.Advertise
   nameWithType: ServiceDiscovery.Advertise
+- uid: Makaretu.Dns.ServiceDiscovery.Announce(Makaretu.Dns.ServiceProfile)
+  name: Announce(ServiceProfile)
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Announce_Makaretu_Dns_ServiceProfile_
+  commentId: M:Makaretu.Dns.ServiceDiscovery.Announce(Makaretu.Dns.ServiceProfile)
+  fullName: Makaretu.Dns.ServiceDiscovery.Announce(Makaretu.Dns.ServiceProfile)
+  nameWithType: ServiceDiscovery.Announce(ServiceProfile)
+- uid: Makaretu.Dns.ServiceDiscovery.Announce*
+  name: Announce
+  href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_Announce_
+  commentId: Overload:Makaretu.Dns.ServiceDiscovery.Announce
+  isSpec: "True"
+  fullName: Makaretu.Dns.ServiceDiscovery.Announce
+  nameWithType: ServiceDiscovery.Announce
 - uid: Makaretu.Dns.ServiceDiscovery.AnswersContainsAdditionalRecords
   name: AnswersContainsAdditionalRecords
   href: api/Makaretu.Dns.ServiceDiscovery.html#Makaretu_Dns_ServiceDiscovery_AnswersContainsAdditionalRecords
