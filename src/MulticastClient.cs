@@ -175,11 +175,7 @@ namespace Makaretu.Dns
 
                     await task.ConfigureAwait(false);
                 }
-                catch (NullReferenceException)
-                {
-                    return;
-                }
-                catch (ObjectDisposedException)
+                catch
                 {
                     return;
                 }
