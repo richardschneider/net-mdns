@@ -565,7 +565,7 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
-        [Ignore("See issue #52")]
+        //[Ignore("See issue #52")]
         public async Task NoDuplicateResponse()
         {
             var service = Guid.NewGuid().ToString() + ".local";
@@ -573,10 +573,10 @@ namespace Makaretu.Dns
             using (var mdns = new MulticastService())
             {
                 var answerCount = 0;
-                mdns.NetworkInterfaceDiscovered += (s, e) =>
+                mdns.NetworkInterfaceDiscovered += async (s, e) =>
                 {
                     mdns.SendQuery(service);
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                     mdns.SendQuery(service);
                 };
                 mdns.QueryReceived += (s, e) =>
