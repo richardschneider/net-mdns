@@ -565,7 +565,6 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
-        //[Ignore("See issue #52")]
         public async Task NoDuplicateResponse()
         {
             var service = Guid.NewGuid().ToString() + ".local";
