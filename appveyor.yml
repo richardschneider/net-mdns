@@ -1,14 +1,8 @@
 # gitversion will change the version number
 version: x-{build}
-
 branches:
-    only:
-      - master
-
-environment:
-    git_token:
-      secure: NeX5NCOUXsCLc1UjTJjqB9F02FZ8Wq0VsxqTXC8kBdyK6zjxjebrf/9Da2sY1Kql
-
+  only:
+   - master
 configuration: Release
 os: Visual Studio 2017
 
@@ -19,13 +13,13 @@ init:
   - git config --global user.email "noreply@emanon.org"
   - git config --global user.name "Appveyor CI"
 
-# cache:
-#  - packages -> **\packages.config      # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
-
 environment:
+  git_token:
+    secure: NeX5NCOUXsCLc1UjTJjqB9F02FZ8Wq0VsxqTXC8kBdyK6zjxjebrf/9Da2sY1Kql
   COVERALLS_REPO_TOKEN:
     secure: mxSBDkT22JU2Md+CSLG59sp0CqfE2f9RjqOn7XTPaIn2Jo2RNAFpSD+iZ0x0jh1J
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
 # tools we need for bulding/testing/deploying
 install:
