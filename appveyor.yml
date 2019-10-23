@@ -32,7 +32,6 @@ pull_requests:
   do_not_increment_build_number: true
 
 before_build:
-  - nuget restore
   - ps: gitversion /output buildserver >gitversion.log
 
 build_script:
@@ -47,17 +46,16 @@ test_script:
 
 after_test: 
 # Generate coverage report
-    - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe 
-        -register:user -filter:"+[Makaretu.Dns.Multicast]*" 
-        -target:"c:\Program Files\dotnet\dotnet.exe" 
-        -targetargs:"test -c Release --no-build --no-restore --framework net461 test" 
-        -output:coverage.xml  
-        -mergeoutput 
-        -hideskipped:File 
-        -oldStyle 
-    - if defined COVERALLS_REPO_TOKEN 
-        packages\coveralls.net.0.6.0\tools\csmacnz.coveralls.exe 
-        --opencover -i ./coverage.xml --useRelativePaths --serviceName appveyor --jobId %APPVEYOR_BUILD_NUMBER%
+    - dotnet test -c %CONFIGURATION% -f netcoreapp2.2 --no-build --no-restore test 
+      --filter TestCategory!=IPv6 
+      /p:CollectCoverage=true /p:Include="[Makaretu.Dns.Multicast]*"
+    - choco install codecov -y
+    - codecov -f "test/coverage.opencover.xml"
+    - dotnet tool install --global coveralls.net --version 1.0.0
+    - if defined COVERALLS_REPO_TOKEN
+        csmacnz.coveralls.exe
+        --opencover -i test/coverage.opencover.xml --useRelativePaths --serviceName appveyor --jobId %APPVEYOR_BUILD_NUMBER%
+
 # Build documentation in doc\_site
     - docfx doc\docfx.json --logLevel Warning
     - 7z a -tzip docs.zip doc\_site
