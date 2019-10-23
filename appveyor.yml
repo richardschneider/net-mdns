@@ -1,13 +1,11 @@
 # gitversion will change the version number
 version: x-{build}
 
-for:
--
-  branches:
+branches:
     only:
       - master
 
-  environment:
+environment:
     git_token:
       secure: NeX5NCOUXsCLc1UjTJjqB9F02FZ8Wq0VsxqTXC8kBdyK6zjxjebrf/9Da2sY1Kql
 
