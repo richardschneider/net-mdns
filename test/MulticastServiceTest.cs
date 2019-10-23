@@ -572,10 +572,10 @@ namespace Makaretu.Dns
             using (var mdns = new MulticastService())
             {
                 var answerCount = 0;
-                mdns.NetworkInterfaceDiscovered += async (s, e) =>
+                mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
                     mdns.SendQuery(service);
-                    await Task.Delay(2000);
+                    Thread.Sleep(250);
                     mdns.SendQuery(service);
                 };
                 mdns.QueryReceived += (s, e) =>
@@ -601,7 +601,11 @@ namespace Makaretu.Dns
                     };
                 };
                 mdns.Start();
-                await Task.Delay(5000);
+                await Task.Delay(2000);
+                Assert.AreEqual(1, answerCount);
+
+                mdns.SendQuery(service);
+                await Task.Delay(2000);
                 Assert.AreEqual(2, answerCount);
             }
         }
