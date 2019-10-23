@@ -565,7 +565,6 @@ namespace Makaretu.Dns
         }
 
         [TestMethod]
-        [Ignore("See issue #52")]
         public async Task NoDuplicateResponse()
         {
             var service = Guid.NewGuid().ToString() + ".local";
@@ -576,7 +575,7 @@ namespace Makaretu.Dns
                 mdns.NetworkInterfaceDiscovered += (s, e) =>
                 {
                     mdns.SendQuery(service);
-                    Thread.Sleep(2000);
+                    Thread.Sleep(250);
                     mdns.SendQuery(service);
                 };
                 mdns.QueryReceived += (s, e) =>
@@ -602,7 +601,11 @@ namespace Makaretu.Dns
                     };
                 };
                 mdns.Start();
-                await Task.Delay(5000);
+                await Task.Delay(2000);
+                Assert.AreEqual(1, answerCount);
+
+                mdns.SendQuery(service);
+                await Task.Delay(2000);
                 Assert.AreEqual(2, answerCount);
             }
         }

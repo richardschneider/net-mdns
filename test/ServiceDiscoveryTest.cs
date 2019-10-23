@@ -347,7 +347,7 @@ namespace Makaretu.Dns
 
                 mdns.Start();
 
-                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(3)), "instance not found");
 
                 var additionalRecordsCount =
                     1 + // SRVRecord
