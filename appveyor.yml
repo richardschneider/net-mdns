@@ -48,6 +48,7 @@ after_test:
 # Generate coverage report
     - dotnet test -c %CONFIGURATION% -f netcoreapp2.2 --no-build --no-restore test 
       --filter TestCategory!=IPv6 
+      /p:CopyLocalLockFileAssemblies=true
       /p:CollectCoverage=true /p:Include="[Makaretu.Dns.Multicast]*"
     - choco install codecov -y
     - codecov -f "test/coverage.opencover.xml"
