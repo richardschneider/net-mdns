@@ -333,15 +333,14 @@ namespace Makaretu.Dns
                 //
                 // Do magic only on Windows.
 #if NET461
-                NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
-                NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
+                if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
 #else
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
                 {
                     NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
                     NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
                 }
-#endif
             }
             catch (Exception e)
             {
