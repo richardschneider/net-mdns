@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -330,8 +331,16 @@ namespace Makaretu.Dns
                 // (wifi off, but NIC is not disabled, wifi - on, NIC was not changed 
                 // so no event). Rebinding fixes this.
                 //
-                NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
-                NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
+                // Do magic only on Windows.
+#if NET461
+                if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
+#else
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
+                {
+                    NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+                    NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
+                }
             }
             catch (Exception e)
             {
@@ -673,7 +682,7 @@ namespace Makaretu.Dns
             }
         }
 
-        #region IDisposable Support
+#region IDisposable Support
 
         /// <inheritdoc />
         protected virtual void Dispose(bool disposing)
@@ -690,6 +699,6 @@ namespace Makaretu.Dns
             Dispose(true);
         }
 
-        #endregion
+#endregion
     }
 }
