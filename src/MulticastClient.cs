@@ -219,20 +219,7 @@ namespace Makaretu.Dns
                     }
                     receivers.Clear();
 
-                    foreach (var address in senders.Keys)
-                    {
-                        if (senders.TryRemove(address, out var sender))
-                        {
-                            try
-                            {
-                                sender.Dispose();
-                            }
-                            catch
-                            {
-                                // eat it.
-                            }
-                        }
-                    }
+                    // senders are a subset of reiceivers (listening for answers to unicast queries), so no need to dispose this list.
                     senders.Clear();
                 }
 
