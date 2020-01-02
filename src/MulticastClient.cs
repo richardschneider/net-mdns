@@ -114,6 +114,8 @@ namespace Makaretu.Dns
                             throw new NotSupportedException($"Address family {address.AddressFamily}.");
                     }
 
+                    receivers.Add(sender);
+
                     log.Debug($"Will send via {localEndpoint}");
                     if (!senders.TryAdd(address, sender)) // Should not fail
                     {
