@@ -268,9 +268,6 @@ namespace Makaretu.Dns
             AnswerReceived = null;
             NetworkInterfaceDiscovered = null;
 
-            unicastClientIp4?.Dispose();
-            unicastClientIp6?.Dispose();
-
             // Stop current UDP listener
             client?.Dispose();
             client = null;
@@ -692,6 +689,8 @@ namespace Makaretu.Dns
         {
             if (disposing)
             {
+                unicastClientIp4?.Dispose();
+                unicastClientIp6?.Dispose();
                 Stop();
             }
         }
