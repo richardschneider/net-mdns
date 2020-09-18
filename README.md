@@ -13,6 +13,10 @@ as both a client (sending queries) or a server (responding to queries).
 A higher level DNS Service Discovery based on [RFC 6763](https://tools.ietf.org/html/rfc6763) that automatically responds to any query for the 
 service or service instance.
 
+## Credits and Disclaimer
+
+This repository is a fork of Richard Schneider's net-mdns repository.  Since the original repository seems to be no longer maintained (cfr the open pull requests and issues) and @richardschneider seems to be inactive, some users of the net-mdns repository have decided to create a fork of this repository in the dotnetDNS organization.  Hopefully, this initiative can make sure that this excellent tool can be further developed and supported by the OSS community.
+
 ## Features
 
 - Targets Framework 4.6.1, .NET Standard 1.4 and 2.0
