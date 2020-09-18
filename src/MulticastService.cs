@@ -689,6 +689,8 @@ namespace Makaretu.Dns
         {
             if (disposing)
             {
+                unicastClientIp4?.Dispose();
+                unicastClientIp6?.Dispose();
                 Stop();
             }
         }
