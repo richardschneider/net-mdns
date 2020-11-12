@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Common.Logging;
 using Makaretu.Dns.Resolving;
@@ -367,80 +369,89 @@ namespace Makaretu.Dns
         }
 
         void OnQuery(object sender, MessageEventArgs e)
-        {
-            var request = e.Message;
+		{
+			// Should run asynchronously because otherwise incoming messages may overlap and it may not be responded to every message.
+			Task.Run(() =>
+				{
+					var request = e.Message;
 
-            if (log.IsDebugEnabled)
-            {
-                log.Debug($"Query from {e.RemoteEndPoint}");
-            }
-            if (log.IsTraceEnabled)
-            {
-                log.Trace(request);
-            }
+					if (log.IsDebugEnabled)
+					{
+						log.Debug($"Query from {e.RemoteEndPoint}");
+					}
 
-            // Determine if this query is requesting a unicast response
-            // and normalise the Class.
-            var QU = false; // unicast query response?
-            foreach (var r in request.Questions)
-            {
-                if (((ushort)r.Class & 0x8000) != 0)
-                {
-                    QU = true;
-                    r.Class = (DnsClass)((ushort)r.Class & 0x7fff);
-                }
-            }
+					if (log.IsTraceEnabled)
+					{
+						log.Trace(request);
+					}
 
-            var response = NameServer.ResolveAsync(request).Result;
+					// Determine if this query is requesting a unicast response
+					// and normalise the Class.
+					
+					var QU = false; // unicast query response?
+					foreach (var r in request.Questions)
+					{
+						if (((ushort)r.Class & 0x8000) != 0)
+						{
+							QU = true;
+							r.Class = (DnsClass)((ushort)r.Class & 0x7fff);
+						}
+					}
 
-            if (response.Status != MessageStatus.NoError)
-            {
-                return;
-            }
+					var response = NameServer.ResolveAsync(request).Result;
 
-            // Many bonjour browsers don't like DNS-SD response
-            // with additional records.
-            if (response.Answers.Any(a => a.Name == ServiceName))
-            {
-                response.AdditionalRecords.Clear();
-            }
+					if (response.Status != MessageStatus.NoError)
+					{
+						return;
+					}
 
-            if (AnswersContainsAdditionalRecords)
-            {
-                response.Answers.AddRange(response.AdditionalRecords);
-                response.AdditionalRecords.Clear();
-            }
+					// Many bonjour browsers don't like DNS-SD response
+					// with additional records.
+					if (response.Answers.Any(a => a.Name == ServiceName))
+					{
+						response.AdditionalRecords.Clear();
+					}
 
-            if (!response.Answers.Any(a => a.Name == ServiceName))
-            {
-                ;
-            }
+					if (AnswersContainsAdditionalRecords)
+					{
+						response.Answers.AddRange(response.AdditionalRecords);
+						response.AdditionalRecords.Clear();
+					}
 
-            if (QU)
-            {
-                // TODO: Send a Unicast response if required.
-                Mdns.SendAnswer(response, e);
-            }
-            else
-            {
-                Mdns.SendAnswer(response, e);
-            }
+					if (!response.Answers.Any(a => a.Name == ServiceName))
+					{
+						;
+					}
 
-            if (log.IsDebugEnabled)
-            {
-                log.Debug($"Sending answer");
-            }
-            if (log.IsTraceEnabled)
-            {
-                log.Trace(response);
-            }
-            //Console.WriteLine($"Response time {(DateTime.Now - request.CreationTime).TotalMilliseconds}ms");
-        }
+					// Only return address records that the querier can reach.
+					response.RemoveUnreachableRecords(e.RemoteEndPoint.Address);
 
-        #region IDisposable Support
+					if (QU)
+					{
+						// TODO: Send a Unicast response if required.
+						Mdns.SendAnswer(response, e);
+					}
+					else
+					{
+						Mdns.SendAnswer(response, e);
+					}
 
-        /// <inheritdoc />
-        protected virtual void Dispose(bool disposing)
+					if (log.IsDebugEnabled)
+					{
+						log.Debug($"Sending answer");
+					}
+
+					if (log.IsTraceEnabled)
+					{
+						log.Trace(response);
+					}
+				}).ConfigureAwait(false);
+		}
+
+		#region IDisposable Support
+
+		/// <inheritdoc />
+		protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {

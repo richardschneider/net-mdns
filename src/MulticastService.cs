@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,22 +121,22 @@ namespace Makaretu.Dns
         /// </value>
         public event EventHandler<NetworkInterfaceEventArgs> NetworkInterfaceDiscovered;
 
-        /// <summary>
-        ///   Create a new instance of the <see cref="MulticastService"/> class.
-        /// </summary>
-        /// <param name="filter">
-        ///   Multicast listener will be bound to result of filtering function.
-        /// </param>
-        public MulticastService(Func<IEnumerable<NetworkInterface>, IEnumerable<NetworkInterface>> filter = null)
-        {
-            networkInterfacesFilter = filter;
+		/// <summary>
+		///   Create a new instance of the <see cref="MulticastService"/> class.
+		/// </summary>
+		/// <param name="filter">
+		///   Multicast listener will be bound to result of filtering function.
+		/// </param>
+		public MulticastService(Func<IEnumerable<NetworkInterface>, IEnumerable<NetworkInterface>> filter = null)
+		{
+			networkInterfacesFilter = filter;
 
-            UseIpv4 = Socket.OSSupportsIPv4;
-            UseIpv6 = Socket.OSSupportsIPv6;
-            IgnoreDuplicateMessages = true;
-        }
+			UseIpv4 = Socket.OSSupportsIPv4;
+			UseIpv6 = Socket.OSSupportsIPv6;
+			IgnoreDuplicateMessages = true;
+		}
 
-        /// <summary>
+		/// <summary>
         ///   Send and receive on IPv4.
         /// </summary>
         /// <value>
@@ -479,6 +479,8 @@ namespace Makaretu.Dns
         ///   If <b>true</b>, then if the same <paramref name="answer"/> was
         ///   recently sent it will not be sent again.
         /// </param>
+        /// <param name="remoteEndPoint">The Remote Endpoint, where this answer belongs to.</param>
+        /// <param name="isLegacyUnicast">Selects if this message is a legacy unicast or not.</param>
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
@@ -505,7 +507,7 @@ namespace Makaretu.Dns
         /// </remarks>
         /// <see cref="QueryReceived"/>
         /// <seealso cref="Message.CreateResponse"/>
-        public void SendAnswer(Message answer, bool checkDuplicate = true)
+        public void SendAnswer(Message answer, bool checkDuplicate = true, IPEndPoint remoteEndPoint = null, bool isLegacyUnicast = false)
         {
             // All MDNS answers are authoritative and have a transaction
             // ID of zero.
@@ -517,7 +519,7 @@ namespace Makaretu.Dns
 
             answer.Truncate(maxPacketSize);
 
-            Send(answer, checkDuplicate);
+            Send(answer, checkDuplicate, remoteEndPoint, isLegacyUnicast);
         }
 
         /// <summary>
@@ -564,7 +566,7 @@ namespace Makaretu.Dns
         {
             if (!query.IsLegacyUnicast)
             {
-                SendAnswer(answer, checkDuplicate);
+                SendAnswer(answer, checkDuplicate, query.RemoteEndPoint);
                 return;
             }
 
@@ -587,12 +589,13 @@ namespace Makaretu.Dns
                 r.TTL = (r.TTL > maxLegacyUnicastTTL) ? maxLegacyUnicastTTL : r.TTL;
             }
 
-            Send(answer, checkDuplicate, query.RemoteEndPoint);
+            Send(answer, checkDuplicate, query.RemoteEndPoint, true);
         }
 
-        void Send(Message msg, bool checkDuplicate, IPEndPoint remoteEndPoint = null)
-        {
-            var packet = msg.ToByteArray();
+        void Send(Message msg, bool checkDuplicate, IPEndPoint remoteEndPoint = null, bool isLegacyUnicast = false)
+		{
+			var packet = msg.ToByteArray();
+
             if (packet.Length > maxPacketSize)
             {
                 throw new ArgumentOutOfRangeException($"Exceeds max packet size of {maxPacketSize}.");
@@ -603,15 +606,22 @@ namespace Makaretu.Dns
                 return;
             }
 
-            // Standard multicast reponse?
-            if (remoteEndPoint == null)
+            // Standard multicast response?
+            if (remoteEndPoint == null && !isLegacyUnicast)
             {
-                client?.SendAsync(packet).GetAwaiter().GetResult();
-            }
+				// no clear remote endpoint or querier defined - could be from an announce
+				// better perform asynchronously, because this message gets sent on all available NICs and should not block
+				Task.Run(() => client?.SendAsync(msg).GetAwaiter().GetResult()).ConfigureAwait(false);
+			}
+			else if (!isLegacyUnicast)
+			{
+				client?.SendAsync(msg, remoteEndPoint.Address).GetAwaiter().GetResult();
+			}
+
             // Unicast response
-            else
+            if (isLegacyUnicast && remoteEndPoint != null)
             {
-                var unicastClient = (remoteEndPoint.Address.AddressFamily == AddressFamily.InterNetwork)
+				var unicastClient = (remoteEndPoint.Address.AddressFamily == AddressFamily.InterNetwork)
                     ? unicastClientIp4 : unicastClientIp6;
                 unicastClient.SendAsync(packet, packet.Length, remoteEndPoint).GetAwaiter().GetResult();
             }
@@ -640,9 +650,15 @@ namespace Makaretu.Dns
         /// </remarks>
         public void OnDnsMessage(object sender, UdpReceiveResult result)
         {
-            // If recently received, then ignore.
-            if (IgnoreDuplicateMessages && !receivedMessages.TryAdd(result.Buffer))
+			// If recently received, then ignore.
+			// A message has been recently received, if its content, as well as the remote endpoint(!) match, otherwise messages from different senders can be considered equal.
+			var receivedMessage = new byte[result.Buffer.Length + result.RemoteEndPoint.Address.GetAddressBytes().Length];
+			result.Buffer.CopyTo(receivedMessage, 0);
+			result.RemoteEndPoint.Address.GetAddressBytes().CopyTo(receivedMessage, result.Buffer.Length);
+			
+			if (IgnoreDuplicateMessages && !receivedMessages.TryAdd(receivedMessage))
             {
+				// Not continuing here because it looks like a duplicate message
                 return;
             }
 

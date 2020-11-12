@@ -1,4 +1,4 @@
-﻿using Common.Logging;
+using Common.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -132,34 +132,61 @@ namespace Makaretu.Dns
                 }
             }
 
-            // Start listening for messages.
+			// Start listening for messages.
             foreach (var r in receivers)
             {
                 Listen(r);
             }
         }
 
-        public async Task SendAsync(byte[] message)
+        public async Task SendAsync(Message message, IPAddress ipAddress = null)
         {
-            foreach (var sender in senders)
-            {
-                try
+			foreach (var sender in senders)
+			{
+				// Make a copy of the message, so that its resource records can be removed without changing the actual message.
+				var messageCopy = message.Copy();
+				
+				// Only return address records that the querier can reach.
+				if (ipAddress != null)
                 {
+					var reachable = sender.Key.IsReachable(ipAddress);
+					if (reachable == false)
+                    {
+                        log.Debug($"Suppressing a message because {ipAddress} (querier) and {sender.Key} are not on the same subnet.");
+                        continue;
+                    }
+				}
+				else if (!messageCopy.IsQuery)
+				{
+					// When the IP is null, the querier is not defined -> return only address records that remain in the same subnet as the sender.
+					messageCopy.RemoveUnreachableRecords(sender.Key);
+					
+					// If there is no address record left, the service is not running on the same subnet as the sender, so move to the next sender.
+					if (!messageCopy.ContainsAddressRecords())
+						continue;
+				}
+	
+				var messageBytes = messageCopy.ToByteArray();
+
+				try
+				{
                     var endpoint = sender.Key.AddressFamily == AddressFamily.InterNetwork ? MdnsEndpointIp4 : MdnsEndpointIp6;
+
+                    log.Debug($"Trying to send the message from {sender.Key} to {endpoint.Address}:{endpoint.Port}");
                     await sender.Value.SendAsync(
-                        message, message.Length, 
-                        endpoint)
-                    .ConfigureAwait(false);
+									messageBytes, messageBytes.Length,
+                                    endpoint)
+                                .ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Sender {sender.Key} failure: {e.Message}");
+					log.Error($"Sender {sender.Key} failure: {e.Message}");
                     // eat it.
                 }
             }
         }
 
-        void Listen(UdpClient receiver)
+		void Listen(UdpClient receiver)
         {
             // ReceiveAsync does not support cancellation.  So the receiver is disposed
             // to stop it. See https://github.com/dotnet/corefx/issues/9848
