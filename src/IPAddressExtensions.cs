@@ -26,6 +26,7 @@ namespace Makaretu.Dns
 		/// s</returns>
 		public static IPAddress GetSubnetMask(this IPAddress address)
 		{
+			var nics = NetworkInterface.GetAllNetworkInterfaces();
 			return NetworkInterface.GetAllNetworkInterfaces()
 								   .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
 								   .Where(a => a.Address.Equals(address))
@@ -61,18 +62,24 @@ namespace Makaretu.Dns
 					var network = IPNetwork.Parse(local, mask);
 					return network.Contains(remote);
 				}
+
+				// A mask of null should not occur. Is the IP address available on the actual machine or are the local and remote addresses switched in the function call?
+				return false;
 			}
 
 			// IPv6 link local addresses are reachable when using the same scope id.
 			if (local.AddressFamily == AddressFamily.InterNetworkV6 && remote.AddressFamily == AddressFamily.InterNetworkV6)
 			{
-				if (local.IsIPv6LinkLocal || remote.IsIPv6LinkLocal)
+				if (local.IsIPv6LinkLocal && remote.IsIPv6LinkLocal)
 				{
-					return local.Equals(remote);
+					return (local.ScopeId == remote.ScopeId);
 				}
+
+				// only interested in link local addresses
+				return false;
 			}
 
-			// If none of the above combinations matched, it is likely, that the address is not reachable.
+			// If nothing of the above matched, they are probably not reachable. -> maybe a IPv4 to IPv6 transmission or vice verse.
 			return false;
 		}
 	}

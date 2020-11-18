@@ -544,7 +544,7 @@ namespace Makaretu.Dns
         /// <remarks>
         ///   <para>
         ///   If the <paramref name="query"/> is a standard multicast query (sent to port 5353), then 
-        ///   <see cref="SendAnswer(Message, bool)"/> is called.
+        ///   <see cref="SendAnswer(Message,bool,IPEndPoint,bool)"/> is called.
         ///   </para>
         ///   <para>
         ///   Otherwise a legacy unicast reponse is sent to sender's end point.

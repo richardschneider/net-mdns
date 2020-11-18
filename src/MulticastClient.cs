@@ -104,12 +104,14 @@ namespace Makaretu.Dns
                             sender.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
                             break;
                         case AddressFamily.InterNetworkV6:
-                            receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6, address.ScopeId));
-                            sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                            sender.Client.Bind(localEndpoint);
-                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
-                            sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastLoopback, true);
-                            break;
+							receiver6.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6, address.ScopeId));
+							sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+							sender.Client.Bind(localEndpoint);
+							sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.AddMembership, new IPv6MulticastOption(MulticastAddressIp6));
+
+							// TODO@EPR next line crashes on Linux device
+							sender.Client.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.MulticastLoopback, true);
+							break;
                         default:
                             throw new NotSupportedException($"Address family {address.AddressFamily}.");
                     }
@@ -127,7 +129,7 @@ namespace Makaretu.Dns
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Cannot setup send socket for {address}: {e.Message}");
+					log.Error($"Cannot setup send socket for {address}: {e.Message}");
                     sender.Dispose();
                 }
             }
