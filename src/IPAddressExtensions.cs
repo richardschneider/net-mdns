@@ -26,7 +26,6 @@ namespace Makaretu.Dns
 		/// s</returns>
 		public static IPAddress GetSubnetMask(this IPAddress address)
 		{
-			var nics = NetworkInterface.GetAllNetworkInterfaces();
 			return NetworkInterface.GetAllNetworkInterfaces()
 								   .SelectMany(nic => nic.GetIPProperties().UnicastAddresses)
 								   .Where(a => a.Address.Equals(address))

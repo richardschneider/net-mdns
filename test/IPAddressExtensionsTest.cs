@@ -100,7 +100,7 @@ namespace Makaretu.Dns
 			Assert.IsTrue(me1.IsReachable(me1));
 			Assert.IsTrue(me2.IsReachable(me2));
 			Assert.IsFalse(me1.IsReachable(me2));
-			Assert.IsFalse(me1.IsReachable(me5));
+			Assert.IsTrue(me1.IsReachable(me5)); // as long as the scope matches, they should be reachable
 		}
 	}
 }
