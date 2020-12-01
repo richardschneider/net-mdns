@@ -160,10 +160,13 @@ namespace Makaretu.Dns
 				{
 					// When the IP is null, the querier is not defined -> return only address records that remain in the same subnet as the sender.
 					messageCopy.RemoveUnreachableRecords(sender.Key);
-					
-					// If there is no address record left, the service is not running on the same subnet as the sender, so move to the next sender.
-					if (!messageCopy.ContainsAddressRecords())
-						continue;
+
+                    // If there is no address record left, the service is not running on the same subnet as the sender, so move to the next sender.
+                    if (!messageCopy.ContainsAddressRecords())
+                    {
+                        log.Debug($"All address records have been removed for {sender.Key}, therefore no message is sent.");
+                        continue;
+                    }
 				}
 	
 				var messageBytes = messageCopy.ToByteArray();

@@ -115,7 +115,7 @@ namespace Makaretu.Dns
                         res.Answers.Add(new ARecord
                         {
                             Name = service,
-                            Address = IPAddress.Parse("127.1.1.1")
+                            Address = IPAddress.Loopback
                         });
                         mdns.SendAnswer(res);
                     }
@@ -138,7 +138,7 @@ namespace Makaretu.Dns
                 Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
                 var a = (ARecord)response.Answers[0];
-                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
+                Assert.AreEqual(IPAddress.Loopback, a.Address);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Makaretu.Dns
                         res.Answers.Add(new ARecord
                         {
                             Name = service,
-                            Address = IPAddress.Parse("127.1.1.1")
+                            Address = IPAddress.Loopback
                         });
                         mdns.SendAnswer(res);
                     }
@@ -233,7 +233,7 @@ namespace Makaretu.Dns
                 Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
                 var a = (ARecord)response.Answers[0];
-                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
+                Assert.AreEqual(IPAddress.Loopback, a.Address);
             }
         }
 
@@ -259,7 +259,7 @@ namespace Makaretu.Dns
                         res.Answers.Add(new AAAARecord
                         {
                             Name = service,
-                            Address = IPAddress.Parse("::2")
+                            Address = IPAddress.IPv6Loopback
                         });
                         mdns.SendAnswer(res);
                     }
@@ -280,7 +280,7 @@ namespace Makaretu.Dns
                 Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
                 var a = (AAAARecord)response.Answers[0];
-                Assert.AreEqual(IPAddress.Parse("::2"), a.Address);
+                Assert.AreEqual(IPAddress.IPv6Loopback, a.Address);
             }
         }
 
@@ -495,7 +495,7 @@ namespace Makaretu.Dns
                         res.Answers.Add(new ARecord
                         {
                             Name = service,
-                            Address = IPAddress.Parse("127.1.1.1")
+                            Address = IPAddress.Loopback
                         });
                         mdns.SendAnswer(res);
                     }
@@ -507,7 +507,7 @@ namespace Makaretu.Dns
                 Assert.AreEqual(MessageStatus.NoError, response.Status);
                 Assert.IsTrue(response.AA);
                 var a = (ARecord)response.Answers[0];
-                Assert.AreEqual(IPAddress.Parse("127.1.1.1"), a.Address);
+                Assert.AreEqual(IPAddress.Loopback, a.Address);
             }
         }
 
@@ -551,7 +551,7 @@ namespace Makaretu.Dns
                         res.Answers.Add(new ARecord
                         {
                             Name = service,
-                            Address = IPAddress.Parse("127.1.1.1")
+                            Address = IPAddress.Loopback
                         });
                         mdns.SendAnswer(res);
                     }
@@ -566,7 +566,10 @@ namespace Makaretu.Dns
                 };
                 mdns.Start();
                 await Task.Delay(1000);
-                Assert.AreEqual(1, answerCount);
+
+                // one answer message per sender is allowed, because they may be on different subnets
+                var numberOfValidSender = MulticastService.GetIPAddresses().Where(a => (a.IsIPv6LinkLocal || a.AddressFamily == AddressFamily.InterNetwork)).Count();
+                Assert.AreEqual(numberOfValidSender, answerCount);
             }
         }
 

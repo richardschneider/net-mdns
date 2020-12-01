@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Makaretu.Dns
 {
@@ -57,26 +58,6 @@ namespace Makaretu.Dns
 			{
 				Console.WriteLine($"{a} ll={a.IsIPv6LinkLocal} ss={a.IsIPv6SiteLocal}");
 			}
-		}
-
-		[TestMethod]
-		public void Reachable_Loopback_From_Localhost()
-		{
-			var me = IPAddress.Loopback;
-			foreach (var a in MulticastService.GetIPAddresses())
-			{
-				Assert.IsTrue(me.IsReachable(a), $"{a}");
-			}
-			Assert.IsFalse(me.IsReachable(IPAddress.Parse("1.1.1.1")));
-			Assert.IsFalse(me.IsReachable(IPAddress.Parse("2606:4700:4700::1111")));
-
-			me = IPAddress.IPv6Loopback;
-			foreach (var a in MulticastService.GetIPAddresses())
-			{
-				Assert.IsTrue(me.IsReachable(a), $"{a}");
-			}
-			Assert.IsFalse(me.IsReachable(IPAddress.Parse("1.1.1.1")));
-			Assert.IsFalse(me.IsReachable(IPAddress.Parse("2606:4700:4700::1111")));
 		}
 
 		[TestMethod]
