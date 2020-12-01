@@ -274,7 +274,7 @@ namespace Makaretu.Dns
                 sd.Advertise(service1);
                 sd.Advertise(service2);
                 mdns.Start();
-                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(2)), "instance not found");
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
             }
             finally
             {
@@ -308,7 +308,7 @@ namespace Makaretu.Dns
             {
                 sd.Advertise(service);
                 mdns.Start();
-                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(2)), "instance not found");
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "instance not found");
             }
             finally
             {
@@ -383,7 +383,7 @@ namespace Makaretu.Dns
                 sd.Advertise(service);
                 mdns.Start();
                 sd.Unadvertise(service);
-                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(2)), "goodbye timeout");
+                Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1)), "goodbye timeout");
             }
             finally
             {
@@ -417,7 +417,7 @@ namespace Makaretu.Dns
                 {
                     sd.Advertise(service);
                     mdns.Start();
-                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(2)), "query timeout");
+                    Assert.IsTrue(done.WaitOne(TimeSpan.FromSeconds(1.5)), "query timeout");
                     var answers = response.Answers
                         .OfType<PTRRecord>()
                         .Where(ptr => service.HostName == ptr.DomainName);

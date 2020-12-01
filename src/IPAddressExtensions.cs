@@ -40,11 +40,12 @@ namespace Makaretu.Dns
 		/// <param name="local"></param>
 		/// <param name="remote"></param>
 		/// <param name="searchOnNeighborAddresses">If other addresses from the same NIC should als be checked or not.</param>
+		/// <param name="nics">The available nics on the system. Providing them reduces computation time.</param>
 		/// <returns>
 		///   <b>true</b> if <paramref name="local"/> can be used by <paramref name="remote"/>;
 		///   otherwise, <b>false</b>.
 		/// </returns>
-		public static bool IsReachable(this IPAddress local, IPAddress remote, bool searchOnNeighborAddresses = true)
+		public static bool IsReachable(this IPAddress local, IPAddress remote, bool searchOnNeighborAddresses = true, NetworkInterface[] nics = null)
 		{
 			// Loopback addresses are only reachable when the remote is
 			// the same host.
@@ -80,19 +81,21 @@ namespace Makaretu.Dns
 				return false;
 			}
 
+
 			// mix of IPv4 and IPv6 -> try if the remote is reachable from one of the other IP addresses of the same NIC
 			if (!searchOnNeighborAddresses)
 				return false;
 
-			var nics = NetworkInterface.GetAllNetworkInterfaces();
-		
+			if(nics == null)
+				nics = NetworkInterface.GetAllNetworkInterfaces();
+
 			foreach (var nic in nics)
 			{
 				var localAddressInformation = nic.GetIPProperties().UnicastAddresses.Where(a => a.Address.Equals(local)).FirstOrDefault();
 				if (localAddressInformation != null)
 				{
 					var otherAddresses = nic.GetIPProperties().UnicastAddresses.Where(a => a != localAddressInformation).Select(a => a.Address);
-					return otherAddresses.Any(otherAddress => otherAddress.IsReachable(remote, searchOnNeighborAddresses: false));
+					return otherAddresses.Any(otherAddress => otherAddress.IsReachable(remote, searchOnNeighborAddresses: false, nics));
 				}
 			}
 

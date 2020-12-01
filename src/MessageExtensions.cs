@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Makaretu.Dns
 {
@@ -37,12 +38,13 @@ namespace Makaretu.Dns
 		/// <summary>Removes the unreachable records.</summary>
 		/// <param name="message">The message from which the unreachable records should be removed.</param>
 		/// <param name="address">The address which should be able to reach all the addresses contained in the address records.</param>
-		public static void RemoveUnreachableRecords(this Message message, IPAddress address)
+		/// <param name="nics">The available nics on the system. Providing them reduces computation time.</param>
+		public static void RemoveUnreachableRecords(this Message message, IPAddress address, NetworkInterface[] nics = null)
 		{
 			// Only return address records that the querier can reach.
-			message.Answers.RemoveAll(rr => IsUnreachable(rr, address));
-			message.AuthorityRecords.RemoveAll(rr => IsUnreachable(rr, address));
-			message.AdditionalRecords.RemoveAll(rr => IsUnreachable(rr, address));
+			message.Answers.RemoveAll(rr => IsUnreachable(rr, address, nics));
+			message.AuthorityRecords.RemoveAll(rr => IsUnreachable(rr, address, nics));
+			message.AdditionalRecords.RemoveAll(rr => IsUnreachable(rr, address, nics));
 		}
 
 		/// <summary>Determines whether the message contains address records.</summary>
@@ -57,10 +59,11 @@ namespace Makaretu.Dns
 		/// <param name="rr">The resource record.</param>
 		/// <param name="address">The address.</param>
 		/// <returns><c>true</c> if the specified resource records is unreachable; otherwise, <c>false</c>.</returns>
-		private static bool IsUnreachable(ResourceRecord rr, IPAddress address)
+		/// <param name="nics">The available nics on the system. Providing them reduces computation time.</param>
+		private static bool IsUnreachable(ResourceRecord rr, IPAddress address, NetworkInterface[] nics = null)
 		{
 			var addressRecord = rr as AddressRecord;
-			return !addressRecord?.Address.IsReachable(address) ?? false;
+			return !addressRecord?.Address.IsReachable(address, nics: nics) ?? false;
 		}
 	}
 }

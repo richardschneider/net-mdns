@@ -139,7 +139,7 @@ namespace Makaretu.Dns
             }
         }
 
-        public async Task SendAsync(Message message, IPAddress ipAddress = null)
+        public async Task SendAsync(Message message, IPAddress ipAddress = null, NetworkInterface[] nics = null)
         {
 			foreach (var sender in senders)
 			{
@@ -149,7 +149,7 @@ namespace Makaretu.Dns
 				// Only return address records that the querier can reach.
 				if (ipAddress != null)
                 {
-					var reachable = sender.Key.IsReachable(ipAddress);
+					var reachable = sender.Key.IsReachable(ipAddress, nics: nics);
 					if (reachable == false)
                     {
                         log.Debug($"Suppressing a message because {ipAddress} (querier) and {sender.Key} are not on the same subnet.");
@@ -159,7 +159,7 @@ namespace Makaretu.Dns
 				else if (!messageCopy.IsQuery)
 				{
 					// When the IP is null, the querier is not defined -> return only address records that remain in the same subnet as the sender.
-					messageCopy.RemoveUnreachableRecords(sender.Key);
+					messageCopy.RemoveUnreachableRecords(sender.Key, nics);
 
                     // If there is no address record left, the service is not running on the same subnet as the sender, so move to the next sender.
                     if (!messageCopy.ContainsAddressRecords())

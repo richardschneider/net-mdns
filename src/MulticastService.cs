@@ -38,6 +38,9 @@ namespace Makaretu.Dns
         List<NetworkInterface> knownNics = new List<NetworkInterface>();
         int maxPacketSize;
 
+        /// <summary>Gets the known NICs for this MulticastService.</summary>
+        public NetworkInterface[] KnownNics { get => knownNics.ToArray(); }
+
         /// <summary>
         ///   Recently sent messages.
         /// </summary>
@@ -611,11 +614,11 @@ namespace Makaretu.Dns
             {
 				// no clear remote endpoint or querier defined - could be from an announce
 				// better perform asynchronously, because this message gets sent on all available NICs and should not block
-				Task.Run(() => client?.SendAsync(msg).GetAwaiter().GetResult()).ConfigureAwait(false);
+				Task.Run(() => client?.SendAsync(msg, nics: KnownNics).GetAwaiter().GetResult()).ConfigureAwait(false);
 			}
 			else if (!isLegacyUnicast)
 			{
-				client?.SendAsync(msg, remoteEndPoint.Address).GetAwaiter().GetResult();
+				client?.SendAsync(msg, remoteEndPoint.Address, nics: KnownNics).GetAwaiter().GetResult();
 			}
 
             // Unicast response

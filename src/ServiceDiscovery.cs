@@ -424,7 +424,7 @@ namespace Makaretu.Dns
 					}
 
 					// Only return address records that the querier can reach.
-					response.RemoveUnreachableRecords(e.RemoteEndPoint.Address);
+					response.RemoveUnreachableRecords(e.RemoteEndPoint.Address, nics: Mdns.KnownNics);
 
 					if (QU)
 					{
