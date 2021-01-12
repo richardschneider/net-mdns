@@ -165,6 +165,17 @@ namespace Makaretu.Dns
         public bool IgnoreDuplicateMessages { get; set; }
 
         /// <summary>
+        /// Determines whether loopback interfaces should be excluded when other network interfaces are available
+        /// </summary>
+        /// <value>
+        /// <b>true</b> to include loopback interfaces also when other network interfaces are up. Defaults to <b>false</b>.
+        /// </value>
+        /// <remarks>
+        /// If not set, loopback network interfaces will be ignored regardless of the network interface filter.
+        /// </remarks>
+        public static bool IncludeLoopbackInterfaces { get; set; } = false;
+
+        /// <summary>
         ///   The interval for discovering network interfaces.
         /// </summary>
         /// <value>
@@ -197,13 +208,15 @@ namespace Makaretu.Dns
         /// </remarks>
         public static IEnumerable<NetworkInterface> GetNetworkInterfaces()
         {
-            var nics = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Where(nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .ToArray();
-            if (nics.Length > 0)
-                return nics;
-
+            if(!IncludeLoopbackInterfaces)
+            {
+                var nics = NetworkInterface.GetAllNetworkInterfaces()
+                    .Where( nic => nic.OperationalStatus == OperationalStatus.Up )
+                    .Where( nic => nic.NetworkInterfaceType != NetworkInterfaceType.Loopback )
+                    .ToArray();
+                if(nics.Length > 0)
+                    return nics;
+            }
             // Special case: no operational NIC, then use loopbacks.
             return NetworkInterface.GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up);
