@@ -268,6 +268,15 @@ namespace Makaretu.Dns
             AnswerReceived = null;
             NetworkInterfaceDiscovered = null;
 
+#if NET461
+            if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
+#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
+            {
+                NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+            }
+
             // Stop current UDP listener
             client?.Dispose();
             client = null;
