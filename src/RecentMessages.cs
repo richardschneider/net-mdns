@@ -77,12 +77,12 @@ namespace Makaretu.Dns
         ///   The binary representation of a message.
         /// </param>
         /// <returns>
-        ///   The Base64 encoding of the MD5 hash of the <paramref name="message"/>.
+        ///   The Base64 encoding of the SHA1 hash of the <paramref name="message"/>.
         /// </returns>
         public string GetId(byte[] message)
         {
-            // MD5 is okay because the hash is not used for security.
-            using (HashAlgorithm hasher = MD5.Create())
+            // SHA is FIPS compliant, as opposed to MD5.
+            using (HashAlgorithm hasher = SHA1.Create())
             {
                 return Convert.ToBase64String(hasher.ComputeHash(message));
             }
