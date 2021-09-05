@@ -381,7 +381,7 @@ namespace Makaretu.Dns
         /// <param name="name">
         ///   A domain name that should end with ".local", e.g. "myservice.local".
         /// </param>
-        /// <param name="klass">
+        /// <param name="class">
         ///   The class, defaults to <see cref="DnsClass.IN"/>.
         /// </param>
         /// <param name="type">
@@ -394,7 +394,7 @@ namespace Makaretu.Dns
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
-        public void SendQuery(DomainName name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
+        public void SendQuery(DomainName name, DnsClass @class = DnsClass.IN, DnsType type = DnsType.ANY)
         {
             var msg = new Message
             {
@@ -404,7 +404,7 @@ namespace Makaretu.Dns
             msg.Questions.Add(new Question
             {
                 Name = name,
-                Class = klass,
+                Class = @class,
                 Type = type
             });
 
@@ -417,7 +417,7 @@ namespace Makaretu.Dns
         /// <param name="name">
         ///   A domain name that should end with ".local", e.g. "myservice.local".
         /// </param>
-        /// <param name="klass">
+        /// <param name="class">
         ///   The class, defaults to <see cref="DnsClass.IN"/>.
         /// </param>
         /// <param name="type">
@@ -431,7 +431,7 @@ namespace Makaretu.Dns
         /// <exception cref="InvalidOperationException">
         ///   When the service has not started.
         /// </exception>
-        public void SendUnicastQuery(DomainName name, DnsClass klass = DnsClass.IN, DnsType type = DnsType.ANY)
+        public void SendUnicastQuery(DomainName name, DnsClass @class = DnsClass.IN, DnsType type = DnsType.ANY)
         {
             var msg = new Message
             {
@@ -441,7 +441,7 @@ namespace Makaretu.Dns
             msg.Questions.Add(new Question
             {
                 Name = name,
-                Class = (DnsClass) ((ushort)klass | 0x8000),
+                Class = (DnsClass) ((ushort)class | 0x8000),
                 Type = type
             });
 
